@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as below."
+title: "NFL_AB_design: a reproducible NfL antigen inference and antibody design replay workflow"
+version: "0.1.0"
+date-released: "2026-07-08"
+license: "MIT"
+authors:
+  - name: "NFL_AB_design contributors"
+keywords:
+  - NfL
+  - NEFL
+  - antibody design
+  - antigen truncation inference
+  - sandwich assay
+  - computational workflow
+abstract: "A self-contained computational workflow for NfL antigen-truncation inference, antigen processing, antibody design replay, multi-objective candidate ranking, sandwich-pair assessment, and external structure-pipeline handoff."

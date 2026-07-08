@@ -1,0 +1,29 @@
+{
+  "protein": {
+    "name": "human NEFL/NfL",
+    "uniprot_accession": "P07196",
+    "sequence_source": "resources/antigen_inference/nfl_cathepsin_annotated_for_snapgene.gp"
+  },
+  "experimental_observation": {
+    "non_reducing_band_kDa": 22.0,
+    "interpretation": "disulfide-linked homodimer",
+    "expected_monomer_kDa": 11.0
+  },
+  "fragment_constraints": {
+    "required_cysteine_position": 322,
+    "monomer_mass_min_kDa": 10.0,
+    "monomer_mass_max_kDa": 12.6,
+    "preferred_region_start": 280,
+    "preferred_region_end": 377,
+    "core_candidate_fragments": ["280-375", "281-376", "282-377"]
+  },
+  "cathepsin_model": {
+    "cysteine_cathepsin_family": "Cathepsin B/L/S/K/V-like",
+    "aspartyl_cathepsin_family": "Cathepsin D/E-like",
+    "notes": [
+      "Cysteine cathepsin-like scoring emphasizes hydrophobic/aromatic P2 preference, basic P1 support, and P1' Pro penalty.",
+      "Cathepsin D/E-like scoring emphasizes hydrophobic or aromatic P1/P1' boundaries.",
+      "Scores are substrate-preference proxies and require experimental validation."
+    ]
+  }
+}

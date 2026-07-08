@@ -1,0 +1,47 @@
+{
+  "description": "Example adapters for external structure and docking tools. Keep jobs disabled until the corresponding local tool commands are verified.",
+  "pipelines": [
+    {
+      "name": "igfold_fv_modeling",
+      "stage": "antibody_fv_modeling",
+      "enabled": false,
+      "input_selector": "validated_fv_chains_fasta",
+      "command_template": "igfold --fasta {input} --outdir {output_dir}"
+    },
+    {
+      "name": "abodybuilder3_fv_modeling",
+      "stage": "antibody_fv_modeling",
+      "enabled": false,
+      "input_selector": "validated_fv_chains_fasta",
+      "command_template": "abodybuilder3 --fasta {input} --output {output_dir}"
+    },
+    {
+      "name": "alphafold3_complex",
+      "stage": "antibody_antigen_cofolding",
+      "enabled": false,
+      "input_selector": "af3_json_files",
+      "command_template": "run_alphafold3 --json_path {input} --output_dir {output_dir}"
+    },
+    {
+      "name": "chai1_complex",
+      "stage": "antibody_antigen_cofolding",
+      "enabled": false,
+      "input_selector": "complex_fastas",
+      "command_template": "chai-lab fold {input} --output-dir {output_dir}"
+    },
+    {
+      "name": "boltz_complex",
+      "stage": "antibody_antigen_cofolding",
+      "enabled": false,
+      "input_selector": "complex_fastas",
+      "command_template": "boltz predict {input} --out_dir {output_dir}"
+    },
+    {
+      "name": "rosetta_interface_analysis",
+      "stage": "post_prediction_interface_scoring",
+      "enabled": false,
+      "input_selector": "sandwich_fasta",
+      "command_template": "rosetta_interface_analyzer --input {input} --outdir {output_dir}"
+    }
+  ]
+}

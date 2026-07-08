@@ -1,0 +1,153 @@
+{
+  "purpose": "Structure-tool input handoff for the NfL antibody design workflow.",
+  "limitations": [
+    "VH/VL Fv chains are exported without constant regions.",
+    "AF3 JSON files are schema templates and should be checked against the active runner.",
+    "Proxy ranking metrics should be replaced by measured or modeled ipTM, pTM, interface PAE, pDockQ, buried surface area, Rosetta interface dG, and clash metrics when structures are available."
+  ],
+  "recommended_tool_order": [
+    "IgFold or ABodyBuilder3 for Fv/Fab sanity checks",
+    "AF3, Chai-1, or Boltz co-folding for antibody-antigen complexes",
+    "Rosetta relax/interface analyzer for post-prediction interface metrics",
+    "Pair-aware trimer prediction for sandwich compatibility"
+  ],
+  "sandwich_pair_proxy": {
+    "antibody_1": "7-H11-D3-2-C7",
+    "antibody_1_epitope_id": "C_boundary_368_377",
+    "antibody_1_epitope_start": 368,
+    "antibody_1_epitope_end": 377,
+    "antibody_1_binding_score": 74.77,
+    "antibody_2": "15-C12-H6",
+    "antibody_2_epitope_id": "Cys322_anchor_316_331",
+    "antibody_2_epitope_start": 316,
+    "antibody_2_epitope_end": 331,
+    "antibody_2_binding_score": 79.99,
+    "epitope_overlap_aa": 0,
+    "epitope_overlap_ratio": 0.0,
+    "linear_epitope_gap_aa": 36,
+    "clash_score_proxy": 0.0,
+    "sandwich_compatibility_score": 84.52,
+    "recommended_capture": "7-H11-D3-2-C7",
+    "recommended_detection": "15-C12-H6",
+    "orientation_reason": "capture uses the antibody with the higher sequence developability proxy; detection antibody should be checked for label-site interference"
+  },
+  "exports": {
+    "primary_antigen_fragment": "280-375",
+    "antigen_fragments_fasta": "outputs/exports/fasta/antigen_fragments.fasta",
+    "validated_fv_chains_fasta": "outputs/exports/fasta/validated_fv_chains.fasta",
+    "complex_fastas": [
+      "outputs/exports/fasta/complex_7-H11-D3-2-C7_NEFL_280-375.fasta",
+      "outputs/exports/fasta/complex_15-C12-H6_NEFL_280-375.fasta"
+    ],
+    "sandwich_fasta": "outputs/exports/fasta/sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-375.fasta",
+    "fasta_files": [
+      "outputs/exports/fasta/complex_7-H11-D3-2-C7_NEFL_280-375.fasta",
+      "outputs/exports/fasta/complex_15-C12-H6_NEFL_280-375.fasta",
+      "outputs/exports/fasta/sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-375.fasta"
+    ],
+    "af3_json_files": [
+      "outputs/exports/af3_json/af3_complex_7-H11-D3-2-C7_NEFL_280-375.json",
+      "outputs/exports/af3_json/af3_complex_15-C12-H6_NEFL_280-375.json",
+      "outputs/exports/af3_json/af3_sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-375.json"
+    ]
+  },
+  "external_pipeline_handoff": {
+    "config_path": "config/external_pipelines.example.json",
+    "job_table": "outputs/exports/external_jobs/pipeline_jobs.tsv",
+    "runner_script": "outputs/exports/external_jobs/run_external_pipelines.sh",
+    "job_count": 10,
+    "enabled_job_count": 0,
+    "jobs": [
+      {
+        "stage": "antibody_fv_modeling",
+        "tool": "igfold_fv_modeling",
+        "enabled": "no",
+        "input_selector": "validated_fv_chains_fasta",
+        "input_path": "outputs/exports/fasta/validated_fv_chains.fasta",
+        "output_dir": "outputs/external_results/igfold_fv_modeling/validated_fv_chains",
+        "command": "igfold --fasta outputs/exports/fasta/validated_fv_chains.fasta --outdir outputs/external_results/igfold_fv_modeling/validated_fv_chains"
+      },
+      {
+        "stage": "antibody_fv_modeling",
+        "tool": "abodybuilder3_fv_modeling",
+        "enabled": "no",
+        "input_selector": "validated_fv_chains_fasta",
+        "input_path": "outputs/exports/fasta/validated_fv_chains.fasta",
+        "output_dir": "outputs/external_results/abodybuilder3_fv_modeling/validated_fv_chains",
+        "command": "abodybuilder3 --fasta outputs/exports/fasta/validated_fv_chains.fasta --output outputs/external_results/abodybuilder3_fv_modeling/validated_fv_chains"
+      },
+      {
+        "stage": "antibody_antigen_cofolding",
+        "tool": "alphafold3_complex",
+        "enabled": "no",
+        "input_selector": "af3_json_files",
+        "input_path": "outputs/exports/af3_json/af3_complex_7-H11-D3-2-C7_NEFL_280-375.json",
+        "output_dir": "outputs/external_results/alphafold3_complex/af3_complex_7-H11-D3-2-C7_NEFL_280-375",
+        "command": "run_alphafold3 --json_path outputs/exports/af3_json/af3_complex_7-H11-D3-2-C7_NEFL_280-375.json --output_dir outputs/external_results/alphafold3_complex/af3_complex_7-H11-D3-2-C7_NEFL_280-375"
+      },
+      {
+        "stage": "antibody_antigen_cofolding",
+        "tool": "alphafold3_complex",
+        "enabled": "no",
+        "input_selector": "af3_json_files",
+        "input_path": "outputs/exports/af3_json/af3_complex_15-C12-H6_NEFL_280-375.json",
+        "output_dir": "outputs/external_results/alphafold3_complex/af3_complex_15-C12-H6_NEFL_280-375",
+        "command": "run_alphafold3 --json_path outputs/exports/af3_json/af3_complex_15-C12-H6_NEFL_280-375.json --output_dir outputs/external_results/alphafold3_complex/af3_complex_15-C12-H6_NEFL_280-375"
+      },
+      {
+        "stage": "antibody_antigen_cofolding",
+        "tool": "alphafold3_complex",
+        "enabled": "no",
+        "input_selector": "af3_json_files",
+        "input_path": "outputs/exports/af3_json/af3_sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-375.json",
+        "output_dir": "outputs/external_results/alphafold3_complex/af3_sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-375",
+        "command": "run_alphafold3 --json_path outputs/exports/af3_json/af3_sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-375.json --output_dir outputs/external_results/alphafold3_complex/af3_sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-375"
+      },
+      {
+        "stage": "antibody_antigen_cofolding",
+        "tool": "chai1_complex",
+        "enabled": "no",
+        "input_selector": "complex_fastas",
+        "input_path": "outputs/exports/fasta/complex_7-H11-D3-2-C7_NEFL_280-375.fasta",
+        "output_dir": "outputs/external_results/chai1_complex/complex_7-H11-D3-2-C7_NEFL_280-375",
+        "command": "chai-lab fold outputs/exports/fasta/complex_7-H11-D3-2-C7_NEFL_280-375.fasta --output-dir outputs/external_results/chai1_complex/complex_7-H11-D3-2-C7_NEFL_280-375"
+      },
+      {
+        "stage": "antibody_antigen_cofolding",
+        "tool": "chai1_complex",
+        "enabled": "no",
+        "input_selector": "complex_fastas",
+        "input_path": "outputs/exports/fasta/complex_15-C12-H6_NEFL_280-375.fasta",
+        "output_dir": "outputs/external_results/chai1_complex/complex_15-C12-H6_NEFL_280-375",
+        "command": "chai-lab fold outputs/exports/fasta/complex_15-C12-H6_NEFL_280-375.fasta --output-dir outputs/external_results/chai1_complex/complex_15-C12-H6_NEFL_280-375"
+      },
+      {
+        "stage": "antibody_antigen_cofolding",
+        "tool": "boltz_complex",
+        "enabled": "no",
+        "input_selector": "complex_fastas",
+        "input_path": "outputs/exports/fasta/complex_7-H11-D3-2-C7_NEFL_280-375.fasta",
+        "output_dir": "outputs/external_results/boltz_complex/complex_7-H11-D3-2-C7_NEFL_280-375",
+        "command": "boltz predict outputs/exports/fasta/complex_7-H11-D3-2-C7_NEFL_280-375.fasta --out_dir outputs/external_results/boltz_complex/complex_7-H11-D3-2-C7_NEFL_280-375"
+      },
+      {
+        "stage": "antibody_antigen_cofolding",
+        "tool": "boltz_complex",
+        "enabled": "no",
+        "input_selector": "complex_fastas",
+        "input_path": "outputs/exports/fasta/complex_15-C12-H6_NEFL_280-375.fasta",
+        "output_dir": "outputs/external_results/boltz_complex/complex_15-C12-H6_NEFL_280-375",
+        "command": "boltz predict outputs/exports/fasta/complex_15-C12-H6_NEFL_280-375.fasta --out_dir outputs/external_results/boltz_complex/complex_15-C12-H6_NEFL_280-375"
+      },
+      {
+        "stage": "post_prediction_interface_scoring",
+        "tool": "rosetta_interface_analysis",
+        "enabled": "no",
+        "input_selector": "sandwich_fasta",
+        "input_path": "outputs/exports/fasta/sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-375.fasta",
+        "output_dir": "outputs/external_results/rosetta_interface_analysis/sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-375",
+        "command": "rosetta_interface_analyzer --input outputs/exports/fasta/sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-375.fasta --outdir outputs/external_results/rosetta_interface_analysis/sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-375"
+      }
+    ]
+  }
+}

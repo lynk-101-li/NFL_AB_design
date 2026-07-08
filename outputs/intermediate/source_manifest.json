@@ -1,0 +1,17 @@
+{
+  "story_path": "resources/project_context/storyline.txt",
+  "research_plan_path": "resources/project_context/research_plan.txt",
+  "antigen_report_path": "resources/antigen_inference/NFL_22kDa_disulfide_dimer_cathepsin_truncation.md",
+  "fragment_candidates_path": "resources/antigen_inference/nfl_22kda_disulfide_dimer_fragment_candidates.csv",
+  "cleavage_sites_path": "resources/antigen_inference/nfl_medium_high_cathepsin_candidate_sites.csv",
+  "genpept_path": "resources/antigen_inference/nfl_cathepsin_annotated_for_snapgene.gp",
+  "truncation_constraints_path": "input/antigen_truncation/truncation_constraints.json",
+  "antibody_template_fasta_path": "input/antibody_templates/template_fv_backgrounds.fasta",
+  "validation_antibody_fasta_path": "validation/experimentally_validated_antibodies.fasta",
+  "nfl_sequence_length": 543,
+  "upstream_cleavage_site_rows": 34,
+  "computed_peptide_bond_rows": 542,
+  "computed_medium_high_site_rows": 87,
+  "computed_fragment_candidate_rows": 571,
+  "antigen_report_characters": 5080
+}

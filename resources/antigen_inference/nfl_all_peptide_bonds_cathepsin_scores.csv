@@ -1,0 +1,543 @@
+cut_after_position,bond,context_P4_to_P4prime,domain_at_cut,contains_or_near_C322,cysteine_cathepsin_like_score,cysteine_cathepsin_notes,cysteine_cathepsin_possible_bias,cathepsin_D_E_like_score,cathepsin_D_E_notes,overall_priority
+1,M1|S2,---M|SSFS,N-terminus/transition,no,0.7,P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+2,S2|S3,--MS|SFSY,head,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,0.8,P2 hydrophobic; P2prime hydrophobic,low
+3,S3|F4,-MSS|FSYE,head,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+4,F4|S5,MSSF|SYEP,head,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,3.1,P1 aromatic/Leu; P2prime hydrophobic,low
+5,S5|Y6,SSFS|YEPY,head,no,3.8,P2 aromatic; P1 polar/acidic; P1prime tolerated,CatL/V favored,2.8,P1prime aromatic/Leu; P2 hydrophobic,weak
+6,Y6|E7,SFSY|EPYY,head,no,0.9,P3 hydrophobic; P1 hydrophobic,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+7,E7|P8,FSYE|PYYS,head,no,2.8,P2 aromatic; P4 hydrophobic; P1 polar/acidic; P1prime Pro unfavorable,CatL/V favored,0.6,P1 tolerated; P2 hydrophobic; P2prime hydrophobic; P1prime Pro unfavorable,low
+8,P8|Y9,SYEP|YYST,head,no,0.8,P3 hydrophobic; P1prime tolerated,,2.8,P1prime aromatic/Leu; P2prime hydrophobic,low
+9,Y9|Y10,YEPY|YSTS,head,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,5.1,P1 aromatic/Leu; P1prime aromatic/Leu,medium
+10,Y10|S11,EPYY|STSY,head,no,3.7,P2 aromatic; P1 hydrophobic; P1prime tolerated,CatL/V favored,3.1,P1 aromatic/Leu; P2 hydrophobic,weak
+11,S11|T12,PYYS|TSYK,head,no,4.3,P2 aromatic; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,CatL/V favored,0.4,P2 hydrophobic,medium
+12,T12|S13,YYST|SYKR,head,no,1.6,P3 hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.4,P2prime hydrophobic,low
+13,S13|Y14,YSTS|YKRR,head,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+14,Y14|K15,STSY|KRRY,head,no,0.4,P1 hydrophobic,,2.7,P1 aromatic/Leu,low
+15,K15|R16,TSYK|RRYV,head,no,4.4,P2 aromatic; P1 basic; dibasic bond,CatL/V dibasic possible; CatL/V favored,0.4,P2 hydrophobic,medium
+16,R16|R17,SYKR|RYVE,head,no,3.3,P2 basic/dibasic-context; P3 hydrophobic; P1 basic; dibasic bond,CatL/V dibasic possible,0.4,P2prime hydrophobic,weak
+17,R17|Y18,YKRR|YVET,head,no,2.8,P2 basic/dibasic-context; P4 hydrophobic; P1 basic; P1prime tolerated,,2.8,P1prime aromatic/Leu; P2prime hydrophobic,low
+18,Y18|V19,KRRY|VETP,head,no,2.1,P2 basic/dibasic-context; P1 hydrophobic; P1prime tolerated,,4.4,P1 aromatic/Leu; P1prime hydrophobic,medium
+19,V19|E20,RRYV|ETPR,head,no,3.4,P2 aromatic; P1 hydrophobic,CatL/V favored,3.1,P1 hydrophobic; P1prime tolerated; P2 hydrophobic,weak
+20,E20|T21,RYVE|TPRV,head,no,3.6,P2 aliphatic hydrophobic; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.2,P1 tolerated; P2 hydrophobic,weak
+21,T21|P22,YVET|PRVH,head,no,0.3,P3 hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime Pro unfavorable,,-1.0,P1prime Pro unfavorable,low
+22,P22|R23,VETP|RVHI,head,no,0.3,P4 hydrophobic,,0.4,P2prime hydrophobic,low
+23,R23|V24,ETPR|VHIS,head,no,1.1,P1 basic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+24,V24|H25,TPRV|HISS,head,no,1.8,P2 basic/dibasic-context; P1 hydrophobic,,2.4,P1 hydrophobic; P2prime hydrophobic,low
+25,H25|I26,PRVH|ISSV,head,no,2.6,P2 aliphatic hydrophobic; P1prime tolerated,CatB/S/K possible,2.1,P1prime hydrophobic; P2 hydrophobic,low
+26,I26|S27,RVHI|SSVR,head,no,1.2,P3 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+27,S27|S28,VHIS|SVRS,head,no,3.4,P2 aliphatic hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,0.8,P2 hydrophobic; P2prime hydrophobic,weak
+28,S28|V29,HISS|VRSG,head,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+29,V29|R30,ISSV|RSGY,head,no,0.7,P4 hydrophobic; P1 hydrophobic,,2.0,P1 hydrophobic,low
+30,R30|S31,SSVR|SGYS,head,no,3.4,P2 aliphatic hydrophobic; P1 basic; P1prime tolerated,CatB/S/K possible,0.4,P2 hydrophobic,weak
+31,S31|G32,SVRS|GYST,head,no,2.7,P2 basic/dibasic-context; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.4,P2prime hydrophobic,low
+32,G32|Y33,VRSG|YSTA,head,no,0.6,P4 hydrophobic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+33,Y33|S34,RSGY|STAR,head,no,0.7,P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+34,S34|T35,SGYS|TARS,head,no,3.8,P2 aromatic; P1 polar/acidic; P1prime tolerated,CatL/V favored,0.4,P2 hydrophobic,weak
+35,T35|A36,GYST|ARSA,head,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.7,P1prime tolerated,low
+36,A36|R37,YSTA|RSAY,head,no,0.3,P4 hydrophobic,,0.8,P1 tolerated,low
+37,R37|S38,STAR|SAYS,head,no,1.1,P1 basic; P1prime tolerated,,0.0,,low
+38,S38|A39,TARS|AYSS,head,no,2.2,P2 basic/dibasic-context; P1 polar/acidic; P1prime tolerated,,1.1,P1prime tolerated; P2prime hydrophobic,low
+39,A39|Y40,ARSA|YSSY,head,no,0.3,P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+40,Y40|S41,RSAY|SSYS,head,no,0.7,P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+41,S41|S42,SAYS|SYSA,head,no,3.8,P2 aromatic; P1 polar/acidic; P1prime tolerated,CatL/V favored,0.8,P2 hydrophobic; P2prime hydrophobic,weak
+42,S42|Y43,AYSS|YSAP,head,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+43,Y43|S44,YSSY|SAPV,head,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+44,S44|A45,SSYS|APVS,head,no,3.8,P2 aromatic; P1 polar/acidic; P1prime tolerated,CatL/V favored,1.1,P1prime tolerated; P2 hydrophobic,weak
+45,A45|P46,SYSA|PVSS,head,no,-0.5,P3 hydrophobic; P1prime Pro unfavorable,,0.2,P1 tolerated; P2prime hydrophobic; P1prime Pro unfavorable,low
+46,P46|V47,YSAP|VSSS,head,no,0.6,P4 hydrophobic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+47,V47|S48,SAPV|SSSL,head,no,0.7,P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+48,S48|S49,APVS|SSLS,head,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,0.4,P2 hydrophobic,low
+49,S49|S50,PVSS|SLSV,head,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.4,P2prime hydrophobic,low
+50,S50|L51,VSSS|LSVR,head,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+51,L51|S52,SSSL|SVRR,head,no,0.7,P1 hydrophobic; P1prime tolerated,,3.1,P1 aromatic/Leu; P2prime hydrophobic,low
+52,S52|V53,SSLS|VRRS,head,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,2.1,P1prime hydrophobic; P2 hydrophobic,low
+53,V53|R54,SLSV|RRSY,head,no,0.9,P3 hydrophobic; P1 hydrophobic,,2.0,P1 hydrophobic,low
+54,R54|R55,LSVR|RSYS,head,no,4.0,P2 aliphatic hydrophobic; P4 hydrophobic; P1 basic; dibasic bond,CatB/S/K possible; CatL/V dibasic possible,0.4,P2 hydrophobic,medium
+55,R55|S56,SVRR|SYSS,head,no,3.0,P2 basic/dibasic-context; P3 hydrophobic; P1 basic; P1prime tolerated,,0.4,P2prime hydrophobic,low
+56,S56|Y57,VRRS|YSSS,head,no,2.5,P2 basic/dibasic-context; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+57,Y57|S58,RRSY|SSSS,head,no,0.7,P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+58,S58|S59,RSYS|SSSG,head,no,3.8,P2 aromatic; P1 polar/acidic; P1prime tolerated,CatL/V favored,0.4,P2 hydrophobic,weak
+59,S59|S60,SYSS|SSGS,head,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.0,,low
+60,S60|S61,YSSS|SGSL,head,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.0,,low
+61,S61|G62,SSSS|GSLM,head,no,0.8,P1 polar/acidic; P1prime tolerated,,0.0,,low
+62,G62|S63,SSSG|SLMP,head,no,0.3,P1prime tolerated,,0.4,P2prime hydrophobic,low
+63,S63|L64,SSGS|LMPS,head,no,0.8,P1 polar/acidic; P1prime tolerated,,2.8,P1prime aromatic/Leu; P2prime hydrophobic,low
+64,L64|M65,SGSL|MPSL,head,no,0.7,P1 hydrophobic; P1prime tolerated,,4.4,P1 aromatic/Leu; P1prime hydrophobic,medium
+65,M65|P66,GSLM|PSLE,head,no,1.7,P2 aliphatic hydrophobic; P1 hydrophobic; P1prime Pro unfavorable,CatB/S/K possible,1.4,P1 hydrophobic; P2 hydrophobic; P1prime Pro unfavorable,low
+66,P66|S67,SLMP|SLEN,head,no,3.1,P2 aliphatic hydrophobic; P3 hydrophobic; P1prime tolerated,CatB/S/K possible,0.8,P2 hydrophobic; P2prime hydrophobic,low
+67,S67|L68,LMPS|LENL,head,no,1.6,P3 hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+68,L68|E69,MPSL|ENLD,head,no,0.7,P4 hydrophobic; P1 hydrophobic,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+69,E69|N70,PSLE|NLDL,head,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.6,P1 tolerated; P2 hydrophobic; P2prime hydrophobic,low
+70,N70|L71,SLEN|LDLS,head,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+71,L71|D72,LENL|DLSQ,head,no,0.7,P4 hydrophobic; P1 hydrophobic,,3.8,P1 aromatic/Leu; P1prime tolerated; P2prime hydrophobic,weak
+72,D72|L73,ENLD|LSQV,head,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,3.6,P1 tolerated; P1prime aromatic/Leu; P2 hydrophobic,weak
+73,L73|S74,NLDL|SQVA,head,no,1.2,P3 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+74,S74|Q75,LDLS|QVAA,head,no,3.4,P2 aliphatic hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,0.8,P2 hydrophobic; P2prime hydrophobic,weak
+75,Q75|V76,DLSQ|VAAI,head,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+76,V76|A77,LSQV|AAIS,head,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.7,P1 hydrophobic; P1prime tolerated,low
+77,A77|A78,SQVA|AISN,head,no,2.6,P2 aliphatic hydrophobic; P1prime tolerated,CatB/S/K possible,2.3,P1 tolerated; P1prime tolerated; P2 hydrophobic; P2prime hydrophobic,low
+78,A78|I79,QVAA|ISND,head,no,0.8,P3 hydrophobic; P1prime tolerated,,2.5,P1 tolerated; P1prime hydrophobic,low
+79,I79|S80,VAAI|SNDL,head,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+80,S80|N81,AAIS|NDLK,head,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,0.4,P2 hydrophobic,low
+81,N81|D82,AISN|DLKS,head,no,1.0,P3 hydrophobic; P1 polar/acidic,,1.1,P1prime tolerated; P2prime hydrophobic,low
+82,D82|L83,ISND|LKSI,head,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+83,L83|K84,SNDL|KSIR,head,no,0.4,P1 hydrophobic,,2.7,P1 aromatic/Leu,low
+84,K84|S85,NDLK|SIRT,head,no,3.4,P2 aliphatic hydrophobic; P1 basic; P1prime tolerated,CatB/S/K possible,0.8,P2 hydrophobic; P2prime hydrophobic,weak
+85,S85|I86,DLKS|IRTQ,head,no,2.7,P2 basic/dibasic-context; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+86,I86|R87,LKSI|RTQE,head,no,0.7,P4 hydrophobic; P1 hydrophobic,,2.0,P1 hydrophobic,low
+87,R87|T88,KSIR|TQEK,head,no,3.4,P2 aliphatic hydrophobic; P1 basic; P1prime tolerated,CatB/S/K possible,0.4,P2 hydrophobic,weak
+88,T88|Q89,SIRT|QEKA,head,no,2.7,P2 basic/dibasic-context; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.0,,low
+89,Q89|E90,IRTQ|EKAQ,head,no,0.8,P4 hydrophobic; P1 polar/acidic,,0.7,P1prime tolerated,low
+90,E90|K91,RTQE|KAQL,head,no,0.5,P1 polar/acidic,,0.8,P1 tolerated,low
+91,K91|A92,TQEK|AQLQ,head,no,1.1,P1 basic; P1prime tolerated,,0.7,P1prime tolerated,low
+92,A92|Q93,QEKA|QLQD,head,no,1.7,P2 basic/dibasic-context; P1prime tolerated,,1.2,P1 tolerated; P2prime hydrophobic,low
+93,Q93|L94,EKAQ|LQDL,rod:coil1A,no,0.8,P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+94,L94|Q95,KAQL|QDLN,rod:coil1A,no,0.7,P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+95,Q95|D96,AQLQ|DLND,rod:coil1A,no,2.8,P2 aliphatic hydrophobic; P1 polar/acidic,CatB/S/K possible,1.5,P1prime tolerated; P2 hydrophobic; P2prime hydrophobic,low
+96,D96|L97,QLQD|LNDR,rod:coil1A,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+97,L97|N98,LQDL|NDRF,rod:coil1A,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+98,N98|D99,QDLN|DRFA,rod:coil1A,no,2.8,P2 aliphatic hydrophobic; P1 polar/acidic,CatB/S/K possible,1.1,P1prime tolerated; P2 hydrophobic,low
+99,D99|R100,DLND|RFAS,rod:coil1A,no,1.0,P3 hydrophobic; P1 polar/acidic,,1.2,P1 tolerated; P2prime hydrophobic,low
+100,R100|F101,LNDR|FASF,rod:coil1A,no,1.4,P4 hydrophobic; P1 basic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+101,F101|A102,NDRF|ASFI,rod:coil1A,no,2.1,P2 basic/dibasic-context; P1 hydrophobic; P1prime tolerated,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+102,A102|S103,DRFA|SFIE,rod:coil1A,no,3.3,P2 aromatic; P1prime tolerated,CatL/V favored,1.6,P1 tolerated; P2 hydrophobic; P2prime hydrophobic,weak
+103,S103|F104,RFAS|FIER,rod:coil1A,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.8,P1prime aromatic/Leu; P2prime hydrophobic,low
+104,F104|I105,FASF|IERV,rod:coil1A,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,4.4,P1 aromatic/Leu; P1prime hydrophobic,medium
+105,I105|E106,ASFI|ERVH,rod:coil1A,no,3.4,P2 aromatic; P1 hydrophobic,CatL/V favored,3.1,P1 hydrophobic; P1prime tolerated; P2 hydrophobic,weak
+106,E106|R107,SFIE|RVHE,rod:coil1A,no,3.3,P2 aliphatic hydrophobic; P3 hydrophobic; P1 polar/acidic,CatB/S/K possible,1.6,P1 tolerated; P2 hydrophobic; P2prime hydrophobic,weak
+107,R107|V108,FIER|VHEL,rod:coil1A,no,1.9,P3 hydrophobic; P4 hydrophobic; P1 basic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+108,V108|H109,IERV|HELE,rod:coil1A,no,2.1,P2 basic/dibasic-context; P4 hydrophobic; P1 hydrophobic,,2.0,P1 hydrophobic,low
+109,H109|E110,ERVH|ELEQ,rod:coil1A,no,2.3,P2 aliphatic hydrophobic,CatB/S/K possible,1.5,P1prime tolerated; P2 hydrophobic; P2prime hydrophobic,low
+110,E110|L111,RVHE|LEQQ,rod:coil1A,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+111,L111|E112,VHEL|EQQN,rod:coil1A,no,0.7,P4 hydrophobic; P1 hydrophobic,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+112,E112|Q113,HELE|QQNK,rod:coil1A,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.2,P1 tolerated; P2 hydrophobic,low
+113,Q113|Q114,ELEQ|QNKV,rod:coil1A,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.0,,low
+114,Q114|N115,LEQQ|NKVL,rod:coil1A,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.0,,low
+115,N115|K116,EQQN|KVLE,rod:coil1A,no,0.5,P1 polar/acidic,,0.4,P2prime hydrophobic,low
+116,K116|V117,QQNK|VLEA,rod:coil1A,no,1.1,P1 basic; P1prime tolerated,,2.1,P1prime hydrophobic; P2prime hydrophobic,low
+117,V117|L118,QNKV|LEAE,rod:coil1A,no,2.1,P2 basic/dibasic-context; P1 hydrophobic; P1prime tolerated,,4.4,P1 hydrophobic; P1prime aromatic/Leu,medium
+118,L118|E119,NKVL|EAEL,rod:coil1A,no,2.7,P2 aliphatic hydrophobic; P1 hydrophobic,CatB/S/K possible,3.8,P1 aromatic/Leu; P1prime tolerated; P2 hydrophobic,weak
+119,E119|A120,KVLE|AELL,rod:coil1A,no,3.6,P2 aliphatic hydrophobic; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.9,P1 tolerated; P1prime tolerated; P2 hydrophobic,weak
+120,A120|E121,VLEA|ELLV,rod:coil1A,no,0.8,P3 hydrophobic; P4 hydrophobic,,1.9,P1 tolerated; P1prime tolerated; P2prime hydrophobic,low
+121,E121|L122,LEAE|LLVL,rod:coil1A,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,3.6,P1 tolerated; P1prime aromatic/Leu; P2prime hydrophobic,weak
+122,L122|L123,EAEL|LVLR,rod:coil1A,no,0.7,P1 hydrophobic; P1prime tolerated,,5.5,P1 aromatic/Leu; P1prime aromatic/Leu; P2prime hydrophobic,high
+123,L123|V124,AELL|VLRQ,rod:coil1A,no,3.0,P2 aliphatic hydrophobic; P1 hydrophobic; P1prime tolerated,CatB/S/K possible,5.2,P1 aromatic/Leu; P1prime hydrophobic; P2 hydrophobic; P2prime hydrophobic,high
+124,V124|L125,ELLV|LRQK,rod:coil1A,no,3.5,P2 aliphatic hydrophobic; P3 hydrophobic; P1 hydrophobic; P1prime tolerated,CatB/S/K possible,4.8,P1 hydrophobic; P1prime aromatic/Leu; P2 hydrophobic,medium
+125,L125|R126,LLVL|RQKH,rod:linker1,no,3.5,P2 aliphatic hydrophobic; P3 hydrophobic; P4 hydrophobic; P1 hydrophobic,CatB/S/K possible,3.1,P1 aromatic/Leu; P2 hydrophobic,weak
+126,R126|Q127,LVLR|QKHS,rod:linker1,no,4.2,P2 aliphatic hydrophobic; P3 hydrophobic; P4 hydrophobic; P1 basic; P1prime tolerated,CatB/S/K possible,0.4,P2 hydrophobic,medium
+127,Q127|K128,VLRQ|KHSE,rod:linker1,no,2.7,P2 basic/dibasic-context; P3 hydrophobic; P4 hydrophobic; P1 polar/acidic,,0.0,,low
+128,K128|H129,LRQK|HSEP,rod:linker1,no,1.1,P4 hydrophobic; P1 basic,,0.0,,low
+129,H129|S130,RQKH|SEPS,rod:linker1,no,1.7,P2 basic/dibasic-context; P1prime tolerated,,0.0,,low
+130,S130|E131,QKHS|EPSR,rod:linker1,no,0.5,P1 polar/acidic,,0.7,P1prime tolerated,low
+131,E131|P132,KHSE|PSRF,rod:linker1,no,-0.5,P1 polar/acidic; P1prime Pro unfavorable,,-0.2,P1 tolerated; P1prime Pro unfavorable,low
+132,P132|S133,HSEP|SRFR,rod:linker1,no,0.3,P1prime tolerated,,0.0,,low
+133,S133|R134,SEPS|RFRA,rod:linker1,no,0.5,P1 polar/acidic,,0.4,P2prime hydrophobic,low
+134,R134|F135,EPSR|FRAL,rod:linker1,no,1.1,P1 basic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+135,F135|R136,PSRF|RALY,rod:linker1,no,1.8,P2 basic/dibasic-context; P1 hydrophobic,,2.7,P1 aromatic/Leu,low
+136,R136|A137,SRFR|ALYE,rod:linker1,no,4.1,P2 aromatic; P1 basic; P1prime tolerated,CatL/V favored,1.5,P1prime tolerated; P2 hydrophobic; P2prime hydrophobic,medium
+137,A137|L138,RFRA|LYEQ,rod:linker1,no,2.2,P2 basic/dibasic-context; P3 hydrophobic; P1prime tolerated,,3.6,P1 tolerated; P1prime aromatic/Leu; P2prime hydrophobic,weak
+138,L138|Y139,FRAL|YEQE,rod:coil1B,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,5.1,P1 aromatic/Leu; P1prime aromatic/Leu,medium
+139,Y139|E140,RALY|EQEI,rod:coil1B,no,2.7,P2 aliphatic hydrophobic; P1 hydrophobic,CatB/S/K possible,3.8,P1 aromatic/Leu; P1prime tolerated; P2 hydrophobic,weak
+140,E140|Q141,ALYE|QEIR,rod:coil1B,no,4.3,P2 aromatic; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,CatL/V favored,1.2,P1 tolerated; P2 hydrophobic,medium
+141,Q141|E142,LYEQ|EIRD,rod:coil1B,no,1.3,P3 hydrophobic; P4 hydrophobic; P1 polar/acidic,,1.1,P1prime tolerated; P2prime hydrophobic,low
+142,E142|I143,YEQE|IRDL,rod:coil1B,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.5,P1 tolerated; P1prime hydrophobic,low
+143,I143|R144,EQEI|RDLR,rod:coil1B,no,0.4,P1 hydrophobic,,2.0,P1 hydrophobic,low
+144,R144|D145,QEIR|DLRL,rod:coil1B,no,3.1,P2 aliphatic hydrophobic; P1 basic,CatB/S/K possible,1.5,P1prime tolerated; P2 hydrophobic; P2prime hydrophobic,low
+145,D145|L146,EIRD|LRLA,rod:coil1B,no,2.7,P2 basic/dibasic-context; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+146,L146|R147,IRDL|RLAA,rod:coil1B,no,0.7,P4 hydrophobic; P1 hydrophobic,,3.1,P1 aromatic/Leu; P2prime hydrophobic,low
+147,R147|L148,RDLR|LAAE,rod:coil1B,no,3.4,P2 aliphatic hydrophobic; P1 basic; P1prime tolerated,CatB/S/K possible,2.8,P1prime aromatic/Leu; P2 hydrophobic,weak
+148,L148|A149,DLRL|AAED,rod:coil1B,no,2.6,P2 basic/dibasic-context; P3 hydrophobic; P1 hydrophobic; P1prime tolerated,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+149,A149|A150,LRLA|AEDA,rod:coil1B,no,2.9,P2 aliphatic hydrophobic; P4 hydrophobic; P1prime tolerated,CatB/S/K possible,1.9,P1 tolerated; P1prime tolerated; P2 hydrophobic,low
+150,A150|E151,RLAA|EDAT,rod:coil1B,no,0.5,P3 hydrophobic,,1.5,P1 tolerated; P1prime tolerated,low
+151,E151|D152,LAAE|DATN,rod:coil1B,no,0.8,P4 hydrophobic; P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+152,D152|A153,AAED|ATNE,rod:coil1B,no,0.8,P1 polar/acidic; P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+153,A153|T154,AEDA|TNEK,rod:coil1B,no,0.3,P1prime tolerated,,0.8,P1 tolerated,low
+154,T154|N155,EDAT|NEKQ,rod:coil1B,no,0.8,P1 polar/acidic; P1prime tolerated,,0.0,,low
+155,N155|E156,DATN|EKQA,rod:coil1B,no,0.5,P1 polar/acidic,,0.7,P1prime tolerated,low
+156,E156|K157,ATNE|KQAL,rod:coil1B,no,0.5,P1 polar/acidic,,0.8,P1 tolerated,low
+157,K157|Q158,TNEK|QALQ,rod:coil1B,no,1.1,P1 basic; P1prime tolerated,,0.0,,low
+158,Q158|A159,NEKQ|ALQG,rod:coil1B,no,2.2,P2 basic/dibasic-context; P1 polar/acidic; P1prime tolerated,,1.1,P1prime tolerated; P2prime hydrophobic,low
+159,A159|L160,EKQA|LQGE,rod:coil1B,no,0.3,P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+160,L160|Q161,KQAL|QGER,rod:coil1B,no,0.7,P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+161,Q161|G162,QALQ|GERE,rod:coil1B,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,0.4,P2 hydrophobic,low
+162,G162|E163,ALQG|EREG,rod:coil1B,no,0.5,P3 hydrophobic,,0.7,P1prime tolerated,low
+163,E163|R164,LQGE|REGL,rod:coil1B,no,0.8,P4 hydrophobic; P1 polar/acidic,,0.8,P1 tolerated,low
+164,R164|E165,QGER|EGLE,rod:coil1B,no,0.8,P1 basic,,0.7,P1prime tolerated,low
+165,E165|G166,GERE|GLEE,rod:coil1B,no,2.2,P2 basic/dibasic-context; P1 polar/acidic; P1prime tolerated,,1.2,P1 tolerated; P2prime hydrophobic,low
+166,G166|L167,EREG|LEET,rod:coil1B,no,0.3,P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+167,L167|E168,REGL|EETL,rod:coil1B,no,0.4,P1 hydrophobic,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+168,E168|E169,EGLE|ETLR,rod:coil1B,no,2.8,P2 aliphatic hydrophobic; P1 polar/acidic,CatB/S/K possible,1.9,P1 tolerated; P1prime tolerated; P2 hydrophobic,low
+169,E169|T170,GLEE|TLRN,rod:coil1B,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.2,P1 tolerated; P2prime hydrophobic,low
+170,T170|L171,LEET|LRNL,rod:coil1B,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+171,L171|R172,EETL|RNLQ,rod:coil1B,no,0.4,P1 hydrophobic,,2.7,P1 aromatic/Leu,low
+172,R172|N173,ETLR|NLQA,rod:coil1B,no,3.4,P2 aliphatic hydrophobic; P1 basic; P1prime tolerated,CatB/S/K possible,0.8,P2 hydrophobic; P2prime hydrophobic,weak
+173,N173|L174,TLRN|LQAR,rod:coil1B,no,2.7,P2 basic/dibasic-context; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+174,L174|Q175,LRNL|QARY,rod:coil1B,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+175,Q175|A176,RNLQ|ARYE,rod:coil1B,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.1,P1prime tolerated; P2 hydrophobic,low
+176,A176|R177,NLQA|RYEE,rod:coil1B,no,0.5,P3 hydrophobic,,1.2,P1 tolerated; P2prime hydrophobic,low
+177,R177|Y178,LQAR|YEEE,rod:coil1B,no,1.4,P4 hydrophobic; P1 basic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+178,Y178|E179,QARY|EEEV,rod:coil1B,no,1.8,P2 basic/dibasic-context; P1 hydrophobic,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+179,E179|E180,ARYE|EEVL,rod:coil1B,no,3.5,P2 aromatic; P1 polar/acidic,CatL/V favored,1.9,P1 tolerated; P1prime tolerated; P2 hydrophobic,weak
+180,E180|E181,RYEE|EVLS,rod:coil1B,no,1.0,P3 hydrophobic; P1 polar/acidic,,1.9,P1 tolerated; P1prime tolerated; P2prime hydrophobic,low
+181,E181|V182,YEEE|VLSR,rod:coil1B,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.9,P1 tolerated; P1prime hydrophobic; P2prime hydrophobic,low
+182,V182|L183,EEEV|LSRE,rod:coil1B,no,0.7,P1 hydrophobic; P1prime tolerated,,4.4,P1 hydrophobic; P1prime aromatic/Leu,medium
+183,L183|S184,EEVL|SRED,rod:coil1B,no,3.0,P2 aliphatic hydrophobic; P1 hydrophobic; P1prime tolerated,CatB/S/K possible,3.1,P1 aromatic/Leu; P2 hydrophobic,low
+184,S184|R185,EVLS|REDA,rod:coil1B,no,3.3,P2 aliphatic hydrophobic; P3 hydrophobic; P1 polar/acidic,CatB/S/K possible,0.4,P2 hydrophobic,weak
+185,R185|E186,VLSR|EDAE,rod:coil1B,no,1.6,P3 hydrophobic; P4 hydrophobic; P1 basic,,0.7,P1prime tolerated,low
+186,E186|D187,LSRE|DAEG,rod:coil1B,no,2.2,P2 basic/dibasic-context; P4 hydrophobic; P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+187,D187|A188,SRED|AEGR,rod:coil1B,no,0.8,P1 polar/acidic; P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+188,A188|E189,REDA|EGRL,rod:coil1B,no,0.0,,,1.5,P1 tolerated; P1prime tolerated,low
+189,E189|G190,EDAE|GRLM,rod:coil1B,no,0.8,P1 polar/acidic; P1prime tolerated,,0.8,P1 tolerated,low
+190,G190|R191,DAEG|RLME,rod:coil1B,no,0.0,,,0.4,P2prime hydrophobic,low
+191,R191|L192,AEGR|LMEA,rod:coil1B,no,1.1,P1 basic; P1prime tolerated,,2.8,P1prime aromatic/Leu; P2prime hydrophobic,low
+192,L192|M193,EGRL|MEAR,rod:coil1B,no,2.1,P2 basic/dibasic-context; P1 hydrophobic; P1prime tolerated,,4.4,P1 aromatic/Leu; P1prime hydrophobic,medium
+193,M193|E194,GRLM|EARK,rod:coil1B,no,2.7,P2 aliphatic hydrophobic; P1 hydrophobic,CatB/S/K possible,3.1,P1 hydrophobic; P1prime tolerated; P2 hydrophobic,low
+194,E194|A195,RLME|ARKG,rod:coil1B,no,3.6,P2 aliphatic hydrophobic; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.9,P1 tolerated; P1prime tolerated; P2 hydrophobic,weak
+195,A195|R196,LMEA|RKGA,rod:coil1B,no,0.8,P3 hydrophobic; P4 hydrophobic,,0.8,P1 tolerated,low
+196,R196|K197,MEAR|KGAD,rod:coil1B,no,1.7,P4 hydrophobic; P1 basic; dibasic bond,CatL/V dibasic possible,0.0,,low
+197,K197|G198,EARK|GADE,rod:coil1B,no,2.5,P2 basic/dibasic-context; P1 basic; P1prime tolerated,,0.0,,low
+198,G198|A199,ARKG|ADEA,rod:coil1B,no,1.7,P2 basic/dibasic-context; P1prime tolerated,,0.7,P1prime tolerated,low
+199,A199|D200,RKGA|DEAA,rod:coil1B,no,0.0,,,1.5,P1 tolerated; P1prime tolerated,low
+200,D200|E201,KGAD|EAAL,rod:coil1B,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+201,E201|A202,GADE|AALA,rod:coil1B,no,0.8,P1 polar/acidic; P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+202,A202|A203,ADEA|ALAR,rod:coil1B,no,0.3,P1prime tolerated,,1.9,P1 tolerated; P1prime tolerated; P2prime hydrophobic,low
+203,A203|L204,DEAA|LARA,rod:coil1B,no,0.3,P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+204,L204|A205,EAAL|ARAE,rod:coil1B,no,0.7,P1 hydrophobic; P1prime tolerated,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+205,A205|R206,AALA|RAEL,rod:coil1B,no,2.3,P2 aliphatic hydrophobic,CatB/S/K possible,1.2,P1 tolerated; P2 hydrophobic,low
+206,R206|A207,ALAR|AELE,rod:coil1B,no,1.6,P3 hydrophobic; P1 basic; P1prime tolerated,,0.7,P1prime tolerated,low
+207,A207|E208,LARA|ELEK,rod:coil1B,no,1.7,P2 basic/dibasic-context; P4 hydrophobic,,1.9,P1 tolerated; P1prime tolerated; P2prime hydrophobic,low
+208,E208|L209,ARAE|LEKR,rod:coil1B,no,0.8,P1 polar/acidic; P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+209,L209|E210,RAEL|EKRI,rod:coil1B,no,0.4,P1 hydrophobic,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+210,E210|K211,AELE|KRID,rod:coil1B,no,2.8,P2 aliphatic hydrophobic; P1 polar/acidic,CatB/S/K possible,1.2,P1 tolerated; P2 hydrophobic,low
+211,K211|R212,ELEK|RIDS,rod:coil1B,no,1.9,P3 hydrophobic; P1 basic; dibasic bond,CatL/V dibasic possible,0.4,P2prime hydrophobic,low
+212,R212|I213,LEKR|IDSL,rod:coil1B,no,2.8,P2 basic/dibasic-context; P4 hydrophobic; P1 basic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+213,I213|D214,EKRI|DSLM,rod:coil1B,no,1.8,P2 basic/dibasic-context; P1 hydrophobic,,2.7,P1 hydrophobic; P1prime tolerated,low
+214,D214|S215,KRID|SLMD,rod:coil1B,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.6,P1 tolerated; P2 hydrophobic; P2prime hydrophobic,low
+215,S215|L216,RIDS|LMDE,rod:coil1B,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.8,P1prime aromatic/Leu; P2prime hydrophobic,low
+216,L216|M217,IDSL|MDEI,rod:coil1B,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,4.4,P1 aromatic/Leu; P1prime hydrophobic,medium
+217,M217|D218,DSLM|DEIS,rod:coil1B,no,2.7,P2 aliphatic hydrophobic; P1 hydrophobic,CatB/S/K possible,3.1,P1 hydrophobic; P1prime tolerated; P2 hydrophobic,low
+218,D218|E219,SLMD|EISF,rod:coil1B,no,3.3,P2 aliphatic hydrophobic; P3 hydrophobic; P1 polar/acidic,CatB/S/K possible,2.3,P1 tolerated; P1prime tolerated; P2 hydrophobic; P2prime hydrophobic,weak
+219,E219|I220,LMDE|ISFL,rod:coil1B,no,1.6,P3 hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.5,P1 tolerated; P1prime hydrophobic,low
+220,I220|S221,MDEI|SFLK,rod:coil1B,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.4,P1 hydrophobic; P2prime hydrophobic,low
+221,S221|F222,DEIS|FLKK,rod:coil1B,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,3.2,P1prime aromatic/Leu; P2 hydrophobic; P2prime hydrophobic,weak
+222,F222|L223,EISF|LKKV,rod:coil1B,no,1.2,P3 hydrophobic; P1 hydrophobic; P1prime tolerated,,5.1,P1 aromatic/Leu; P1prime aromatic/Leu,medium
+223,L223|K224,ISFL|KKVH,rod:coil1B,no,3.7,P2 aromatic; P4 hydrophobic; P1 hydrophobic,CatL/V favored,3.1,P1 aromatic/Leu; P2 hydrophobic,weak
+224,K224|K225,SFLK|KVHE,rod:coil1B,no,4.2,P2 aliphatic hydrophobic; P3 hydrophobic; P1 basic; dibasic bond,CatB/S/K possible; CatL/V dibasic possible,0.8,P2 hydrophobic; P2prime hydrophobic,medium
+225,K225|V226,FLKK|VHEE,rod:coil1B,no,3.3,P2 basic/dibasic-context; P3 hydrophobic; P4 hydrophobic; P1 basic; P1prime tolerated,,1.7,P1prime hydrophobic,weak
+226,V226|H227,LKKV|HEEE,rod:coil1B,no,2.1,P2 basic/dibasic-context; P4 hydrophobic; P1 hydrophobic,,2.0,P1 hydrophobic,low
+227,H227|E228,KKVH|EEEI,rod:coil1B,no,2.3,P2 aliphatic hydrophobic,CatB/S/K possible,1.1,P1prime tolerated; P2 hydrophobic,low
+228,E228|E229,KVHE|EEIA,rod:coil1B,no,1.0,P3 hydrophobic; P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+229,E229|E230,VHEE|EIAE,rod:coil1B,no,0.8,P4 hydrophobic; P1 polar/acidic,,1.9,P1 tolerated; P1prime tolerated; P2prime hydrophobic,low
+230,E230|I231,HEEE|IAEL,rod:coil1B,no,0.8,P1 polar/acidic; P1prime tolerated,,2.5,P1 tolerated; P1prime hydrophobic,low
+231,I231|A232,EEEI|AELQ,rod:coil1B,no,0.7,P1 hydrophobic; P1prime tolerated,,2.7,P1 hydrophobic; P1prime tolerated,low
+232,A232|E233,EEIA|ELQA,rod:coil1B,no,2.3,P2 aliphatic hydrophobic,CatB/S/K possible,2.3,P1 tolerated; P1prime tolerated; P2 hydrophobic; P2prime hydrophobic,low
+233,E233|L234,EIAE|LQAQ,rod:coil1B,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+234,L234|Q235,IAEL|QAQI,rod:coil1B,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+235,Q235|A236,AELQ|AQIQ,rod:linker12,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.1,P1prime tolerated; P2 hydrophobic,low
+236,A236|Q237,ELQA|QIQY,rod:linker12,no,0.8,P3 hydrophobic; P1prime tolerated,,1.2,P1 tolerated; P2prime hydrophobic,low
+237,Q237|I238,LQAQ|IQYA,rod:linker12,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+238,I238|Q239,QAQI|QYAQ,rod:linker12,no,0.7,P1 hydrophobic; P1prime tolerated,,2.4,P1 hydrophobic; P2prime hydrophobic,low
+239,Q239|Y240,AQIQ|YAQI,rod:linker12,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,2.8,P1prime aromatic/Leu; P2 hydrophobic,low
+240,Y240|A241,QIQY|AQIS,rod:linker12,no,1.2,P3 hydrophobic; P1 hydrophobic; P1prime tolerated,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+241,A241|Q242,IQYA|QISV,rod:linker12,no,3.6,P2 aromatic; P4 hydrophobic; P1prime tolerated,CatL/V favored,1.6,P1 tolerated; P2 hydrophobic; P2prime hydrophobic,weak
+242,Q242|I243,QYAQ|ISVE,rod:linker12,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+243,I243|S244,YAQI|SVEM,rod:linker12,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.4,P1 hydrophobic; P2prime hydrophobic,low
+244,S244|V245,AQIS|VEMD,rod:linker12,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,2.1,P1prime hydrophobic; P2 hydrophobic,low
+245,V245|E246,QISV|EMDV,rod:linker12,no,0.9,P3 hydrophobic; P1 hydrophobic,,3.1,P1 hydrophobic; P1prime tolerated; P2prime hydrophobic,low
+246,E246|M247,ISVE|MDVT,rod:linker12,no,3.4,P2 aliphatic hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,2.9,P1 tolerated; P1prime hydrophobic; P2 hydrophobic,weak
+247,M247|D248,SVEM|DVTK,rod:linker12,no,0.9,P3 hydrophobic; P1 hydrophobic,,3.1,P1 hydrophobic; P1prime tolerated; P2prime hydrophobic,low
+248,D248|V249,VEMD|VTKP,rod:linker12,no,3.4,P2 aliphatic hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,2.9,P1 tolerated; P1prime hydrophobic; P2 hydrophobic,weak
+249,V249|T250,EMDV|TKPD,rod:linker12,no,1.2,P3 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+250,T250|K251,MDVT|KPDL,rod:linker12,no,3.1,P2 aliphatic hydrophobic; P4 hydrophobic; P1 polar/acidic,CatB/S/K possible,0.4,P2 hydrophobic,low
+251,K251|P252,DVTK|PDLS,rod:linker12,no,0.3,P3 hydrophobic; P1 basic; P1prime Pro unfavorable,,-1.0,P1prime Pro unfavorable,low
+252,P252|D253,VTKP|DLSA,rod:linker12,no,1.7,P2 basic/dibasic-context; P4 hydrophobic,,1.1,P1prime tolerated; P2prime hydrophobic,low
+253,D253|L254,TKPD|LSAA,rod:coil2A,no,0.8,P1 polar/acidic; P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+254,L254|S255,KPDL|SAAL,rod:coil2A,no,0.7,P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+255,S255|A256,PDLS|AALK,rod:coil2A,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.1,P1prime tolerated; P2 hydrophobic,low
+256,A256|A257,DLSA|ALKD,rod:coil2A,no,0.8,P3 hydrophobic; P1prime tolerated,,1.9,P1 tolerated; P1prime tolerated; P2prime hydrophobic,low
+257,A257|L258,LSAA|LKDI,rod:coil2A,no,0.6,P4 hydrophobic; P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+258,L258|K259,SAAL|KDIR,rod:coil2A,no,0.4,P1 hydrophobic,,2.7,P1 aromatic/Leu,low
+259,K259|D260,AALK|DIRA,rod:coil2A,no,3.1,P2 aliphatic hydrophobic; P1 basic,CatB/S/K possible,1.5,P1prime tolerated; P2 hydrophobic; P2prime hydrophobic,low
+260,D260|I261,ALKD|IRAQ,rod:coil2A,no,2.7,P2 basic/dibasic-context; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.5,P1 tolerated; P1prime hydrophobic,low
+261,I261|R262,LKDI|RAQY,rod:coil2A,no,0.7,P4 hydrophobic; P1 hydrophobic,,2.0,P1 hydrophobic,low
+262,R262|A263,KDIR|AQYE,rod:coil2A,no,3.4,P2 aliphatic hydrophobic; P1 basic; P1prime tolerated,CatB/S/K possible,1.1,P1prime tolerated; P2 hydrophobic,weak
+263,A263|Q264,DIRA|QYEK,rod:coil2A,no,2.2,P2 basic/dibasic-context; P3 hydrophobic; P1prime tolerated,,1.2,P1 tolerated; P2prime hydrophobic,low
+264,Q264|Y265,IRAQ|YEKL,rod:coil2A,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+265,Y265|E266,RAQY|EKLA,rod:coil2A,no,0.4,P1 hydrophobic,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+266,E266|K267,AQYE|KLAA,rod:coil2A,no,3.5,P2 aromatic; P1 polar/acidic,CatL/V favored,1.6,P1 tolerated; P2 hydrophobic; P2prime hydrophobic,weak
+267,K267|L268,QYEK|LAAK,rod:coil2A,no,1.6,P3 hydrophobic; P1 basic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+268,L268|A269,YEKL|AAKN,rod:coil2A,no,2.4,P2 basic/dibasic-context; P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+269,A269|A270,EKLA|AKNM,rod:coil2A,no,2.6,P2 aliphatic hydrophobic; P1prime tolerated,CatB/S/K possible,1.9,P1 tolerated; P1prime tolerated; P2 hydrophobic,low
+270,A270|K271,KLAA|KNMQ,rod:coil2A,no,0.5,P3 hydrophobic,,0.8,P1 tolerated,low
+271,K271|N272,LAAK|NMQN,rod:coil2A,no,1.4,P4 hydrophobic; P1 basic; P1prime tolerated,,0.4,P2prime hydrophobic,low
+272,N272|M273,AAKN|MQNA,rod:linker2,no,2.2,P2 basic/dibasic-context; P1 polar/acidic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+273,M273|Q274,AKNM|QNAE,rod:linker2,no,0.7,P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+274,Q274|N275,KNMQ|NAEE,rod:linker2,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,0.4,P2 hydrophobic,low
+275,N275|A276,NMQN|AEEW,rod:linker2,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.7,P1prime tolerated,low
+276,A276|E277,MQNA|EEWF,rod:linker2,no,0.3,P4 hydrophobic,,1.5,P1 tolerated; P1prime tolerated,low
+277,E277|E278,QNAE|EWFK,rod:linker2,no,0.5,P1 polar/acidic,,1.9,P1 tolerated; P1prime tolerated; P2prime hydrophobic,low
+278,E278|W279,NAEE|WFKS,rod:linker2,no,0.8,P1 polar/acidic; P1prime tolerated,,3.6,P1 tolerated; P1prime aromatic/Leu; P2prime hydrophobic,weak
+279,W279|F280,AEEW|FKSR,rod:linker2,no,0.7,P1 hydrophobic; P1prime tolerated,,5.1,P1 aromatic/Leu; P1prime aromatic/Leu,medium
+280,F280|K281,EEWF|KSRF,rod:linker2,no,3.4,P2 aromatic; P1 hydrophobic,CatL/V favored,3.1,P1 aromatic/Leu; P2 hydrophobic,weak
+281,K281|S282,EWFK|SRFT,rod:coil2B,yes,4.6,P2 aromatic; P3 hydrophobic; P1 basic; P1prime tolerated,CatL/V favored,0.4,P2 hydrophobic,medium
+282,S282|R283,WFKS|RFTV,rod:coil2B,yes,2.7,P2 basic/dibasic-context; P3 hydrophobic; P4 hydrophobic; P1 polar/acidic,,0.4,P2prime hydrophobic,low
+283,R283|F284,FKSR|FTVL,rod:coil2B,yes,1.4,P4 hydrophobic; P1 basic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+284,F284|T285,KSRF|TVLT,rod:coil2B,yes,2.1,P2 basic/dibasic-context; P1 hydrophobic; P1prime tolerated,,3.1,P1 aromatic/Leu; P2prime hydrophobic,low
+285,T285|V286,SRFT|VLTE,rod:coil2B,yes,3.8,P2 aromatic; P1 polar/acidic; P1prime tolerated,CatL/V favored,2.5,P1prime hydrophobic; P2 hydrophobic; P2prime hydrophobic,weak
+286,V286|L287,RFTV|LTES,rod:coil2B,yes,1.2,P3 hydrophobic; P1 hydrophobic; P1prime tolerated,,4.4,P1 hydrophobic; P1prime aromatic/Leu,medium
+287,L287|T288,FTVL|TESA,rod:coil2B,yes,3.3,P2 aliphatic hydrophobic; P4 hydrophobic; P1 hydrophobic; P1prime tolerated,CatB/S/K possible,3.1,P1 aromatic/Leu; P2 hydrophobic,weak
+288,T288|E289,TVLT|ESAA,rod:coil2B,yes,3.3,P2 aliphatic hydrophobic; P3 hydrophobic; P1 polar/acidic,CatB/S/K possible,1.1,P1prime tolerated; P2 hydrophobic,weak
+289,E289|S290,VLTE|SAAK,rod:coil2B,yes,1.6,P3 hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.8,P1 tolerated,low
+290,S290|A291,LTES|AAKN,rod:coil2B,yes,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.7,P1prime tolerated,low
+291,A291|A292,TESA|AKNT,rod:coil2B,yes,0.3,P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+292,A292|K293,ESAA|KNTD,rod:coil2B,yes,0.0,,,0.8,P1 tolerated,low
+293,K293|N294,SAAK|NTDA,rod:coil2B,yes,1.1,P1 basic; P1prime tolerated,,0.0,,low
+294,N294|T295,AAKN|TDAV,rod:coil2B,yes,2.2,P2 basic/dibasic-context; P1 polar/acidic; P1prime tolerated,,0.0,,low
+295,T295|D296,AKNT|DAVR,rod:coil2B,yes,0.5,P1 polar/acidic,,0.7,P1prime tolerated,low
+296,D296|A297,KNTD|AVRA,rod:coil2B,yes,0.8,P1 polar/acidic; P1prime tolerated,,1.9,P1 tolerated; P1prime tolerated; P2prime hydrophobic,low
+297,A297|V298,NTDA|VRAA,rod:coil2B,yes,0.3,P1prime tolerated,,2.5,P1 tolerated; P1prime hydrophobic,low
+298,V298|R299,TDAV|RAAK,rod:coil2B,yes,0.4,P1 hydrophobic,,2.0,P1 hydrophobic,low
+299,R299|A300,DAVR|AAKD,rod:coil2B,yes,3.4,P2 aliphatic hydrophobic; P1 basic; P1prime tolerated,CatB/S/K possible,1.1,P1prime tolerated; P2 hydrophobic,weak
+300,A300|A301,AVRA|AKDE,rod:coil2B,yes,2.2,P2 basic/dibasic-context; P3 hydrophobic; P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+301,A301|K302,VRAA|KDEV,rod:coil2B,yes,0.3,P4 hydrophobic,,0.8,P1 tolerated,low
+302,K302|D303,RAAK|DEVS,rod:coil2B,yes,0.8,P1 basic,,0.7,P1prime tolerated,low
+303,D303|E304,AAKD|EVSE,rod:coil2B,yes,1.9,P2 basic/dibasic-context; P1 polar/acidic,,1.9,P1 tolerated; P1prime tolerated; P2prime hydrophobic,low
+304,E304|V305,AKDE|VSES,rod:coil2B,yes,0.8,P1 polar/acidic; P1prime tolerated,,2.5,P1 tolerated; P1prime hydrophobic,low
+305,V305|S306,KDEV|SESR,rod:coil2B,yes,0.7,P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+306,S306|E307,DEVS|ESRR,rod:coil2B,yes,2.8,P2 aliphatic hydrophobic; P1 polar/acidic,CatB/S/K possible,1.1,P1prime tolerated; P2 hydrophobic,low
+307,E307|S308,EVSE|SRRL,rod:coil2B,yes,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.8,P1 tolerated,low
+308,S308|R309,VSES|RRLL,rod:coil2B,yes,0.8,P4 hydrophobic; P1 polar/acidic,,0.0,,low
+309,R309|R310,SESR|RLLK,rod:coil2B,yes,1.4,P1 basic; dibasic bond,CatL/V dibasic possible,0.4,P2prime hydrophobic,low
+310,R310|L311,ESRR|LLKA,rod:coil2B,yes,2.5,P2 basic/dibasic-context; P1 basic; P1prime tolerated,,2.8,P1prime aromatic/Leu; P2prime hydrophobic,low
+311,L311|L312,SRRL|LKAK,rod:coil2B,yes,2.1,P2 basic/dibasic-context; P1 hydrophobic; P1prime tolerated,,5.1,P1 aromatic/Leu; P1prime aromatic/Leu,medium
+312,L312|K313,RRLL|KAKT,rod:coil2B,yes,2.7,P2 aliphatic hydrophobic; P1 hydrophobic,CatB/S/K possible,3.1,P1 aromatic/Leu; P2 hydrophobic,low
+313,K313|A314,RLLK|AKTL,rod:coil2B,yes,3.9,P2 aliphatic hydrophobic; P3 hydrophobic; P1 basic; P1prime tolerated,CatB/S/K possible,1.1,P1prime tolerated; P2 hydrophobic,weak
+314,A314|K315,LLKA|KTLE,rod:coil2B,yes,2.2,P2 basic/dibasic-context; P3 hydrophobic; P4 hydrophobic,,0.8,P1 tolerated,low
+315,K315|T316,LKAK|TLEI,rod:coil2B,yes,1.4,P4 hydrophobic; P1 basic; P1prime tolerated,,0.4,P2prime hydrophobic,low
+316,T316|L317,KAKT|LEIE,rod:coil2B,yes,2.2,P2 basic/dibasic-context; P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+317,L317|E318,AKTL|EIEA,rod:coil2B,yes,0.4,P1 hydrophobic,,3.8,P1 aromatic/Leu; P1prime tolerated; P2prime hydrophobic,weak
+318,E318|I319,KTLE|IEAC,rod:coil2B,yes,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,2.9,P1 tolerated; P1prime hydrophobic; P2 hydrophobic,low
+319,I319|E320,TLEI|EACR,rod:coil2B,yes,0.9,P3 hydrophobic; P1 hydrophobic,,2.7,P1 hydrophobic; P1prime tolerated,low
+320,E320|A321,LEIE|ACRG,rod:coil2B,yes,3.4,P2 aliphatic hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.9,P1 tolerated; P1prime tolerated; P2 hydrophobic,weak
+321,A321|C322,EIEA|CRGM,rod:coil2B,yes,0.5,P3 hydrophobic,,0.8,P1 tolerated,low
+322,C322|R323,IEAC|RGMN,rod:coil2B,yes,0.3,P4 hydrophobic,,0.0,,low
+323,R323|G324,EACR|GMNE,rod:coil2B,yes,1.1,P1 basic; P1prime tolerated,,0.4,P2prime hydrophobic,low
+324,G324|M325,ACRG|MNEA,rod:coil2B,yes,1.7,P2 basic/dibasic-context; P1prime tolerated,,1.7,P1prime hydrophobic,low
+325,M325|N326,CRGM|NEAL,rod:coil2B,yes,0.7,P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+326,N326|E327,RGMN|EALE,rod:coil2B,yes,2.8,P2 aliphatic hydrophobic; P1 polar/acidic,CatB/S/K possible,1.1,P1prime tolerated; P2 hydrophobic,low
+327,E327|A328,GMNE|ALEK,rod:coil2B,yes,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.9,P1 tolerated; P1prime tolerated; P2prime hydrophobic,low
+328,A328|L329,MNEA|LEKQ,rod:coil2B,yes,0.6,P4 hydrophobic; P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+329,L329|E330,NEAL|EKQL,rod:coil2B,yes,0.4,P1 hydrophobic,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+330,E330|K331,EALE|KQLQ,rod:coil2B,yes,2.8,P2 aliphatic hydrophobic; P1 polar/acidic,CatB/S/K possible,1.2,P1 tolerated; P2 hydrophobic,low
+331,K331|Q332,ALEK|QLQE,rod:coil2B,yes,1.6,P3 hydrophobic; P1 basic; P1prime tolerated,,0.4,P2prime hydrophobic,low
+332,Q332|L333,LEKQ|LQEL,rod:coil2B,yes,2.5,P2 basic/dibasic-context; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+333,L333|Q334,EKQL|QELE,rod:coil2B,yes,0.7,P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+334,Q334|E335,KQLQ|ELED,rod:coil2B,yes,2.8,P2 aliphatic hydrophobic; P1 polar/acidic,CatB/S/K possible,1.5,P1prime tolerated; P2 hydrophobic; P2prime hydrophobic,low
+335,E335|L336,QLQE|LEDK,rod:coil2B,yes,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+336,L336|E337,LQEL|EDKQ,rod:coil2B,yes,0.7,P4 hydrophobic; P1 hydrophobic,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+337,E337|D338,QELE|DKQN,rod:coil2B,yes,2.8,P2 aliphatic hydrophobic; P1 polar/acidic,CatB/S/K possible,1.9,P1 tolerated; P1prime tolerated; P2 hydrophobic,low
+338,D338|K339,ELED|KQNA,rod:coil2B,yes,1.0,P3 hydrophobic; P1 polar/acidic,,0.8,P1 tolerated,low
+339,K339|Q340,LEDK|QNAD,rod:coil2B,yes,1.4,P4 hydrophobic; P1 basic; P1prime tolerated,,0.0,,low
+340,Q340|N341,EDKQ|NADI,rod:coil2B,yes,2.2,P2 basic/dibasic-context; P1 polar/acidic; P1prime tolerated,,0.0,,low
+341,N341|A342,DKQN|ADIS,rod:coil2B,yes,0.8,P1 polar/acidic; P1prime tolerated,,0.7,P1prime tolerated,low
+342,A342|D343,KQNA|DISA,rod:coil2B,yes,0.0,,,1.9,P1 tolerated; P1prime tolerated; P2prime hydrophobic,low
+343,D343|I344,QNAD|ISAM,rod:coil2B,yes,0.8,P1 polar/acidic; P1prime tolerated,,2.5,P1 tolerated; P1prime hydrophobic,low
+344,I344|S345,NADI|SAMQ,rod:coil2B,yes,0.7,P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+345,S345|A346,ADIS|AMQD,rod:coil2B,yes,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.5,P1prime tolerated; P2 hydrophobic; P2prime hydrophobic,low
+346,A346|M347,DISA|MQDT,rod:coil2B,yes,0.8,P3 hydrophobic; P1prime tolerated,,2.5,P1 tolerated; P1prime hydrophobic,low
+347,M347|Q348,ISAM|QDTI,rod:coil2B,yes,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+348,Q348|D349,SAMQ|DTIN,rod:coil2B,yes,2.8,P2 aliphatic hydrophobic; P1 polar/acidic,CatB/S/K possible,1.1,P1prime tolerated; P2 hydrophobic,low
+349,D349|T350,AMQD|TINK,rod:coil2B,yes,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.2,P1 tolerated; P2prime hydrophobic,low
+350,T350|I351,MQDT|INKL,rod:coil2B,yes,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+351,I351|N352,QDTI|NKLE,rod:coil2B,yes,0.7,P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+352,N352|K353,DTIN|KLEN,rod:coil2B,yes,2.8,P2 aliphatic hydrophobic; P1 polar/acidic,CatB/S/K possible,0.8,P2 hydrophobic; P2prime hydrophobic,low
+353,K353|L354,TINK|LENE,rod:coil2B,yes,1.6,P3 hydrophobic; P1 basic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+354,L354|E355,INKL|ENEL,rod:coil2B,yes,2.1,P2 basic/dibasic-context; P4 hydrophobic; P1 hydrophobic,,3.4,P1 aromatic/Leu; P1prime tolerated,weak
+355,E355|N356,NKLE|NELR,rod:coil2B,yes,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.2,P1 tolerated; P2 hydrophobic,low
+356,N356|E357,KLEN|ELRT,rod:coil2B,yes,1.0,P3 hydrophobic; P1 polar/acidic,,1.1,P1prime tolerated; P2prime hydrophobic,low
+357,E357|L358,LENE|LRTT,rod:coil2B,yes,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+358,L358|R359,ENEL|RTTK,rod:coil2B,yes,0.4,P1 hydrophobic,,2.7,P1 aromatic/Leu,low
+359,R359|T360,NELR|TTKS,rod:coil2B,yes,3.4,P2 aliphatic hydrophobic; P1 basic; P1prime tolerated,CatB/S/K possible,0.4,P2 hydrophobic,weak
+360,T360|T361,ELRT|TKSE,rod:coil2B,yes,2.7,P2 basic/dibasic-context; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.0,,low
+361,T361|K362,LRTT|KSEM,rod:coil2B,yes,0.8,P4 hydrophobic; P1 polar/acidic,,0.0,,low
+362,K362|S363,RTTK|SEMA,rod:coil2B,yes,1.1,P1 basic; P1prime tolerated,,0.0,,low
+363,S363|E364,TTKS|EMAR,rod:coil2B,yes,1.9,P2 basic/dibasic-context; P1 polar/acidic,,1.1,P1prime tolerated; P2prime hydrophobic,low
+364,E364|M365,TKSE|MARY,rod:coil2B,yes,0.8,P1 polar/acidic; P1prime tolerated,,2.5,P1 tolerated; P1prime hydrophobic,low
+365,M365|A366,KSEM|ARYL,rod:coil2B,yes,0.7,P1 hydrophobic; P1prime tolerated,,2.7,P1 hydrophobic; P1prime tolerated,low
+366,A366|R367,SEMA|RYLK,rod:coil2B,yes,2.3,P2 aliphatic hydrophobic,CatB/S/K possible,1.6,P1 tolerated; P2 hydrophobic; P2prime hydrophobic,low
+367,R367|Y368,EMAR|YLKE,rod:coil2B,yes,1.6,P3 hydrophobic; P1 basic; P1prime tolerated,,2.8,P1prime aromatic/Leu; P2prime hydrophobic,low
+368,Y368|L369,MARY|LKEY,rod:coil2B,yes,2.4,P2 basic/dibasic-context; P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,5.1,P1 aromatic/Leu; P1prime aromatic/Leu,medium
+369,L369|K370,ARYL|KEYQ,rod:coil2B,yes,3.4,P2 aromatic; P1 hydrophobic,CatL/V favored,3.1,P1 aromatic/Leu; P2 hydrophobic,weak
+370,K370|E371,RYLK|EYQD,rod:coil2B,yes,3.6,P2 aliphatic hydrophobic; P3 hydrophobic; P1 basic,CatB/S/K possible,1.5,P1prime tolerated; P2 hydrophobic; P2prime hydrophobic,weak
+371,E371|Y372,YLKE|YQDL,rod:coil2B,yes,3.0,P2 basic/dibasic-context; P3 hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+372,Y372|Q373,LKEY|QDLL,rod:coil2B,yes,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+373,Q373|D374,KEYQ|DLLN,rod:coil2B,yes,3.5,P2 aromatic; P1 polar/acidic,CatL/V favored,1.5,P1prime tolerated; P2 hydrophobic; P2prime hydrophobic,weak
+374,D374|L375,EYQD|LLNV,rod:coil2B,yes,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,3.6,P1 tolerated; P1prime aromatic/Leu; P2prime hydrophobic,weak
+375,L375|L376,YQDL|LNVK,rod:coil2B,yes,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,5.1,P1 aromatic/Leu; P1prime aromatic/Leu,medium
+376,L376|N377,QDLL|NVKM,rod:coil2B,yes,3.0,P2 aliphatic hydrophobic; P1 hydrophobic; P1prime tolerated,CatB/S/K possible,3.5,P1 aromatic/Leu; P2 hydrophobic; P2prime hydrophobic,weak
+377,N377|V378,DLLN|VKMA,rod:coil2B,yes,3.6,P2 aliphatic hydrophobic; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,2.1,P1prime hydrophobic; P2 hydrophobic,weak
+378,V378|K379,LLNV|KMAL,rod:coil2B,yes,1.2,P3 hydrophobic; P4 hydrophobic; P1 hydrophobic,,2.4,P1 hydrophobic; P2prime hydrophobic,low
+379,K379|M380,LNVK|MALD,rod:coil2B,yes,3.7,P2 aliphatic hydrophobic; P4 hydrophobic; P1 basic; P1prime tolerated,CatB/S/K possible,2.1,P1prime hydrophobic; P2 hydrophobic,weak
+380,M380|A381,NVKM|ALDI,rod:coil2B,yes,2.6,P2 basic/dibasic-context; P3 hydrophobic; P1 hydrophobic; P1prime tolerated,,3.1,P1 hydrophobic; P1prime tolerated; P2prime hydrophobic,low
+381,A381|L382,VKMA|LDIE,rod:coil2B,yes,2.9,P2 aliphatic hydrophobic; P4 hydrophobic; P1prime tolerated,CatB/S/K possible,3.6,P1 tolerated; P1prime aromatic/Leu; P2 hydrophobic,weak
+382,L382|D383,KMAL|DIEI,rod:coil2B,yes,0.9,P3 hydrophobic; P1 hydrophobic,,3.8,P1 aromatic/Leu; P1prime tolerated; P2prime hydrophobic,weak
+383,D383|I384,MALD|IEIA,rod:coil2B,yes,3.4,P2 aliphatic hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,2.9,P1 tolerated; P1prime hydrophobic; P2 hydrophobic,weak
+384,I384|E385,ALDI|EIAA,rod:coil2B,yes,0.9,P3 hydrophobic; P1 hydrophobic,,3.1,P1 hydrophobic; P1prime tolerated; P2prime hydrophobic,low
+385,E385|I386,LDIE|IAAY,rod:coil2B,yes,3.4,P2 aliphatic hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,2.9,P1 tolerated; P1prime hydrophobic; P2 hydrophobic,weak
+386,I386|A387,DIEI|AAYR,rod:coil2B,yes,1.2,P3 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.7,P1 hydrophobic; P1prime tolerated,low
+387,A387|A388,IEIA|AYRK,rod:coil2B,yes,2.9,P2 aliphatic hydrophobic; P4 hydrophobic; P1prime tolerated,CatB/S/K possible,2.3,P1 tolerated; P1prime tolerated; P2 hydrophobic; P2prime hydrophobic,low
+388,A388|Y389,EIAA|YRKL,rod:coil2B,yes,0.8,P3 hydrophobic; P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+389,Y389|R390,IAAY|RKLL,rod:coil2B,yes,0.7,P4 hydrophobic; P1 hydrophobic,,2.7,P1 aromatic/Leu,low
+390,R390|K391,AAYR|KLLE,rod:coil2B,yes,4.4,P2 aromatic; P1 basic; dibasic bond,CatL/V dibasic possible; CatL/V favored,0.8,P2 hydrophobic; P2prime hydrophobic,medium
+391,K391|L392,AYRK|LLEG,rod:coil2B,yes,3.0,P2 basic/dibasic-context; P3 hydrophobic; P1 basic; P1prime tolerated,,2.8,P1prime aromatic/Leu; P2prime hydrophobic,low
+392,L392|L393,YRKL|LEGE,rod:coil2B,yes,2.4,P2 basic/dibasic-context; P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,5.1,P1 aromatic/Leu; P1prime aromatic/Leu,medium
+393,L393|E394,RKLL|EGEE,rod:coil2B,yes,2.7,P2 aliphatic hydrophobic; P1 hydrophobic,CatB/S/K possible,3.8,P1 aromatic/Leu; P1prime tolerated; P2 hydrophobic,weak
+394,E394|G395,KLLE|GEET,rod:coil2B,yes,3.6,P2 aliphatic hydrophobic; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.2,P1 tolerated; P2 hydrophobic,weak
+395,G395|E396,LLEG|EETR,rod:coil2B,yes,0.8,P3 hydrophobic; P4 hydrophobic,,0.7,P1prime tolerated,low
+396,E396|E397,LEGE|ETRL,rod:coil2B,yes,0.8,P4 hydrophobic; P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+397,E397|T398,EGEE|TRLS,rod,no,0.8,P1 polar/acidic; P1prime tolerated,,0.8,P1 tolerated,low
+398,T398|R399,GEET|RLSF,rod,no,0.5,P1 polar/acidic,,0.4,P2prime hydrophobic,low
+399,R399|L400,EETR|LSFT,rod,no,1.1,P1 basic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+400,L400|S401,ETRL|SFTS,rod,no,2.1,P2 basic/dibasic-context; P1 hydrophobic; P1prime tolerated,,3.1,P1 aromatic/Leu; P2prime hydrophobic,low
+401,S401|F402,TRLS|FTSV,tail,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,2.8,P1prime aromatic/Leu; P2 hydrophobic,low
+402,F402|T403,RLSF|TSVG,tail,no,1.2,P3 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+403,T403|S404,LSFT|SVGS,tail,no,4.1,P2 aromatic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,CatL/V favored,0.8,P2 hydrophobic; P2prime hydrophobic,medium
+404,S404|V405,SFTS|VGSI,tail,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+405,V405|G406,FTSV|GSIT,tail,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+406,G406|S407,TSVG|SITS,tail,no,2.6,P2 aliphatic hydrophobic; P1prime tolerated,CatB/S/K possible,0.8,P2 hydrophobic; P2prime hydrophobic,low
+407,S407|I408,SVGS|ITSG,tail,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+408,I408|T409,VGSI|TSGY,tail,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+409,T409|S410,GSIT|SGYS,tail,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,0.4,P2 hydrophobic,low
+410,S410|G411,SITS|GYSQ,tail,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.4,P2prime hydrophobic,low
+411,G411|Y412,ITSG|YSQS,tail,no,0.6,P4 hydrophobic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+412,Y412|S413,TSGY|SQSS,tail,no,0.7,P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+413,S413|Q414,SGYS|QSSQ,tail,no,3.8,P2 aromatic; P1 polar/acidic; P1prime tolerated,CatL/V favored,0.4,P2 hydrophobic,weak
+414,Q414|S415,GYSQ|SSQV,tail,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.0,,low
+415,S415|S416,YSQS|SQVF,tail,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.0,,low
+416,S416|Q417,SQSS|QVFG,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,0.4,P2prime hydrophobic,low
+417,Q417|V418,QSSQ|VFGR,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,2.1,P1prime hydrophobic; P2prime hydrophobic,low
+418,V418|F419,SSQV|FGRS,tail,no,0.7,P1 hydrophobic; P1prime tolerated,,4.4,P1 hydrophobic; P1prime aromatic/Leu,medium
+419,F419|G420,SQVF|GRSA,tail,no,3.0,P2 aliphatic hydrophobic; P1 hydrophobic; P1prime tolerated,CatB/S/K possible,3.1,P1 aromatic/Leu; P2 hydrophobic,low
+420,G420|R421,QVFG|RSAY,tail,no,3.5,P2 aromatic; P3 hydrophobic,CatL/V favored,0.4,P2 hydrophobic,weak
+421,R421|S422,VFGR|SAYG,tail,no,1.9,P3 hydrophobic; P4 hydrophobic; P1 basic; P1prime tolerated,,0.0,,low
+422,S422|A423,FGRS|AYGG,tail,no,2.5,P2 basic/dibasic-context; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.1,P1prime tolerated; P2prime hydrophobic,low
+423,A423|Y424,GRSA|YGGL,tail,no,0.3,P1prime tolerated,,3.2,P1 tolerated; P1prime aromatic/Leu,weak
+424,Y424|G425,RSAY|GGLQ,tail,no,0.7,P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+425,G425|G426,SAYG|GLQT,tail,no,3.3,P2 aromatic; P1prime tolerated,CatL/V favored,0.8,P2 hydrophobic; P2prime hydrophobic,weak
+426,G426|L427,AYGG|LQTS,tail,no,0.8,P3 hydrophobic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+427,L427|Q428,YGGL|QTSS,tail,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,2.7,P1 aromatic/Leu,low
+428,Q428|T429,GGLQ|TSSY,tail,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,0.4,P2 hydrophobic,low
+429,T429|S430,GLQT|SSYL,tail,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.0,,low
+430,S430|S431,LQTS|SYLM,tail,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,0.4,P2prime hydrophobic,low
+431,S431|Y432,QTSS|YLMS,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,2.8,P1prime aromatic/Leu; P2prime hydrophobic,low
+432,Y432|L433,TSSY|LMST,tail,no,0.7,P1 hydrophobic; P1prime tolerated,,5.5,P1 aromatic/Leu; P1prime aromatic/Leu; P2prime hydrophobic,high
+433,L433|M434,SSYL|MSTR,tail,no,3.7,P2 aromatic; P1 hydrophobic; P1prime tolerated,CatL/V favored,4.8,P1 aromatic/Leu; P1prime hydrophobic; P2 hydrophobic,medium
+434,M434|S435,SYLM|STRS,tail,no,3.5,P2 aliphatic hydrophobic; P3 hydrophobic; P1 hydrophobic; P1prime tolerated,CatB/S/K possible,2.4,P1 hydrophobic; P2 hydrophobic,weak
+435,S435|T436,YLMS|TRSF,tail,no,3.9,P2 aliphatic hydrophobic; P3 hydrophobic; P4 hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,0.4,P2 hydrophobic,weak
+436,T436|R437,LMST|RSFP,tail,no,1.3,P3 hydrophobic; P4 hydrophobic; P1 polar/acidic,,0.0,,low
+437,R437|S438,MSTR|SFPS,tail,no,1.4,P4 hydrophobic; P1 basic; P1prime tolerated,,0.4,P2prime hydrophobic,low
+438,S438|F439,STRS|FPSY,tail,no,2.2,P2 basic/dibasic-context; P1 polar/acidic; P1prime tolerated,,2.4,P1prime aromatic/Leu,low
+439,F439|P440,TRSF|PSYY,tail,no,-0.6,P1 hydrophobic; P1prime Pro unfavorable,,1.7,P1 aromatic/Leu; P1prime Pro unfavorable,low
+440,P440|S441,RSFP|SYYT,tail,no,3.3,P2 aromatic; P1prime tolerated,CatL/V favored,0.8,P2 hydrophobic; P2prime hydrophobic,weak
+441,S441|Y442,SFPS|YYTS,tail,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,2.8,P1prime aromatic/Leu; P2prime hydrophobic,low
+442,Y442|Y443,FPSY|YTSH,tail,no,1.0,P4 hydrophobic; P1 hydrophobic; P1prime tolerated,,5.1,P1 aromatic/Leu; P1prime aromatic/Leu,medium
+443,Y443|T444,PSYY|TSHV,tail,no,3.7,P2 aromatic; P1 hydrophobic; P1prime tolerated,CatL/V favored,3.1,P1 aromatic/Leu; P2 hydrophobic,weak
+444,T444|S445,SYYT|SHVQ,tail,no,4.3,P2 aromatic; P3 hydrophobic; P1 polar/acidic; P1prime tolerated,CatL/V favored,0.4,P2 hydrophobic,medium
+445,S445|H446,YYTS|HVQE,tail,no,1.3,P3 hydrophobic; P4 hydrophobic; P1 polar/acidic,,0.4,P2prime hydrophobic,low
+446,H446|V447,YTSH|VQEE,tail,no,0.6,P4 hydrophobic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+447,V447|Q448,TSHV|QEEQ,tail,no,0.7,P1 hydrophobic; P1prime tolerated,,2.0,P1 hydrophobic,low
+448,Q448|E449,SHVQ|EEQI,tail,no,2.8,P2 aliphatic hydrophobic; P1 polar/acidic,CatB/S/K possible,1.1,P1prime tolerated; P2 hydrophobic,low
+449,E449|E450,HVQE|EQIE,tail,no,1.0,P3 hydrophobic; P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+450,E450|Q451,VQEE|QIEV,tail,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.2,P1 tolerated; P2prime hydrophobic,low
+451,Q451|I452,QEEQ|IEVE,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+452,I452|E453,EEQI|EVEE,tail,no,0.4,P1 hydrophobic,,3.1,P1 hydrophobic; P1prime tolerated; P2prime hydrophobic,low
+453,E453|V454,EQIE|VEET,tail,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,2.9,P1 tolerated; P1prime hydrophobic; P2 hydrophobic,low
+454,V454|E455,QIEV|EETI,tail,no,0.9,P3 hydrophobic; P1 hydrophobic,,2.7,P1 hydrophobic; P1prime tolerated,low
+455,E455|E456,IEVE|ETIE,tail,no,3.1,P2 aliphatic hydrophobic; P4 hydrophobic; P1 polar/acidic,CatB/S/K possible,1.9,P1 tolerated; P1prime tolerated; P2 hydrophobic,low
+456,E456|T457,EVEE|TIEA,tail,no,1.3,P3 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.2,P1 tolerated; P2prime hydrophobic,low
+457,T457|I458,VEET|IEAA,tail,no,1.1,P4 hydrophobic; P1 polar/acidic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+458,I458|E459,EETI|EAAK,tail,no,0.4,P1 hydrophobic,,2.7,P1 hydrophobic; P1prime tolerated,low
+459,E459|A460,ETIE|AAKA,tail,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.9,P1 tolerated; P1prime tolerated; P2 hydrophobic,low
+460,A460|A461,TIEA|AKAE,tail,no,0.8,P3 hydrophobic; P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+461,A461|K462,IEAA|KAEE,tail,no,0.3,P4 hydrophobic,,0.8,P1 tolerated,low
+462,K462|A463,EAAK|AEEA,tail,no,1.1,P1 basic; P1prime tolerated,,0.7,P1prime tolerated,low
+463,A463|E464,AAKA|EEAK,tail,no,1.4,P2 basic/dibasic-context,,1.5,P1 tolerated; P1prime tolerated,low
+464,E464|E465,AKAE|EAKD,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+465,E465|A466,KAEE|AKDE,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+466,A466|K467,AEEA|KDEP,tail,no,0.0,,,0.8,P1 tolerated,low
+467,K467|D468,EEAK|DEPP,tail,no,0.8,P1 basic,,0.7,P1prime tolerated,low
+468,D468|E469,EAKD|EPPS,tail,no,1.9,P2 basic/dibasic-context; P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+469,E469|P470,AKDE|PPSE,tail,no,-0.5,P1 polar/acidic; P1prime Pro unfavorable,,-0.2,P1 tolerated; P1prime Pro unfavorable,low
+470,P470|P471,KDEP|PSEG,tail,no,-1.0,P1prime Pro unfavorable,,-1.0,P1prime Pro unfavorable,low
+471,P471|S472,DEPP|SEGE,tail,no,0.3,P1prime tolerated,,0.0,,low
+472,S472|E473,EPPS|EGEA,tail,no,0.5,P1 polar/acidic,,0.7,P1prime tolerated,low
+473,E473|G474,PPSE|GEAE,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,0.8,P1 tolerated,low
+474,G474|E475,PSEG|EAEE,tail,no,0.0,,,0.7,P1prime tolerated,low
+475,E475|A476,SEGE|AEEE,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+476,A476|E477,EGEA|EEEE,tail,no,0.0,,,1.5,P1 tolerated; P1prime tolerated,low
+477,E477|E478,GEAE|EEEK,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+478,E478|E479,EAEE|EEKD,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+479,E479|E480,AEEE|EKDK,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+480,E480|K481,EEEE|KDKE,tail,no,0.5,P1 polar/acidic,,0.8,P1 tolerated,low
+481,K481|D482,EEEK|DKEE,tail,no,0.8,P1 basic,,0.7,P1prime tolerated,low
+482,D482|K483,EEKD|KEEA,tail,no,1.9,P2 basic/dibasic-context; P1 polar/acidic,,0.8,P1 tolerated,low
+483,K483|E484,EKDK|EEAE,tail,no,0.8,P1 basic,,0.7,P1prime tolerated,low
+484,E484|E485,KDKE|EAEE,tail,no,1.9,P2 basic/dibasic-context; P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+485,E485|A486,DKEE|AEEE,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+486,A486|E487,KEEA|EEEE,tail,no,0.0,,,1.5,P1 tolerated; P1prime tolerated,low
+487,E487|E488,EEAE|EEEA,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+488,E488|E489,EAEE|EEAA,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+489,E489|E490,AEEE|EAAE,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+490,E490|A491,EEEE|AAEE,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+491,A491|A492,EEEA|AEEE,tail,no,0.3,P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+492,A492|E493,EEAA|EEEE,tail,no,0.0,,,1.5,P1 tolerated; P1prime tolerated,low
+493,E493|E494,EAAE|EEEA,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+494,E494|E495,AAEE|EEAA,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+495,E495|E496,AEEE|EAAK,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+496,E496|A497,EEEE|AAKE,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+497,A497|A498,EEEA|AKEE,tail,no,0.3,P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+498,A498|K499,EEAA|KEES,tail,no,0.0,,,0.8,P1 tolerated,low
+499,K499|E500,EAAK|EESE,tail,no,0.8,P1 basic,,0.7,P1prime tolerated,low
+500,E500|E501,AAKE|ESEE,tail,no,1.9,P2 basic/dibasic-context; P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+501,E501|S502,AKEE|SEEA,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,0.8,P1 tolerated,low
+502,S502|E503,KEES|EEAK,tail,no,0.5,P1 polar/acidic,,0.7,P1prime tolerated,low
+503,E503|E504,EESE|EAKE,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+504,E504|A505,ESEE|AKEE,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+505,A505|K506,SEEA|KEEE,tail,no,0.0,,,0.8,P1 tolerated,low
+506,K506|E507,EEAK|EEEE,tail,no,0.8,P1 basic,,0.7,P1prime tolerated,low
+507,E507|E508,EAKE|EEEG,tail,no,1.9,P2 basic/dibasic-context; P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+508,E508|E509,AKEE|EEGG,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+509,E509|E510,KEEE|EGGE,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+510,E510|G511,EEEE|GGEG,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,0.8,P1 tolerated,low
+511,G511|G512,EEEG|GEGE,tail,no,0.3,P1prime tolerated,,0.0,,low
+512,G512|E513,EEGG|EGEE,tail,no,0.0,,,0.7,P1prime tolerated,low
+513,E513|G514,EGGE|GEEG,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,0.8,P1 tolerated,low
+514,G514|E515,GGEG|EEGE,tail,no,0.0,,,0.7,P1prime tolerated,low
+515,E515|E516,GEGE|EGEE,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+516,E516|G517,EGEE|GEET,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,0.8,P1 tolerated,low
+517,G517|E518,GEEG|EETK,tail,no,0.0,,,0.7,P1prime tolerated,low
+518,E518|E519,EEGE|ETKE,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+519,E519|T520,EGEE|TKEA,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,0.8,P1 tolerated,low
+520,T520|K521,GEET|KEAE,tail,no,0.5,P1 polar/acidic,,0.0,,low
+521,K521|E522,EETK|EAEE,tail,no,0.8,P1 basic,,0.7,P1prime tolerated,low
+522,E522|A523,ETKE|AEEE,tail,no,2.2,P2 basic/dibasic-context; P1 polar/acidic; P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+523,A523|E524,TKEA|EEEE,tail,no,0.0,,,1.5,P1 tolerated; P1prime tolerated,low
+524,E524|E525,KEAE|EEEK,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+525,E525|E526,EAEE|EEKK,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+526,E526|E527,AEEE|EKKV,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+527,E527|K528,EEEE|KKVE,tail,no,0.5,P1 polar/acidic,,0.8,P1 tolerated,low
+528,K528|K529,EEEK|KVEG,tail,no,1.4,P1 basic; dibasic bond,CatL/V dibasic possible,0.4,P2prime hydrophobic,low
+529,K529|V530,EEKK|VEGA,tail,no,2.5,P2 basic/dibasic-context; P1 basic; P1prime tolerated,,1.7,P1prime hydrophobic,low
+530,V530|E531,EKKV|EGAG,tail,no,1.8,P2 basic/dibasic-context; P1 hydrophobic,,2.7,P1 hydrophobic; P1prime tolerated,low
+531,E531|G532,KKVE|GAGE,tail,no,3.1,P2 aliphatic hydrophobic; P1 polar/acidic; P1prime tolerated,CatB/S/K possible,1.2,P1 tolerated; P2 hydrophobic,low
+532,G532|A533,KVEG|AGEE,tail,no,0.8,P3 hydrophobic; P1prime tolerated,,0.7,P1prime tolerated,low
+533,A533|G534,VEGA|GEEQ,tail,no,0.6,P4 hydrophobic; P1prime tolerated,,0.8,P1 tolerated,low
+534,G534|E535,EGAG|EEQA,tail,no,0.0,,,0.7,P1prime tolerated,low
+535,E535|E536,GAGE|EQAA,tail,no,0.5,P1 polar/acidic,,1.5,P1 tolerated; P1prime tolerated,low
+536,E536|Q537,AGEE|QAAK,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,0.8,P1 tolerated,low
+537,Q537|A538,GEEQ|AAKK,tail,no,0.8,P1 polar/acidic; P1prime tolerated,,0.7,P1prime tolerated,low
+538,A538|A539,EEQA|AKKK,tail,no,0.3,P1prime tolerated,,1.5,P1 tolerated; P1prime tolerated,low
+539,A539|K540,EQAA|KKKD,tail,no,0.0,,,0.8,P1 tolerated,low
+540,K540|K541,QAAK|KKD-,tail,no,1.4,P1 basic; dibasic bond,CatL/V dibasic possible,0.0,,low
+541,K541|K542,AAKK|KD--,tail,no,2.8,P2 basic/dibasic-context; P1 basic; dibasic bond,CatL/V dibasic possible,0.0,,low
+542,K542|D543,AKKK|D---,tail,no,2.2,P2 basic/dibasic-context; P1 basic,,0.7,P1prime tolerated,low

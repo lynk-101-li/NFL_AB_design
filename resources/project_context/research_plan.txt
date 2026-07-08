@@ -1,0 +1,13 @@
+研究计划
+
+本研究建立一套面向 NfL 诊断抗体的结构计算与候选筛选流程，用于解释并复现两株已获得的 rod 区结合抗体：7-H11-D3-2-C7 与 15-C12-H6。核心假设是：NfL rod domain 具有较高结构置信度和较好的构象稳定性，适合作为诊断抗体的结构化表位区域；两株抗体若识别非重叠 rod 表位，则有潜力构成 sandwich 检测抗体对。
+
+第一步，对人源 NfL/NEFL 进行结构分区和表位可及性分析。流程使用 AlphaFold 或同类结构预测模型评估 NfL 全长结构置信度，重点关注 rod 区 90-400 aa 的 pLDDT、PAE、溶剂可及面积 SASA 和表面保守性。同时将 NEFL 与 NEFM、NEFH、INA、PRPH、GFAP、VIM 等中间丝相关蛋白进行序列和结构比对，筛选 rod 区中既暴露、又相对 NfL 特异的候选表位。计算指标包括：表位平均 pLDDT、局部 PAE、表位残基 relative SASA、NEFL-vs-off-target 序列差异度、潜在 PTM 风险和低复杂度风险。
+
+第二步，对两株抗体的 VH/VL 进行标准化编号、CDR 注释和结构建模。给定序列先作为 Fv 建模，并在需要时拼接 CH1/CL 构建 Fab 模型。候选外部工具包括 ANARCI/IgBLAST 编号、ABodyBuilder3/IgFold 或同类抗体结构模型。重点评估 CDR loop，尤其是 HCDR3 的结构置信度。初步序列体检显示，15-C12-H6 的 VH 存在一个 NTS，VL 存在一个 NGS 潜在 N-糖基化 motif，后续需要评估其是否位于 CDR/FR 暴露区以及是否可能影响结合或批次异质性。计算指标包括：Fv 模型全局 pLDDT、CDR pLDDT、HCDR3 构象收敛性、VH/VL packing score、潜在 NXS/T、deamidation、oxidation、aggregation hotspot、surface hydrophobic patch 和 predicted solubility。
+
+第三步，预测两株抗体与 NfL rod 的复合物结构。分别构建 7-H11-D3-2-C7-Fv : NfL rod 与 15-C12-H6-Fv : NfL rod 复合物，采用 AlphaFold 3、Chai-1/Boltz 类 co-folding 模型与传统 docking/refinement 交叉验证。结构判断不采信单一模型，而使用多 seed、多采样、多算法一致性来定义可信结合模式。核心计算指标包括：ipTM、pTM、interface PAE、interface pLDDT、predicted DockQ/pDockQ、interface buried surface area、Rosetta interface delta G、shape complementarity、氢键/盐桥数量、buried unsatisfied polar atoms，以及不同 seed 是否收敛到相同 epitope cluster。
+
+第四步，建立计算复现筛选场景。候选库包含两株真实抗体、一组 CDR 确定性扰动阴性抗体、同源抗体重采样候选和公开抗体背景序列。流程以推断出的 NfL rod/coil-2B 片段为抗原，使用同一套评分体系进行排序，检验 7-H11-D3-2-C7 与 15-C12-H6 是否能被计算流程排入 top tier。排序指标包括：binding confidence proxy、interface score proxy、epitope specificity score、off-target penalty、developability score 和 model consensus score。
+
+第五步，评估两株抗体作为诊断 sandwich pair 的空间兼容性。流程构建 Fab1 : NfL rod : Fab2 三元复合物输入，判断两株抗体是否识别非重叠表位、是否存在 Fab-Fab 空间冲突、是否允许一个作为 capture antibody、另一个作为 detection antibody。关键指标包括：epitope overlap ratio 低、两个 Fab 与 NfL 同时结合时 clash score 低、Fab-Fab 最小距离合理、三元复合物 interface PAE 可接受、capture/detection 标记端远离抗原结合面。

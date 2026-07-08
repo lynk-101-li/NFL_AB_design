@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nfl-ab-design"
+version = "0.1.0"
+description = "Reproducible NfL antibody design replay workflow and external structure-pipeline handoff."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+authors = [
+  {name = "NFL antibody design project"}
+]
+dependencies = []
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+
+[project.scripts]
+nfl-ab-design = "nfl_ab_design.workflow:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

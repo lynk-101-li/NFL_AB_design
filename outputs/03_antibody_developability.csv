@@ -1,0 +1,3 @@
+antibody_id,vh_id,vl_id,vh_length,vl_length,HCDR1_proxy,HCDR2_proxy,HCDR3_proxy,LCDR1_proxy,LCDR2_proxy,LCDR3_proxy,cdr_net_charge_pH7_proxy,cdr_aromatic_fraction,cdr_hydrophobic_fraction,vh_n_glyco_motifs,vl_n_glyco_motifs,n_glyco_risk_notes,cdr_oxidation_MW_count,hydrophobic_patch_proxy,developability_score
+7-H11-D3-2-C7,Q7H-A03,Q7L,112,107,GFNIKDSFIH,WIDPKNDKTIFDPKFR,TRKDY,LASQTIGTWLA,AATSLAD,LQLYSTPLT,1.1,0.1379,0.4138,,,none,2,0.222,92.0
+15-C12-H6,Q9H-A05,Q9L-D03,120,107,GYSITSDYAW,GYISYSGNTSYRPSLR,ATSLLRLRDWFPY,RASQSIGTSIH,FASESIS,QQTNTWPYT,2.1,0.1818,0.3788,57:NTS,41:NGS,VH:57:NTS:CDR;VL:41:NGS:FR,3,0.23,69.87
