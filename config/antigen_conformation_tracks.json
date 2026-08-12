@@ -1,0 +1,26 @@
+{
+  "schema": "nfl_ab_design.antigen_conformation_scope.v1",
+  "scientific_background_not_used_as_design_constraint": {
+    "observation": "A roughly 22 kDa band under non-reducing conditions has an unresolved oligomeric-state hypothesis.",
+    "design_consequence": "None in this campaign: the antibody design target is a single-chain monomer surface and no cysteine contact is requested."
+  },
+  "active_tracks": [
+    {
+      "track_id": "monomer_helix_surface_323_331",
+      "oligomeric_state": "single_chain_monomer",
+      "epitope_id": "helix_surface_323_331",
+      "selected_hotspots": [325, 329],
+      "excluded_direct_contact_constraints": [322],
+      "surface_definition": "Met325/Leu329 i/i+4 alpha-helical face",
+      "current_handoff_support": "shared_RF_IGGM_Germinal_v1_after_human_review",
+      "state": "review_candidate_prepared_not_authorized"
+    }
+  ],
+  "excluded_from_campaign": {
+    "state": "out_of_scope_not_planned_not_built_not_executed",
+    "conformation": "any antigen oligomer, including covalently linked states",
+    "reason": "The campaign owner selected a monomer-only design scope.",
+    "scientific_limitation": "Monomer-only results cannot establish the molecular origin of the approximately 22 kDa non-reducing band or predict epitope geometry in an oligomer."
+  },
+  "ranking_rule": "All generated candidates and scores belong to the single-chain monomer track only; no dimer comparison or cross-conformation ranking is performed."
+}

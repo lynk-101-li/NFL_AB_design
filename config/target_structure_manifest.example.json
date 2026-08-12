@@ -1,0 +1,39 @@
+{
+  "schema": "nfl_ab_design.target_structure_manifest.v1",
+  "execution_state": "blocked_missing_target_structure",
+  "review": {
+    "reviewed_by": "<REVIEWER_NAME_OR_ID>",
+    "reviewed_at": "<ISO_8601_TIMESTAMP>",
+    "contracts_acknowledged": false
+  },
+  "conformation_id": "REPLACE_WITH_REVIEWED_SINGLE_CHAIN_MONOMER_CONFORMATION",
+  "oligomeric_state": "single_chain_monomer",
+  "target_pdb_path": "<PATH_TO_REVIEWED_NEFL_TARGET_PDB>",
+  "target_chain": "A",
+  "antigen_sequence_in_pdb_order": "<EXTRACT_FROM_PDB_AND_VERIFY>",
+  "full_coordinate_to_pdb": {},
+  "full_coordinate_to_local_1_based": {},
+  "selected_hotspots_by_epitope": {
+    "helix_surface_323_331": [],
+    "C_boundary_368_377": []
+  },
+  "framework_coordinate_inputs": {
+    "rfantibody_hlt_pdbs": {
+      "template_7-H11-D3-2-C7": "<PATH_TO_TEMPLATE_1_CHOTHIA_HLT_PDB>",
+      "template_15-C12-H6": "<PATH_TO_TEMPLATE_2_CHOTHIA_HLT_PDB>"
+    },
+    "germinal_scfv_pdbs": {
+      "template_7-H11-D3-2-C7": "<PATH_TO_TEMPLATE_1_VH_LINKER_VL_SCFV_PDB>",
+      "template_15-C12-H6": "<PATH_TO_TEMPLATE_2_VH_LINKER_VL_SCFV_PDB>"
+    }
+  },
+  "review_contract": [
+    "PDB sequence and residue numbering have been extracted from coordinates, not inferred from the filename.",
+    "Every selected hotspot has an explicit full-coordinate to PDB-residue mapping and is present in ATOM records.",
+    "Hotspots were selected after solvent-accessibility and local-chemistry review; an entire epitope window was not passed blindly.",
+    "RFantibody HLT files contain H/L chains and all six CDR REMARK labels.",
+    "Germinal templates are single-chain VH-linker-VL scFv PDBs and remain a separate geometry track.",
+    "Schema v1 intentionally represents one single-chain monomer target shared by all three adapters.",
+    "Any oligomeric target requires a future multichain manifest and an engine-specific campaign; it must not be encoded by duplicating or flattening this single-chain mapping."
+  ]
+}

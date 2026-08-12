@@ -1,360 +1,248 @@
+# NfL 抗体六 CDR 设计模拟：高中生快速上手
 
-# NfL 抗体设计课题快速上手指南
+这份指南帮你理解课题问题、运行双模板六 CDR 设计模拟、阅读筛选漏斗，并分清“模拟分数”、“回顾性对照”和“真实模型/实验结果”。
 
-这份指南面向第一次接触这个课题的高中生，目标是让你理解课题在做什么、代码包怎么运行、结果怎么看，以及后续可以搭配哪些软件继续做结构分析。
+## 1. 先记住最重要的边界
 
-## 1. 这个课题在研究什么
+当前代码是一个确定性的 **proxy simulation**：它用可重复的规则模拟生成、结构/界面筛选和可开发性筛选。
 
-本课题围绕一种神经损伤标志物蛋白 NfL，也叫 NEFL。NfL 可以出现在神经损伤相关样本中，因此常被用于诊断检测研究。
+当前仓库运行：
 
-我们的目标是设计并筛选能识别 NfL 的抗体，尤其是能组成 sandwich assay 的一对抗体。Sandwich assay 可以理解为“两只手同时抓住同一个目标蛋白”：一只抗体负责捕获 NfL，另一只抗体负责检测信号。如果两只抗体识别的位置互不重叠，就更有机会形成好用的检测抗体对。
+- 没有实际运行 RFantibody、IgGM 或 Germinal；
+- 没有实际运行 tFold、AlphaFold 3、Chai-1、Boltz 或 Rosetta；
+- 没有产生真实的 pLDDT、PAE、ipTM、DockQ 或能量；
+- 没有用实验证明新候选一定结合 NfL。
 
-这个课题的最终实验阳性抗体是：
+因此，输出中的 simulated score 只用来学习流程、比较候选和检查代码，不能当成真实结构预测结果。
 
-- `7-H11-D3-2-C7`
-- `15-C12-H6`
+## 2. 课题要解决什么
 
-代码包的作用是把课题中的设计逻辑变成一套可重复运行的计算流程：先推断 NfL 的可能抗原片段，再寻找候选表位，然后对抗体序列做质量检查、排序，并准备外部结构预测软件需要的输入文件。
+NfL，也叫 NEFL，是一种神经丝蛋白。课题希望获得能识别 NfL 的抗体，并最终组成 sandwich assay。
 
-## 2. 课题设计主线
+Sandwich assay 可以想成两只手同时抓住一个目标：
 
-### 第一步：推断抗原片段
+- capture antibody 先抓住 NfL；
+- detection antibody 再抓住 NfL 的另一处，并提供检测信号。
 
-实验中观察到一个约 22 kDa 的 NfL 相关条带，并判断它可能是二硫键连接的二聚体。二聚体是两个相同片段连在一起，所以每个单体大约是 11 kDa。
+两株抗体识别的位置需尽量不重叠，三维结构中也不应严重冲突。
 
-NfL 全长蛋白里只有一个半胱氨酸 `Cys322`，它可以形成二硫键。因此，合理的 NfL 片段必须包含 `Cys322`。
+## 3. 为什么先分析 NfL 片段
 
-代码会对 NfL 全长的每个肽键做 cathepsin-like 切割倾向打分，然后筛选出：
+上游实验观察到约 22 kDa 的 NfL 相关非还原条带。工作假设认为，它可能是两个约 11 kDa 的相同片段用二硫键连在一起。
 
-- 包含 `Cys322`；
+NfL 全长序列中只有一个 canonical cysteine：`Cys322`。所以，如果二硫键二聚体假设正确，相关片段就必须包含 Cys322。
+
+代码根据下列线索给 NfL 截断片段排序：
+
+- 包含 Cys322；
 - 单体质量接近 11 kDa；
 - 二聚体质量接近 22 kDa；
-- N 端和 C 端边界有蛋白酶切割支持；
-- 位于 NfL rod/coil-2B 区域附近。
+- 两端有 cathepsin-like 切割支持；
+- 位于 NfL rod/coil-2B 附近。
 
-当前最重要的候选抗原片段是：
+当前工作片段集中在 aa 280–377，其中 `280-375` 是主要候选。这仍然是需要质谱等证据检验的生物学假设。
 
-```text
-NfL aa 280-375
-```
+## 4. 这次“从头设计”是怎么做的
 
-### 第二步：寻找抗体可能识别的表位
+### 两个目标表位
 
-表位就是抗体在抗原上识别的位置。代码会重点检查：
+表位是抗体在抗原上识别的局部区域。默认 campaign 针对：
 
-- `Cys322` 附近；
-- 片段 N 端边界附近；
-- 片段 C 端边界附近；
-- `280-375` 区间内的滑动窗口。
+| 表位 | NfL 坐标 | 序列 |
+|---|---:|---|
+| Helix surface | 323–331 | `RGMNEALEK` |
+| C-terminal boundary | 368–377 | `YLKEYQDLLN` |
 
-这些窗口会按极性、带电性、结构区域、潜在修饰风险等指标排序。
+第一表位的设计热点仅为 `Met325/Leu329`。Cys322 不作为抗体接触热点；上游条带假设与本轮抗体设计约束分开处理。
 
-### 第三步：检查抗体序列
+最后的 12 个候选不是简单取一个全局分数榜的前 12，而是先保证两个模板和两个表位的四种组合都有代表，再在每组内部按模拟综合分选优。
 
-抗体有重链 `VH` 和轻链 `VL`。代码会读取两株抗体的 VH/VL 序列，做基础检查：
+### 两个 framework-only 模板
 
-- CDR 区域的大致位置；
-- HCDR3 长度；
-- 是否有潜在糖基化 motif，例如 `NXS/T`；
-- 是否有氧化、脱酰胺等风险；
-- CDR 区域的带电性和芳香族氨基酸比例。
+代码从两株已知抗体获取两个不同的 VH/VL framework source：
 
-### 第四步：候选库排序
+- `7-H11-D3-2-C7`；
+- `15-C12-H6`。
 
-代码会把两个真实阳性抗体和一些确定性扰动出来的阴性候选放到同一个候选库里，统一打分。
-
-当前结果中，两个实验阳性抗体排在前两名：
+这不等于把已知抗体整体拿来做候选。在生成请求里，六个 CDR 都被遮罩：
 
 ```text
-Rank 1: 7-H11-D3-2-C7
-Rank 2: 15-C12-H6
+H1  H2  H3  L1  L2  L3
 ```
 
-这说明这套计算流程可以复现课题后期筛选得到的有效抗体对。
+生成阶段只使用 framework residues：不使用已知 CDR 氨基酸身份，也不把已知完整 VH/VL 当成生成特征。六个 CDR 都是待设计区域。
 
-### 第五步：评估 sandwich pair
+这些 CDR 不再使用启发式大致范围，而是使用 `ANARCI 2020.04.23 Chothia` 编号后映射回每条输入链的 1-based 原始坐标。两个模板的 CDR 长度可以不同；程序只遮罩和替换配置中的精确位点，其余 framework 位点必须与源序列一致。可审计的编号 labels 和输入哈希在 `input/antibody_templates/chothia_numbering_evidence.json`。
 
-代码会判断两株抗体的预测表位是否重叠。如果两个表位距离足够远、重叠低，就更适合组成 sandwich assay。
+### 生成规模
 
-当前计算结论是：
-
-- `7-H11-D3-2-C7` 更偏向识别 C 端边界附近；
-- `15-C12-H6` 更偏向识别 `Cys322` anchor 附近；
-- 两者表位不重叠；
-- 推荐 `7-H11-D3-2-C7` 做 capture，`15-C12-H6` 做 detection。
-
-## 3. 代码包在哪里
-
-代码包目录是：
+默认配置是：
 
 ```text
-NFL_AB_design/
+2 个模板 × 2 个表位 × 每组合 1280 个模拟设计 = 5120 个前瞻候选
+seed = 20260812
 ```
 
-最重要的文件：
+`seed` 是随机种子，它让同样的配置能重现同样的模拟结果。5120 是本地 proxy library 的候选数，不是 RFantibody/IgGM/Germinal 各自必须真实运行的数量；真实结构模型会分层缩小计算量。
+
+## 5. 筛选漏斗怎么读
+
+漏斗就是逐层删掉不符合条件的候选。默认参数在 `config/design_campaign.json`：
+
+| 关卡 | 默认阈值 | 简单理解 |
+|---|---:|---|
+| Structure | 58 | 模拟结构是否像一个可用候选 |
+| Interface | 55 | 模拟界面是否适合目标表位 |
+| Developability | 60 | 序列风险是否可接受 |
+| Composite | 60 | 综合 proxy 是否达标 |
+| Final selection | 12 | 最多导出多少个前瞻候选 |
+
+表中的 58、55、60 都是此代码的 proxy 阈值，不是生物学通用标准。不要把它们和真实的结构模型质量或结合常数等同。
+
+## 6. 为什么有两张排名表
+
+这是本课题最容易误解的部分。
+
+### Prospective table
+
+`09_prospective_candidates.csv` 只包含从遮罩六 CDR 模板生成的模拟候选。已知阳性的完整序列不允许出现在这条轨道中。
+
+### Retrospective table
+
+`10_retrospective_demo_candidates.csv` 在前瞻生成和排名结束后，才加入两株已知阳性全序列，并把它们标记为：
 
 ```text
-NFL_AB_design/README.md
-NFL_AB_design/scripts/run_nfl_ab_design.py
-NFL_AB_design/src/nfl_ab_design/workflow.py
-NFL_AB_design/input/antigen_truncation/truncation_constraints.json
-NFL_AB_design/input/antibody_templates/template_fv_backgrounds.fasta
-NFL_AB_design/resources/project_context/storyline.txt
-NFL_AB_design/resources/project_context/research_plan.txt
-NFL_AB_design/resources/antigen_inference/nfl_cathepsin_annotated_for_snapgene.gp
-NFL_AB_design/validation/experimentally_validated_antibodies.fasta
-NFL_AB_design/docs/nfl_truncation_inference_rationale.md
-NFL_AB_design/config/external_pipelines.example.json
+retrospective_positive_control
 ```
 
-这里要特别区分：
+已知的 Top 2 是：
 
-- `input/` 放起始约束和模板，不放最终实验答案；
-- `resources/` 放课题故事线、研究方案、NfL 截断分析过程和参考数据；
-- `validation/` 放最终实验验证通过的两个抗体，用来检查计算流程是否能把它们排到最前面；
-- `docs/` 放方法解释文档，适合讲课时使用。
+1. `7-H11-D3-2-C7`
+2. `15-C12-H6`
 
-运行后结果会写到：
+这只是回顾性阳性对照演示，不是盲法发现。换句话说，代码在这一步已经“知道它们是阳性对照”，所以不能说代码从 5120 个新候选里盲法找回了它们。
 
-```text
-NFL_AB_design/outputs/
-```
+## 7. 如何运行
 
-## 4. 推荐安装的软件
-
-最小上手只需要：
-
-- macOS / Windows / Linux 任意系统；
-- Python 3.10 或更高版本；
-- 一个终端软件；
-- VS Code、Cursor 或其他代码编辑器；
-- Excel、Numbers 或 LibreOffice，用来看 `.csv` 表格。
-
-推荐搭配的软件：
-
-- SnapGene：查看蛋白序列和注释；
-- PyMOL 或 UCSF ChimeraX：查看蛋白结构；
-- Excel / Numbers / LibreOffice：查看输出表格；
-- IgFold 或 ABodyBuilder3：建模抗体 Fv/Fab；
-- AlphaFold 3、Chai-1 或 Boltz：预测抗体-抗原复合物；
-- Rosetta：做界面能量和结构精修分析。
-
-高中生快速理解阶段，不需要一开始就安装所有结构预测软件。先能跑通 Python 流程、看懂输出表格即可。
-
-## 5. 终端快速上手
-
-先打开终端，进入 `NFL_AB_design` 仓库根目录。如果是从 GitHub 拉到本地，通常是：
-
-```bash
-git clone <你的仓库地址>
-cd NFL_AB_design
-```
-
-如果已经在包含 `NFL_AB_design/` 的上一级目录，也可以直接：
+需要 Python 3.10 或更高版本。在终端进入仓库根目录：
 
 ```bash
 cd NFL_AB_design
-```
-
-检查 Python 版本：
-
-```bash
 python3 --version
-```
-
-运行代码包：
-
-```bash
 python3 scripts/run_nfl_ab_design.py
 ```
 
-如果运行成功，终端会看到类似输出：
-
-```text
-NfL antibody workflow complete.
-Primary antigen fragment: NEFL 280-375
-Rank  1: 7-H11-D3-2-C7
-Rank  2: 15-C12-H6
-```
-
-也可以用模块方式运行：
+也可以运行：
 
 ```bash
 PYTHONPATH=src python3 -m nfl_ab_design
 ```
 
-## 6. 运行后应该看哪些结果
-
-### 总报告
-
-```text
-NFL_AB_design/outputs/workflow_report.md
-```
-
-这是最适合先看的文件，里面按顺序总结了：
-
-- 抗原截断推断；
-- 表位窗口；
-- 抗体序列检查；
-- 候选排序；
-- sandwich pair 结论；
-- 外部结构工具输入文件。
-
-### 抗原截断推断
-
-```text
-NFL_AB_design/outputs/00_antigen_truncation_report.md
-NFL_AB_design/outputs/00_antigen_truncation_all_peptide_bonds.csv
-NFL_AB_design/outputs/00_antigen_truncation_medium_high_sites.csv
-NFL_AB_design/outputs/00_antigen_truncation_fragment_candidates.csv
-```
-
-这些文件回答：NfL 哪些位置可能被 cathepsin-like 蛋白酶切开？哪些片段最符合 22 kDa 二硫键二聚体假设？
-
-### 抗原片段优先级
-
-```text
-NFL_AB_design/outputs/01_antigen_fragment_prioritization.csv
-```
-
-这个文件回答：最终哪些 NfL 片段最值得作为抗原重点分析？
-
-### 表位窗口
-
-```text
-NFL_AB_design/outputs/02_epitope_windows.csv
-```
-
-这个文件回答：抗体可能识别 NfL 的哪些局部区域？
-
-### 抗体序列检查
-
-```text
-NFL_AB_design/outputs/03_antibody_developability.csv
-```
-
-这个文件回答：两株抗体序列有没有明显的可开发性风险？
-
-### 候选排序
-
-```text
-NFL_AB_design/outputs/05_candidate_ranking.csv
-```
-
-这个文件回答：在同一套计算评分下，哪些抗体候选排在前面？
-
-### Sandwich pair 报告
-
-```text
-NFL_AB_design/outputs/06_sandwich_pair_report.md
-```
-
-这个文件回答：两个抗体是否适合组成检测抗体对？
-
-## 7. 如何阅读 CSV 表格
-
-CSV 是表格文件，可以用 Excel、Numbers 或 LibreOffice 打开。
-
-常见字段含义：
-
-- `fragment`：NfL 片段范围，例如 `280-375`；
-- `monomer_avg_mass_kDa`：单体理论质量；
-- `disulfide_homodimer_avg_mass_kDa`：二硫键二聚体理论质量；
-- `N_terminal_cut`：N 端切割边界；
-- `C_terminal_cut`：C 端切割边界；
-- `combined_boundary_score`：两个边界的切割支持分；
-- `epitope_priority_score`：表位优先级；
-- `developability_score`：抗体可开发性评分；
-- `total_rank_score`：候选抗体总排序分。
-
-初学者可以先按这些列排序：
-
-- `antigen_confidence_score`
-- `epitope_priority_score`
-- `developability_score`
-- `total_rank_score`
-
-分数越高，说明越值得优先关注。
-
-## 8. 外部结构软件怎么接
-
-代码包已经帮你准备了外部结构工具输入文件。
-
-FASTA 输入：
-
-```text
-NFL_AB_design/outputs/exports/fasta/
-```
-
-AF3-style JSON 输入：
-
-```text
-NFL_AB_design/outputs/exports/af3_json/
-```
-
-外部任务表：
-
-```text
-NFL_AB_design/outputs/exports/external_jobs/pipeline_jobs.tsv
-```
-
-可编辑命令脚本：
-
-```text
-NFL_AB_design/outputs/exports/external_jobs/run_external_pipelines.sh
-```
-
-外部工具配置文件：
-
-```text
-NFL_AB_design/config/external_pipelines.example.json
-```
-
-默认情况下，外部任务都是关闭的，因为不同电脑上安装的软件命令不一样。等你确认本机已经安装好 IgFold、Chai-1、Boltz、Rosetta 等工具后，再修改配置文件里的命令和 `enabled` 字段。
-
-## 9. 一节课可以怎么讲
-
-可以按下面顺序讲：
-
-1. 什么是 NfL，为什么它可以作为神经损伤标志物。
-2. 什么是抗体，VH/VL 和 CDR 是什么。
-3. 什么是 sandwich assay，为什么需要两个非重叠表位抗体。
-4. 为什么 22 kDa 条带提示可能有 11 kDa 单体片段。
-5. 为什么 Cys322 对二硫键二聚体推断很关键。
-6. 运行代码，观察 `280-375` 片段如何被选出来。
-7. 查看两个抗体为什么排在第 1 和第 2。
-8. 讨论为什么计算结果还需要结构预测和实验验证。
-
-## 10. 常见问题
-
-### 这套代码是不是直接证明抗体一定有效？
-
-不是。代码给出的是计算优先级和复现逻辑。真正有效需要实验验证。
-
-### 为什么最后还要做结构预测？
-
-因为表位是否真的不重叠、两个 Fab 是否会空间冲突，需要三维结构进一步确认。
-
-### 高中生需要理解所有打分公式吗？
-
-不需要。一开始只要理解每个分数代表什么方向：质量是否接近、边界是否合理、表位是否合适、抗体序列是否健康、两个抗体是否能同时结合。
-
-### 最重要的结论是什么？
-
-本流程从 NfL 片段推断开始，最终把两个实验阳性抗体排在最高优先级，并支持它们作为 sandwich 检测抗体对继续做结构和实验验证。
-
-## 11. 最快操作清单
-
-```bash
-git clone <你的仓库地址>
-cd NFL_AB_design
-python3 --version
-python3 scripts/run_nfl_ab_design.py
-open outputs/workflow_report.md
-```
-
-如果 `open` 命令不能用，就直接在文件管理器或编辑器中打开：
+运行后先打开：
 
 ```text
 outputs/workflow_report.md
 ```
+
+每次比较结果时，还要保存 campaign 配置和 manifest。如果需要查运行日期，读实际运行 manifest 的时间字段，不要根据文档或 seed 猜测日期。
+
+## 8. 主要输出是什么
+
+| 文件 | 要回答的问题 |
+|---|---|
+| `00_antigen_truncation_report.md` | 为什么重点考虑包含 Cys322 的约 11 kDa 片段？ |
+| `01_antigen_fragment_prioritization.csv` | 哪些 NfL 片段更符合工作假设？ |
+| `02_epitope_windows.csv` | 哪些局部表位更值得设计？ |
+| `03_template_frameworks.csv` | 六 CDR 是否都已遮罩，两模板来自何处？ |
+| `04_backbone_generation.csv` | 每个模板-表位组合生成了哪些模拟记录？ |
+| `05_sequence_candidates.csv` | 六个 CDR 各自的模拟序列是什么？ |
+| `06_structure_interface_screen.csv` | 哪些候选通过结构/界面 proxy？ |
+| `07_developability_screen.csv` | 哪些候选通过可开发性 proxy？ |
+| `08_screening_funnel.csv` | 每一关进入、通过、被剔除多少个？ |
+| `09_prospective_candidates.csv` | 哪些新模拟候选排在前面？ |
+| `10_retrospective_demo_candidates.csv` | 已知阳性对照的回顾性演示怎样？ |
+| `11_sandwich_pair_ranking.csv` | 哪些候选对的表位更不重叠？ |
+
+阅读 06、07 时，要查看 `data_status`、`*_is_simulated` 和 `metric_provenance`，它们用来防止把模拟分数误写成真实模型值。
+
+## 9. 外部真实模型如何接入
+
+代码会准备规范化请求、FASTA/JSON 和任务表，但不会默认运行外部工具。配置位于：
+
+```text
+config/external_pipelines.example.json
+```
+
+其中包含默认关闭的：
+
+- RFantibody 六 CDR 生成 adapter；
+- IgGM 六 CDR 生成 adapter；
+- Germinal 表位条件 scFv 生成 adapter；它把 VH 和 VL 用 linker 连成一条链，不能冒充原生配对 Fv 几何；
+- 可选 tFold 结构预测/复核 adapter；
+- 其他可选建模、复合物预测和界面分析 adapter。
+
+命令中的 `<PATH_TO_...>` 是占位符，必须按实际安装修改。还需要 NfL antigen PDB、模型 checkpoint/database、对应版本的 adapter 和可用硬件。
+
+看到以下文件只能说明“已准备交接输入”：
+
+```text
+outputs/exports/design_requests/
+outputs/exports/fasta/
+outputs/exports/af3_json/
+outputs/exports/external_jobs/pipeline_jobs.tsv
+outputs/exports/external_jobs/run_external_pipelines.sh
+```
+
+它们不是外部模型已运行的证明。只有真实工具输出、日志、版本/checkpoint 记录和完整 manifest 同时存在，才可以声称某个模型已经运行。
+
+三个真实 adapter 都要求抗原的坐标 PDB，并要求把本文中的 NfL 全长坐标明确映射到 PDB 残基。RFantibody 还要求 HLT 模板 PDB，Germinal 要求 scFv 模板 PDB；如果这些输入缺失，程序会直接停止，不会猜一个看似合理的坐标。
+
+补齐并人工复核 `config/target_structure_manifest.json` 后，只有在 reviewer、带时区时间戳和 review contract 都记录完成、状态改为 `reviewed_ready_for_handoff` 时，才可用 `scripts/prepare_real_model_jobs.py` 统一编译三种模型的作业。`--profile smoke --job-scope canary` 会校验全部四个模板-表位组合，但每个引擎只授权同一个 canary；这仍然不会运行模型。真实交接和结果放在 `real_runs/`，不要放入可再生的 `outputs/`。
+
+## 10. 运行测试
+
+```bash
+python3 -m unittest discover -s tests
+```
+
+测试会检查：
+
+- 确实有两个不同的 framework source；
+- H1/H2/H3/L1/L2/L3 六个 CDR 都是设计区；
+- 相同 seed 的模拟可重现；
+- prospective tables 不含已知阳性全序列；
+- retrospective controls 被单独标记；
+- simulated metrics 有可机读的来源标记；
+- funnel 的计数前后一致。
+
+## 11. 一节课可以怎么讲
+
+1. NfL 和 sandwich assay 是什么。
+2. 22 kDa、11 kDa 和 Cys322 如何形成抗原片段假设。
+3. framework 和 CDR 分别做什么。
+4. 为什么生成时必须遮罩已知的六 CDR。
+5. 运行代码，看 5120 个模拟候选如何通过漏斗。
+6. 对比 prospective 和 retrospective 两张表。
+7. 解释为什么已知 Top 2 不能写成盲法发现。
+8. 讨论下一步需要的真实结构模型和实验。
+
+## 12. 最快操作清单
+
+```bash
+cd NFL_AB_design
+python3 --version
+python3 scripts/run_nfl_ab_design.py
+python3 -m unittest discover -s tests
+```
+
+然后依次看：
+
+```text
+outputs/workflow_report.md
+outputs/08_screening_funnel.csv
+outputs/09_prospective_candidates.csv
+outputs/10_retrospective_demo_candidates.csv
+outputs/11_sandwich_pair_ranking.csv
+```
+
+最后问自己三个问题：这个数值是 simulated 还是 measured？这个候选是 prospective 还是 retrospective control？这个结论是否还需要真实模型和实验验证？

@@ -1,0 +1,183 @@
+{
+  "schema": "nfl_ab_design.normalized_de_novo_request.v1",
+  "campaign_mode": "paired_Fv_six_CDR_de_novo_design",
+  "execution_state": "not_run",
+  "result_provenance": "adapter_request_only",
+  "antigen": {
+    "protein": "NEFL",
+    "full_sequence": "MSSFSYEPYYSTSYKRRYVETPRVHISSVRSGYSTARSAYSSYSAPVSSSLSVRRSYSSSSGSLMPSLENLDLSQVAAISNDLKSIRTQEKAQLQDLNDRFASFIERVHELEQQNKVLEAELLVLRQKHSEPSRFRALYEQEIRDLRLAAEDATNEKQALQGEREGLEETLRNLQARYEEEVLSREDAEGRLMEARKGADEAALARAELEKRIDSLMDEISFLKKVHEEEIAELQAQIQYAQISVEMDVTKPDLSAALKDIRAQYEKLAAKNMQNAEEWFKSRFTVLTESAAKNTDAVRAAKDEVSESRRLLKAKTLEIEACRGMNEALEKQLQELEDKQNADISAMQDTINKLENELRTTKSEMARYLKEYQDLLNVKMALDIEIAAYRKLLEGEETRLSFTSVGSITSGYSQSSQVFGRSAYGGLQTSSYLMSTRSFPSYYTSHVQEEQIEVEETIEAAKAEEAKDEPPSEGEAEEEEKDKEEAEEEEAAEEEEAAKEESEEAKEEEEGGEGEEGEETKEAEEEEKKVEGAGEEQAAKKKD",
+    "antigen_pdb_path": "",
+    "structure_input_state": "blocked_missing_antigen_pdb"
+  },
+  "epitopes": [
+    {
+      "epitope_id": "helix_surface_323_331",
+      "sequence": "RGMNEALEK",
+      "start_1_based": 323,
+      "end_1_based_inclusive": 331,
+      "candidate_hotspot_residue_indices": [
+        323,
+        324,
+        325,
+        326,
+        327,
+        328,
+        329,
+        330,
+        331
+      ],
+      "selection_basis": "configured_target_epitope"
+    },
+    {
+      "epitope_id": "C_boundary_368_377",
+      "sequence": "YLKEYQDLLN",
+      "start_1_based": 368,
+      "end_1_based_inclusive": 377,
+      "candidate_hotspot_residue_indices": [
+        368,
+        369,
+        370,
+        371,
+        372,
+        373,
+        374,
+        375,
+        376,
+        377
+      ],
+      "selection_basis": "configured_target_epitope"
+    }
+  ],
+  "templates": [
+    {
+      "template_id": "template_7-H11-D3-2-C7",
+      "framework_source_id": "7-H11-D3-2-C7",
+      "template_role": "framework_source_only",
+      "masked_vh": "EVQLQQSVAELVRPGALVKLSCKASXXXXXXXFIHWVKQRPEQGLEWIGWIXXXXXXTIFDPKFRDKATITADTSSNTAYLQLSSLTSEDTAVYYCTRXXXWGQGTTLTVSS",
+      "masked_vl": "DIVMTQSPASQSASLGESVTITCXXXXXXXXXXXWYQQKPGKSPQLLIYXXXXXXXGVPSRFSGSGSGTKFSFKISSLQAEDFVSYYCXXXXXXXXXFGGGTKLEIK",
+      "design_regions": [
+        {
+          "region": "H1",
+          "chain": "VH",
+          "start_1_based": 26,
+          "end_1_based_inclusive": 32,
+          "length_aa": 7
+        },
+        {
+          "region": "H2",
+          "chain": "VH",
+          "start_1_based": 52,
+          "end_1_based_inclusive": 57,
+          "length_aa": 6
+        },
+        {
+          "region": "H3",
+          "chain": "VH",
+          "start_1_based": 99,
+          "end_1_based_inclusive": 101,
+          "length_aa": 3
+        },
+        {
+          "region": "L1",
+          "chain": "VL",
+          "start_1_based": 24,
+          "end_1_based_inclusive": 34,
+          "length_aa": 11
+        },
+        {
+          "region": "L2",
+          "chain": "VL",
+          "start_1_based": 50,
+          "end_1_based_inclusive": 56,
+          "length_aa": 7
+        },
+        {
+          "region": "L3",
+          "chain": "VL",
+          "start_1_based": 89,
+          "end_1_based_inclusive": 97,
+          "length_aa": 9
+        }
+      ],
+      "designed_regions": "H1;H2;H3;L1;L2;L3",
+      "source_sequence_sha256": "e6c6fedbd537cebf3e32da14f0c175d3f8549fff3249bae088381e0fd7b33476"
+    },
+    {
+      "template_id": "template_15-C12-H6",
+      "framework_source_id": "15-C12-H6",
+      "template_role": "framework_source_only",
+      "masked_vh": "DVQLQQSGPGLVKPSQSLSLTCTVTXXXXXXXXAWNWIRQFPGNKLEWMGYIXXXXXTSYRPSLRSRISITRDTSKNQFFLQLNSVTTEDTATYYCATXXXXXXXXXXXWGQGTLVTVSA",
+      "masked_vl": "DIVMTQTPAILSVSPGERVSFSCXXXXXXXXXXXWYQQRTNGSPRLLMKXXXXXXXGIPSRFSGSGSGTDFTLSINSVESEDFADYYCXXXXXXXXXFGGGTKLEIK",
+      "design_regions": [
+        {
+          "region": "H1",
+          "chain": "VH",
+          "start_1_based": 26,
+          "end_1_based_inclusive": 33,
+          "length_aa": 8
+        },
+        {
+          "region": "H2",
+          "chain": "VH",
+          "start_1_based": 53,
+          "end_1_based_inclusive": 57,
+          "length_aa": 5
+        },
+        {
+          "region": "H3",
+          "chain": "VH",
+          "start_1_based": 99,
+          "end_1_based_inclusive": 109,
+          "length_aa": 11
+        },
+        {
+          "region": "L1",
+          "chain": "VL",
+          "start_1_based": 24,
+          "end_1_based_inclusive": 34,
+          "length_aa": 11
+        },
+        {
+          "region": "L2",
+          "chain": "VL",
+          "start_1_based": 50,
+          "end_1_based_inclusive": 56,
+          "length_aa": 7
+        },
+        {
+          "region": "L3",
+          "chain": "VL",
+          "start_1_based": 89,
+          "end_1_based_inclusive": 97,
+          "length_aa": 9
+        }
+      ],
+      "designed_regions": "H1;H2;H3;L1;L2;L3",
+      "source_sequence_sha256": "f54c75e9da2ad406b02f0c9fad303a20bfa3139b10ac6439e12fcef2b6d68ae9"
+    }
+  ],
+  "cdr_annotation": {
+    "annotation_method": "ANARCI 2020.04.23 Chothia",
+    "coordinate_system": "1_based_inclusive_chain_positions",
+    "annotation_evidence_path": "input/antibody_templates/chothia_numbering_evidence.json",
+    "annotation_evidence_sha256": "278e042a9e99a9572381b8ab034e00866014dc09630c945a1e9917b79abc3d2e"
+  },
+  "important_note": "Only framework residues and CDR masks are exported. Known CDR amino-acid identities are not included in this generation request. Translate this normalized request to the checked-out model version.",
+  "run_metadata": {
+    "run_id": "nfl_design_20260813T0549249078480800",
+    "generated_at": "2026-08-13T05:49:24.907848+08:00",
+    "nfl_ab_design_version": "0.2.0",
+    "design_campaign_sha256": "932f45194685a888f33fe932f8dbec0d252860f1ea7fea6e9a289e8a4db8ff09",
+    "workflow_source_sha256": "8aa4550ce5a5ffa625c40cd7beb982288ea423312ec50c62eea93a3db6a9abaf",
+    "design_pipeline_source_sha256": "16cf851a402bb3ddeb193e3230c44bef76c02ffd0b226a663068352696d55029"
+  },
+  "engine": "IgGM",
+  "role": "paired_VH_VL_template_conditioned_generator",
+  "required_external_inputs": [
+    "antigen_pdb_path",
+    "PDB_antigen_chain_sequence",
+    "full_antigen_coordinate_to_PDB_local_position_map",
+    "IgGM_environment_and_checkpoints"
+  ],
+  "adapter_state": "blocked_missing_antigen_pdb_and_runtime"
+}

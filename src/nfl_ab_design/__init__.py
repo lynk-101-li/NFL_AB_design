@@ -1,3 +1,3 @@
-"""NfL antibody design replay workflow."""
+"""NfL epitope-conditioned antibody de novo design workflow."""
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

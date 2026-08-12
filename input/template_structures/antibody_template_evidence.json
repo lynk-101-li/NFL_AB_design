@@ -1,0 +1,577 @@
+{
+  "anarci_tables": [
+    {
+      "path": "input/antibody_templates/nfl_H.csv",
+      "sha256": "ac196c75c9a54fcb22fbdc7a1a7065182e8c0b8ffefeec9876f5afb9c11a8301"
+    },
+    {
+      "path": "input/antibody_templates/nfl_KL.csv",
+      "sha256": "f658144ce39a560db18464f75ae628434fea811780b1fc1638ba19c5d0f7cffc"
+    }
+  ],
+  "annotation_contract": "ANARCI 2020.04.23 Chothia exact campaign CDRs",
+  "execution_state": "blocked_pending_human_review",
+  "fasta": {
+    "path": "validation/experimentally_validated_antibodies.fasta",
+    "sha256": "3cff567d0e508786934b2e294c500dc1cbed249aba32b7b73a274f0250f79833"
+  },
+  "generic_scfv": {
+    "geometry": {
+      "clash_geometry": {
+        "hard_clash_cutoff_angstrom": 1.8,
+        "heavy_atom_count": 1819,
+        "minimum_checked_nonbonded_distance_angstrom": 2.028395,
+        "severe_clash_count": 0
+      },
+      "peptide_geometry": {
+        "bond_count": 241,
+        "hard_reject_window_angstrom": [
+          1.15,
+          1.55
+        ],
+        "ideal_window_angstrom": [
+          1.15,
+          1.55
+        ],
+        "maximum_cn_angstrom": 1.350968,
+        "minimum_cn_angstrom": 1.326052,
+        "outside_ideal": [],
+        "outside_ideal_count": 0,
+        "requires_human_review": false
+      }
+    },
+    "is_standard_GGGGS3": false,
+    "observed_linker": "AGGGGSGGGGSGGGS",
+    "source_artifact_label": "germinal_generic_scfv_refined.pdb",
+    "sha256": "5cf51d5b93d17654f9efd8dde7c488cfd6105964210cdcbe5eeee06511edf58d"
+  },
+  "known_positive_cdr_sequences_used": false,
+  "neutral_anarci_tables": [
+    {
+      "path": "input/antibody_templates/neutral_chothia_H.csv",
+      "sha256": "c895be834c874a5205ccd75b48d5b48285fd15d5942ba5d35abd369258f9e98c"
+    },
+    {
+      "path": "input/antibody_templates/neutral_chothia_KL.csv",
+      "sha256": "4bd5345c086f46ff93d1ca0b80db1fabeb511ddd6fd444d62bc0c5d0a5529803"
+    }
+  ],
+  "numbering_evidence": {
+    "path": "input/antibody_templates/chothia_numbering_evidence.json",
+    "sha256": "278e042a9e99a9572381b8ab034e00866014dc09630c945a1e9917b79abc3d2e"
+  },
+  "preparation_cli_model_or_network_execution_performed": false,
+  "real_model_handoff_authorized": false,
+  "review": {
+    "contracts_acknowledged": false,
+    "reviewed_at": "",
+    "reviewed_by": "",
+    "status": "blocked_pending_human_review"
+  },
+  "schema": "nfl_ab_design.antibody_template_evidence.v1",
+  "templates": {
+    "template_15-C12-H6": {
+      "cdr_chothia_labels": {
+        "H1": [
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31",
+          "31A",
+          "32"
+        ],
+        "H2": [
+          "52",
+          "53",
+          "54",
+          "55",
+          "56"
+        ],
+        "H3": [
+          "95",
+          "96",
+          "97",
+          "98",
+          "99",
+          "100",
+          "100A",
+          "100B",
+          "100C",
+          "101",
+          "102"
+        ],
+        "L1": [
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31",
+          "32",
+          "33",
+          "34"
+        ],
+        "L2": [
+          "50",
+          "51",
+          "52",
+          "53",
+          "54",
+          "55",
+          "56"
+        ],
+        "L3": [
+          "89",
+          "90",
+          "91",
+          "92",
+          "93",
+          "94",
+          "95",
+          "96",
+          "97"
+        ]
+      },
+      "hlt_absolute_pose_indices": {
+        "H1": [
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33
+        ],
+        "H2": [
+          53,
+          54,
+          55,
+          56,
+          57
+        ],
+        "H3": [
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109
+        ],
+        "L1": [
+          144,
+          145,
+          146,
+          147,
+          148,
+          149,
+          150,
+          151,
+          152,
+          153,
+          154
+        ],
+        "L2": [
+          170,
+          171,
+          172,
+          173,
+          174,
+          175,
+          176
+        ],
+        "L3": [
+          209,
+          210,
+          211,
+          212,
+          213,
+          214,
+          215,
+          216,
+          217
+        ]
+      },
+      "hlt_path": "input/template_structures/template_15-C12-H6.exact_chothia.hlt.pdb",
+      "hlt_sha256": "2c6790e06e4cd296bf2dc2958df24460ebbfb648728db99bdda8d0b232535b6c",
+      "neutral_cdr_seeds": {
+        "H1": "GASSTQSA",
+        "H2": "STAGQ",
+        "H3": "SGTQADSGTAY",
+        "L1": "RASQSGTSTLA",
+        "L2": "SASTGAS",
+        "L3": "QQAGTSPAT"
+      },
+      "neutral_vh": "DVQLQQSGPGLVKPSQSLSLTCTVTGASSTQSAAWNWIRQFPGNKLEWMGYISTAGQTSYRPSLRSRISITRDTSKNQFFLQLNSVTTEDTATYYCATSGTQADSGTAYWGQGTLVTVSA",
+      "neutral_vl": "DIVMTQTPAILSVSPGERVSFSCRASQSGTSTLAWYQQRTNGSPRLLMKSASTGASGIPSRFSGSGSGTDFTLSINSVESEDFADYYCQQAGTSPATFGGGTKLEIK",
+      "official_converter_broad_hlt": {
+        "coordinate_identity_to_paired_fv": {
+          "compared_atom_count": 3330,
+          "comparison_key": "chain_and_sequence_order_and_atom_name",
+          "maximum_coordinate_delta_angstrom": 0.0,
+          "numbering_may_be_changed_to_absolute_pose_indices": true,
+          "tolerance_angstrom": 0.002
+        },
+        "source_artifact_label": "template_15-C12-H6_refined_official_broad_HLT.pdb",
+        "remark_counts": {
+          "H1": 11,
+          "H2": 16,
+          "H3": 11,
+          "L1": 11,
+          "L2": 7,
+          "L3": 9
+        },
+        "sha256": "6019423cd7e08eb2e2936b5b5a65f245b8c11c9768c6bd8aa3daa677695f1830"
+      },
+      "official_converter_broad_labels_discarded_and_normalized": true,
+      "output_hlt_remark_counts": {
+        "H1": 8,
+        "H2": 5,
+        "H3": 11,
+        "L1": 11,
+        "L2": 7,
+        "L3": 9
+      },
+      "prepared_scfv_input": {
+        "path": "input/template_structures/template_15-C12-H6.neutral_seed.scfv.pdb",
+        "sha256": "39aca91375bbcbab3547f64bd1f9a12894a6dd60972b219d9b367450d011a395"
+      },
+      "scfv_coordinate_source": "externally_refined_domain_graft",
+      "scfv_metrics": {
+        "external_refinement_input_hash_bound_by_provenance": true,
+        "external_refinement_method_claim_trusted": false,
+        "generic_linker_coordinate_or_identity_changes": [],
+        "generic_linker_observed": "AGGGGSGGGGSGGGS",
+        "geometry_independently_revalidated_by_preparation_cli": true,
+        "linker_is_standard_GGGGS3": false,
+        "linker_sequence": "AGGGGSGGGGSGGGS",
+        "sequence": "DVQLQQSGPGLVKPSQSLSLTCTVTGASSTQSAAWNWIRQFPGNKLEWMGYISTAGQTSYRPSLRSRISITRDTSKNQFFLQLNSVTTEDTATYYCATSGTQADSGTAYWGQGTLVTVSAAGGGGSGGGGSGGGSDIVMTQTPAILSVSPGERVSFSCRASQSGTSTLAWYQQRTNGSPRLLMKSASTGASGIPSRFSGSGSGTDFTLSINSVESEDFADYYCQQAGTSPATFGGGTKLEIK",
+        "source_prepared_scfv_clash_geometry": {
+          "hard_clash_cutoff_angstrom": 1.8,
+          "heavy_atom_count": 1763,
+          "minimum_checked_nonbonded_distance_angstrom": 2.023138,
+          "severe_clash_count": 0
+        },
+        "source_prepared_scfv_peptide_geometry": {
+          "bond_count": 241,
+          "hard_reject_window_angstrom": [
+            1.15,
+            1.55
+          ],
+          "ideal_window_angstrom": [
+            1.15,
+            1.55
+          ],
+          "maximum_cn_angstrom": 1.429031,
+          "minimum_cn_angstrom": 1.324661,
+          "outside_ideal": [],
+          "outside_ideal_count": 0,
+          "requires_human_review": false
+        }
+      },
+      "scfv_path": "input/template_structures/template_15-C12-H6.neutral_seed.scfv.pdb",
+      "scfv_sha256": "39aca91375bbcbab3547f64bd1f9a12894a6dd60972b219d9b367450d011a395",
+      "source_paired_fv_geometry": {
+        "clash_geometry": {
+          "hard_clash_cutoff_angstrom": 1.8,
+          "heavy_atom_count": 1697,
+          "minimum_checked_nonbonded_distance_angstrom": 2.030561,
+          "severe_clash_count": 0
+        },
+        "peptide_geometry": {
+          "H": {
+            "bond_count": 119,
+            "hard_reject_window_angstrom": [
+              1.15,
+              1.55
+            ],
+            "ideal_window_angstrom": [
+              1.15,
+              1.55
+            ],
+            "maximum_cn_angstrom": 1.351579,
+            "minimum_cn_angstrom": 1.3165,
+            "outside_ideal": [],
+            "outside_ideal_count": 0,
+            "requires_human_review": false
+          },
+          "L": {
+            "bond_count": 106,
+            "hard_reject_window_angstrom": [
+              1.15,
+              1.55
+            ],
+            "ideal_window_angstrom": [
+              1.15,
+              1.55
+            ],
+            "maximum_cn_angstrom": 1.350098,
+            "minimum_cn_angstrom": 1.325672,
+            "outside_ideal": [],
+            "outside_ideal_count": 0,
+            "requires_human_review": false
+          }
+        }
+      },
+      "source_paired_fv_hlt_remark_count": 0,
+      "source_paired_fv_pdb": "external_preparation/template_15-C12-H6_refined.pdb",
+      "source_paired_fv_sha256": "96c64b65fc3decf2349469323e78eaba134ef27a15dab51b49244031eb1c04e4"
+    },
+    "template_7-H11-D3-2-C7": {
+      "cdr_chothia_labels": {
+        "H1": [
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31",
+          "32"
+        ],
+        "H2": [
+          "52",
+          "52A",
+          "53",
+          "54",
+          "55",
+          "56"
+        ],
+        "H3": [
+          "95",
+          "101",
+          "102"
+        ],
+        "L1": [
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31",
+          "32",
+          "33",
+          "34"
+        ],
+        "L2": [
+          "50",
+          "51",
+          "52",
+          "53",
+          "54",
+          "55",
+          "56"
+        ],
+        "L3": [
+          "89",
+          "90",
+          "91",
+          "92",
+          "93",
+          "94",
+          "95",
+          "96",
+          "97"
+        ]
+      },
+      "hlt_absolute_pose_indices": {
+        "H1": [
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32
+        ],
+        "H2": [
+          52,
+          53,
+          54,
+          55,
+          56,
+          57
+        ],
+        "H3": [
+          99,
+          100,
+          101
+        ],
+        "L1": [
+          136,
+          137,
+          138,
+          139,
+          140,
+          141,
+          142,
+          143,
+          144,
+          145,
+          146
+        ],
+        "L2": [
+          162,
+          163,
+          164,
+          165,
+          166,
+          167,
+          168
+        ],
+        "L3": [
+          201,
+          202,
+          203,
+          204,
+          205,
+          206,
+          207,
+          208,
+          209
+        ]
+      },
+      "hlt_path": "input/template_structures/template_7-H11-D3-2-C7.exact_chothia.hlt.pdb",
+      "hlt_sha256": "f7980bc2af32497dea1393ec8051b4be9a0abd4b2cb0ccf2d86e2a739bcfb75c",
+      "neutral_cdr_seeds": {
+        "H1": "ASGTQSS",
+        "H2": "GSTASQ",
+        "H3": "GST",
+        "L1": "QASSSGTSTLA",
+        "L2": "GASTSAS",
+        "L3": "QQSGTSPRT"
+      },
+      "neutral_vh": "EVQLQQSVAELVRPGALVKLSCKASASGTQSSFIHWVKQRPEQGLEWIGWIGSTASQTIFDPKFRDKATITADTSSNTAYLQLSSLTSEDTAVYYCTRGSTWGQGTTLTVSS",
+      "neutral_vl": "DIVMTQSPASQSASLGESVTITCQASSSGTSTLAWYQQKPGKSPQLLIYGASTSASGVPSRFSGSGSGTKFSFKISSLQAEDFVSYYCQQSGTSPRTFGGGTKLEIK",
+      "official_converter_broad_hlt": {
+        "coordinate_identity_to_paired_fv": {
+          "compared_atom_count": 3233,
+          "comparison_key": "chain_and_sequence_order_and_atom_name",
+          "maximum_coordinate_delta_angstrom": 0.0,
+          "numbering_may_be_changed_to_absolute_pose_indices": true,
+          "tolerance_angstrom": 0.002
+        },
+        "source_artifact_label": "template_7-H11-D3-2-C7_refined_official_broad_HLT.pdb",
+        "remark_counts": {
+          "H1": 10,
+          "H2": 17,
+          "H3": 3,
+          "L1": 11,
+          "L2": 7,
+          "L3": 9
+        },
+        "sha256": "09fa4106b67c669764c74368a6b49dc89619de3f17c18451a6fe722ec6d60545"
+      },
+      "official_converter_broad_labels_discarded_and_normalized": true,
+      "output_hlt_remark_counts": {
+        "H1": 7,
+        "H2": 6,
+        "H3": 3,
+        "L1": 11,
+        "L2": 7,
+        "L3": 9
+      },
+      "prepared_scfv_input": {
+        "path": "input/template_structures/template_7-H11-D3-2-C7.neutral_seed.scfv.pdb",
+        "sha256": "47f81500c6dd8260b856157ac70bd30561e75cbb78af14d1f84cbcd468cf61b2"
+      },
+      "scfv_coordinate_source": "externally_refined_domain_graft",
+      "scfv_metrics": {
+        "external_refinement_input_hash_bound_by_provenance": true,
+        "external_refinement_method_claim_trusted": false,
+        "generic_linker_coordinate_or_identity_changes": [],
+        "generic_linker_observed": "AGGGGSGGGGSGGGS",
+        "geometry_independently_revalidated_by_preparation_cli": true,
+        "linker_is_standard_GGGGS3": false,
+        "linker_sequence": "AGGGGSGGGGSGGGS",
+        "sequence": "EVQLQQSVAELVRPGALVKLSCKASASGTQSSFIHWVKQRPEQGLEWIGWIGSTASQTIFDPKFRDKATITADTSSNTAYLQLSSLTSEDTAVYYCTRGSTWGQGTTLTVSSAGGGGSGGGGSGGGSDIVMTQSPASQSASLGESVTITCQASSSGTSTLAWYQQKPGKSPQLLIYGASTSASGVPSRFSGSGSGTKFSFKISSLQAEDFVSYYCQQSGTSPRTFGGGTKLEIK",
+        "source_prepared_scfv_clash_geometry": {
+          "hard_clash_cutoff_angstrom": 1.8,
+          "heavy_atom_count": 1702,
+          "minimum_checked_nonbonded_distance_angstrom": 2.016207,
+          "severe_clash_count": 0
+        },
+        "source_prepared_scfv_peptide_geometry": {
+          "bond_count": 233,
+          "hard_reject_window_angstrom": [
+            1.15,
+            1.55
+          ],
+          "ideal_window_angstrom": [
+            1.15,
+            1.55
+          ],
+          "maximum_cn_angstrom": 1.349756,
+          "minimum_cn_angstrom": 1.320559,
+          "outside_ideal": [],
+          "outside_ideal_count": 0,
+          "requires_human_review": false
+        }
+      },
+      "scfv_path": "input/template_structures/template_7-H11-D3-2-C7.neutral_seed.scfv.pdb",
+      "scfv_sha256": "47f81500c6dd8260b856157ac70bd30561e75cbb78af14d1f84cbcd468cf61b2",
+      "source_paired_fv_geometry": {
+        "clash_geometry": {
+          "hard_clash_cutoff_angstrom": 1.8,
+          "heavy_atom_count": 1636,
+          "minimum_checked_nonbonded_distance_angstrom": 2.023351,
+          "severe_clash_count": 0
+        },
+        "peptide_geometry": {
+          "H": {
+            "bond_count": 111,
+            "hard_reject_window_angstrom": [
+              1.15,
+              1.55
+            ],
+            "ideal_window_angstrom": [
+              1.15,
+              1.55
+            ],
+            "maximum_cn_angstrom": 1.352072,
+            "minimum_cn_angstrom": 1.319146,
+            "outside_ideal": [],
+            "outside_ideal_count": 0,
+            "requires_human_review": false
+          },
+          "L": {
+            "bond_count": 106,
+            "hard_reject_window_angstrom": [
+              1.15,
+              1.55
+            ],
+            "ideal_window_angstrom": [
+              1.15,
+              1.55
+            ],
+            "maximum_cn_angstrom": 1.349097,
+            "minimum_cn_angstrom": 1.321083,
+            "outside_ideal": [],
+            "outside_ideal_count": 0,
+            "requires_human_review": false
+          }
+        }
+      },
+      "source_paired_fv_hlt_remark_count": 0,
+      "source_paired_fv_pdb": "external_preparation/template_7-H11-D3-2-C7_refined.pdb",
+      "source_paired_fv_sha256": "a9ea41c51f60150c99f70d47e5f1e4b25b1bc3591a236faf23fcd4121f644291"
+    }
+  },
+  "upstream_coordinate_generation_provenance": {
+    "input_hashes_verified": true,
+    "model_claims_trusted_by_preparation_cli": false,
+    "path": "input/antibody_templates/template_coordinate_generation_provenance.json",
+    "schema": "nfl_ab_design.template_coordinate_generation_provenance.v1",
+    "sha256": "28e27c2a736042484805d8aeed717010a3876099c2773c39edffb6d46d6b583d"
+  }
+}

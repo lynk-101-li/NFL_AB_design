@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "upstream_metadata_checked_at": "2026-08-13",
+  "policy": {
+    "execution_mode": "separate_environment_per_model",
+    "max_parallel_gpu_jobs": 1,
+    "start_with_smoke_test": true,
+    "require_explicit_target_residue_mapping": true,
+    "require_version_checkpoint_and_command_manifest": true,
+    "simulation_values_must_never_be_relabeled_as_real_model_outputs": true
+  },
+  "backends": [
+    {
+      "name": "RFantibody",
+      "role": "primary_structure_conditioned_paired_Fv_generator",
+      "repository": "https://github.com/RosettaCommons/RFantibody",
+      "revision": "8fe311415754e0276d1a39c87c57e69c88927a2d",
+      "upstream_version": "1.0.0",
+      "license": "MIT",
+      "environment_name": "rfantibody",
+      "runtime_stack": "Python 3.10; PyTorch 2.3; CUDA 11.8",
+      "pipeline": ["rfdiffusion", "proteinmpnn", "rf2"],
+      "required_inputs": [
+        "antigen_coordinate_PDB",
+        "per_template_Chothia_HLT_PDB",
+        "full_antigen_coordinate_to_PDB_residue_map",
+        "curated_PDB_hotspots"
+      ],
+      "designed_regions": ["H1", "H2", "H3", "L1", "L2", "L3"],
+      "smoke_scale": "2 backbones x 1 sequence per structure for one template-epitope job"
+    },
+    {
+      "name": "IgGM",
+      "role": "paired_VH_VL_masked_template_generator",
+      "repository": "https://github.com/TencentAI4S/IgGM",
+      "revision": "06abc563b3fc8c7ea020543add16b69b6f8a1c8d",
+      "license": "MIT",
+      "environment_name": "iggm",
+      "runtime_stack": "Python 3.10.14; PyTorch 2.0.1; CUDA 11.7",
+      "estimated_checkpoint_download_gb": 3.3,
+      "required_inputs": [
+        "masked_H_and_L_FASTA",
+        "antigen_coordinate_PDB",
+        "PDB_chain_sequence",
+        "full_antigen_coordinate_to_PDB_local_position_map"
+      ],
+      "designed_regions": ["H1", "H2", "H3", "L1", "L2", "L3"],
+      "smoke_scale": "1 sample x 1 denoising step for one template-epitope job"
+    },
+    {
+      "name": "Germinal",
+      "role": "parallel_epitope_conditioned_scFv_generator",
+      "repository": "https://github.com/SantiagoMille/germinal",
+      "revision": "1e1c1a5b79884ae45abae030c9df90d9423a990a",
+      "upstream_last_user_validated_revision": "2c0a13b",
+      "license": "Apache-2.0 for repository code; PyRosetta and optional model dependencies have separate terms",
+      "environment_name": "germinal",
+      "runtime_stack": "Python 3.10; JAX GPU; CUDA 12+ recommended",
+      "hardware_note": "40GB+ VRAM and 50GB+ result storage recommended upstream; larger targets may need 60GB+ VRAM",
+      "required_inputs": [
+        "antigen_coordinate_PDB",
+        "per_template_single_chain_scFv_coordinate_PDB",
+        "full_antigen_coordinate_to_PDB_residue_map",
+        "curated_PDB_hotspots"
+      ],
+      "geometry": "single-chain VH-linker-VL scFv; not native paired-Fv geometry",
+      "smoke_structure_backend": "chai",
+      "smoke_scale": "1 trajectory and 1 passing design for one template-epitope job"
+    }
+  ],
+  "autodl": {
+    "topic_slug": "nfl-antibody-design",
+    "recommended_system_disk_total_gb": 80,
+    "minimum_free_system_disk_before_bootstrap_gb": 35,
+    "reason": "Keep the conflicting environments on the system disk, but place checkpoints, model parameters, results, and rebuildable package caches on the 200GB file store. Thirty-five GB free is a conservative bootstrap gate; 60-80GB total is normally sufficient for this server layout.",
+    "formal_results_root": "/root/autodl-fs/topics/nfl-antibody-design/runs",
+    "scratch_root": "/root/autodl-tmp/nfl-antibody-design",
+    "shared_model_root": "/root/autodl-fs/shared/models",
+    "apps_root": "/root/apps",
+    "workspace_root": "/root/workspace/NFL_AB_design",
+    "student_install_state": "not_assumed; every server must pass its own preflight and runtime verification"
+  }
+}

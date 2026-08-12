@@ -1,0 +1,23 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install local package
+        run: python -m pip install -e .
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+      - name: Validate deployment shell
+        run: bash -n deploy/autodl/preflight.sh deploy/autodl/bootstrap_models.sh

@@ -1,131 +1,120 @@
-# NfL 抗体设计计算流程报告
+# NfL 抗体从头设计与回顾性对照演示报告
 
-生成日期：2026-07-08
+运行时间：`2026-08-13T05:49:24.907848+08:00`
 
-## 1. 输入材料
+> **证据边界：** 本次生成、结构/界面、可开发性和 sandwich 数值均为确定性 `simulated proxy`。
+> RFantibody、IgGM、Germinal、tFold 及后续结构工具均未在本次运行中执行。
+> 两株已知抗体在前瞻排名完成后才以 `retrospective_positive_control` 注入；其 Top 2 不是盲法从头发现。
 
-- 故事线：`resources/project_context/storyline.txt`
-- 研究计划：`resources/project_context/research_plan.txt`
-- 抗原推断目录：`resources/antigen_inference`
-- 已验证抗体 FASTA：`validation/experimentally_validated_antibodies.fasta`
+## 1. 输入与设计边界
 
-本流程先执行 NfL 抗原截断推断，再进入表位、抗体和 sandwich pair 计算。当前工作假设是 NfL rod/coil-2B 的 aa 280-377 附近片段包含 Cys322，并形成二硫键同源二聚体。
+- 抗原推断资源：`resources/antigen_inference`
+- 设计 campaign：`config/design_campaign.json`
+- 回顾性阳性对照：`validation/experimentally_validated_antibodies.fasta`
 
-## 2. 计算模块
+工作抗原采用 NfL rod/coil-2B 的 aa280–377 单链单体上下文；设计热点不包含 Cys322，也不要求抗体接触半胱氨酸。两株已知抗体只在生成轨道中提供两个不同的配对 VH/VL framework；H1/H2/H3/L1/L2/L3 全部遮罩并重新设计。已知 CDR 氨基酸和完整已知 VH/VL 不作为 prospective generation feature。
 
-1. 抗原截断推断：对 NfL 全长逐肽键进行 cathepsin-like 打分，并按 Cys322 + 22 kDa 二硫键二聚体约束枚举片段。
-2. 抗原结构可靠性分层：用 rod/coil-2B 区域和截断推断结果定义 NfL aa 280-377 的优先抗原上下文。
-3. NfL 特异性表位图谱：在候选片段内生成边界/Cys322/滑窗表位，并用暴露度、带电性、rod 稳定性和 PTM 风险代理指标打分。
-4. 抗体序列建模准备：解析 VH/VL，做启发式 CDR 注释和 developability 体检。
-5. 计算复现筛选：把两株真实抗体和 CDR 扰动阴性候选放在同一评分体系下排序。
-6. Sandwich pair 兼容性：对两株真实抗体做 pair-aware 表位分配，计算表位重叠、线性距离和 clash 代理指标。
-7. 外部结构工具衔接：导出 Fv/抗原复合物 FASTA、AF3-style JSON、job table 和 shell 任务模板。
+CDR 坐标由 `ANARCI 2020.04.23 Chothia` 编号后映射到链内 1-based inclusive raw 坐标；模拟生成和真实模型请求共用同一组精确遮罩。编号 labels、工具版本与输入哈希见 `input/antibody_templates/chothia_numbering_evidence.json`。
 
-## 3. 抗原截断推断
+## 2. 抗原截断与表位
 
-- 全长 NfL 肽键打分数：`542`。
-- 中高优先级 cathepsin-like 切点数：`87`。
-- 满足 Cys322 + 22 kDa 二硫键二聚体约束的候选片段数：`571`。
-- 详细报告：`00_antigen_truncation_report.md`。
-
-|fragment|length_aa|monomer_avg_mass_kDa|disulfide_homodimer_avg_mass_kDa|N_terminal_cut|C_terminal_cut|combined_boundary_score|mass_error_from_22kDa|
-|---|---|---|---|---|---|---|---|
-|280-375|96|11.041|22.081|W279\|F280|L375\|L376|10.2|0.081|
-|282-377|96|10.993|21.984|K281\|S282|N377\|V378|8.4|0.016|
-|281-376|96|11.007|22.013|F280\|K281|L376\|N377|7.3|0.013|
-|280-374|95|10.928|21.854|W279\|F280|D374\|L375|8.7|0.146|
-|280-376|97|11.154|22.307|W279\|F280|L376\|N377|8.9|0.307|
-|281-375|95|10.894|21.786|F280\|K281|L375\|L376|8.6|0.214|
-|282-376|95|10.879|21.756|K281\|S282|L376\|N377|8.6|0.244|
-|282-375|94|10.766|21.53|K281\|S282|L375\|L376|9.9|0.47|
-
-## 4. 抗原片段优先级
-
-|antigen_rank|fragment|length_aa|disulfide_homodimer_avg_mass_kDa|combined_boundary_score|N_terminal_cut|C_terminal_cut|antigen_confidence_score|
-|---|---|---|---|---|---|---|---|
-|1|280-375|96|22.081|10.2|W279\|F280|L375\|L376|98.25|
-|2|282-377|96|21.984|8.4|K281\|S282|N377\|V378|93.96|
-|3|281-376|96|22.013|7.3|F280\|K281|L376\|N377|90.77|
-|4|272-367|96|21.98|8.9|K271\|N272|R367\|Y368|87.37|
-|5|272-368|97|22.307|9.8|K271\|N272|Y368\|L369|86.08|
-|6|298-392|95|22.031|8.6|A297\|V298|L392\|L393|85.82|
-|7|273-368|96|22.079|8.6|N272\|M273|Y368\|L369|85.57|
-|8|269-365|97|22.067|8.3|L268\|A269|M365\|A366|85.38|
-
-## 5. 候选表位窗口
+- 全长 NfL 肽键 proxy：`542`
+- 中高优先级 cathepsin-like 切点：`87`
+- 约束内候选截断片段：`571`
+- 生化截断排序第一名：`NEFL 280-375`
+- 覆盖全部配置表位的建模上下文：`NEFL 280-377`
 
 |epitope_rank|epitope_id|start|end|sequence|epitope_priority_score|notes|
 |---|---|---|---|---|---|---|
-|1|Cys322_anchor_316_331|316|331|TLEIEACRGMNEALEK|79.76|contains Cys322 disulfide-anchor region; acidic surface proxy favors basic antibody contacts|
-|2|C_boundary_368_377|368|377|YLKEYQDLLN|79.58|near inferred C-terminal cathepsin boundary; hydrophobic/coiled-coil contact proxy|
-|3|Cys322_core_319_327|319|327|IEACRGMNE|79.37|contains Cys322 disulfide-anchor region|
-|4|N_boundary_279_290|279|290|WFKSRFTVLTES|78.17|near inferred N-terminal cathepsin boundary|
-|5|N_boundary_280_291|280|291|FKSRFTVLTESA|77.84|near inferred N-terminal cathepsin boundary|
-|6|sliding_320_331|320|331|EACRGMNEALEK|77.34|contains Cys322 disulfide-anchor region; sliding-window candidate|
-|7|sliding_312_323|312|323|LKAKTLEIEACR|77.09|contains Cys322 disulfide-anchor region; hydrophobic/coiled-coil contact proxy; sliding-window candidate|
-|8|sliding_364_375|364|375|EMARYLKEYQDL|76.9|near inferred C-terminal cathepsin boundary; hydrophobic/coiled-coil contact proxy; sliding-window candidate|
-|9|sliding_316_327|316|327|TLEIEACRGMNE|76.75|contains Cys322 disulfide-anchor region; acidic surface proxy favors basic antibody contacts; sliding-window candidate|
-|10|sliding_280_291|280|291|FKSRFTVLTESA|74.84|near inferred N-terminal cathepsin boundary; sliding-window candidate|
-|11|sliding_352_363|352|363|NKLENELRTTKS|73.78|sliding-window candidate|
-|12|sliding_360_371|360|371|TTKSEMARYLKE|72.96|near inferred C-terminal cathepsin boundary; sliding-window candidate|
+|1|C_boundary_368_377|368|377|YLKEYQDLLN|79.58|near inferred C-terminal cathepsin boundary; hydrophobic/coiled-coil contact proxy|
+|2|N_boundary_279_290|279|290|WFKSRFTVLTES|78.17|near inferred N-terminal cathepsin boundary|
+|3|N_boundary_280_291|280|291|FKSRFTVLTESA|77.84|near inferred N-terminal cathepsin boundary|
+|4|sliding_320_331|320|331|EACRGMNEALEK|77.34|sliding-window candidate|
+|5|sliding_312_323|312|323|LKAKTLEIEACR|77.09|hydrophobic/coiled-coil contact proxy; sliding-window candidate|
+|6|sliding_364_375|364|375|EMARYLKEYQDL|76.9|near inferred C-terminal cathepsin boundary; hydrophobic/coiled-coil contact proxy; sliding-window candidate|
+|7|sliding_316_327|316|327|TLEIEACRGMNE|76.75|acidic surface proxy favors basic antibody contacts; sliding-window candidate|
+|8|Cys322_core_319_327|319|327|IEACRGMNE|76.37||
 
-## 6. 已验证抗体序列体检
+## 3. 双模板、六 CDR 与模拟生成
 
-|antibody_id|HCDR3_proxy|LCDR3_proxy|n_glyco_risk_notes|hydrophobic_patch_proxy|developability_score|
+|template_id|framework_source_antibody_id|template_role|design_regions|known_cdr_sequences_used_for_generation|data_status|
 |---|---|---|---|---|---|
-|7-H11-D3-2-C7|TRKDY|LQLYSTPLT|none|0.222|92.0|
-|15-C12-H6|ATSLLRLRDWFPY|QQTNTWPYT|VH:57:NTS:CDR;VL:41:NGS:FR|0.23|69.87|
+|template_7-H11-D3-2-C7|7-H11-D3-2-C7|framework_source_only|H1;H2;H3;L1;L2;L3|False|derived_input|
+|template_15-C12-H6|15-C12-H6|framework_source_only|H1;H2;H3;L1;L2;L3|False|derived_input|
 
-## 7. 计算复现排序
+本地 proxy 生成 `5120` 个 prospective candidates。这不是 RFantibody、IgGM 或 Germinal 的实际生成量。
 
-真实抗体在包含 CDR 扰动 decoy 的候选库中的排名：
+## 4. 分步筛选漏斗
 
-|rank|candidate_id|best_epitope_id|binding_confidence_score|developability_score|total_rank_score|top_tier|
-|---|---|---|---|---|---|---|
-|1|7-H11-D3-2-C7|C_boundary_368_377|74.77|92.0|81.55|yes|
-|2|15-C12-H6|Cys322_anchor_316_331|79.99|69.87|81.32|yes|
-
-Top 10 候选：
-
-|rank|candidate_id|experimental_status|best_epitope_id|binding_confidence_score|developability_score|off_target_penalty_proxy|total_rank_score|
+|stage_order|stage|metric|threshold|input_count|pass_count|removed_count|data_status|
 |---|---|---|---|---|---|---|---|
-|1|7-H11-D3-2-C7|validated|C_boundary_368_377|74.77|92.0|0.0|81.55|
-|2|15-C12-H6|validated|Cys322_anchor_316_331|79.99|69.87|3.0|81.32|
-|3|15-C12-H6-cdr-perturb-14|in_silico_decoy|Cys322_anchor_316_331|75.04|69.75|3.6|78.25|
-|4|7-H11-D3-2-C7-cdr-perturb-14|in_silico_decoy|C_boundary_368_377|69.23|92.14|0.6|78.23|
-|5|15-C12-H6-cdr-perturb-01|in_silico_decoy|Cys322_anchor_316_331|73.36|69.75|4.2|76.76|
-|6|15-C12-H6-cdr-perturb-07|in_silico_decoy|Cys322_anchor_316_331|71.4|69.87|3.6|76.52|
-|7|7-H11-D3-2-C7-cdr-perturb-07|in_silico_decoy|C_boundary_368_377|67.58|85.0|3.6|76.34|
-|8|7-H11-D3-2-C7-cdr-perturb-15|in_silico_decoy|C_boundary_368_377|66.7|92.09|1.2|76.33|
-|9|7-H11-D3-2-C7-cdr-perturb-01|in_silico_decoy|C_boundary_368_377|66.1|92.14|1.2|76.05|
-|10|15-C12-H6-cdr-perturb-08|in_silico_decoy|Cys322_anchor_316_331|70.63|69.83|4.2|75.46|
+|1|structure_quality|backbone_confidence_score|58.0|5120|4162|958|simulated|
+|2|antigen_interface|interface_confidence_score|55.0|4162|2147|2015|simulated|
+|3|sequence_developability|developability_score|60.0|2147|1864|283|simulated|
+|4|multi_objective_composite|composite_score|60.0|1864|1341|523|simulated|
+|5|final_export_shortlist|balanced_template_epitope_then_composite_rank|quota_plus_fill_12|1341|12|1329|simulated|
 
-## 8. Sandwich Pair 结论
+`06` 和 `07` 表中的分数均保留 `*_is_simulated=True` 与 `metric_provenance`。
 
-- 抗体 1：`7-H11-D3-2-C7`，表位 `C_boundary_368_377`。
-- 抗体 2：`15-C12-H6`，表位 `Cys322_anchor_316_331`。
-- 表位重叠比例：`0.0`。
-- 线性表位间隔：`36` aa。
-- sandwich 兼容性代理评分：`84.52`。
-- 建议 capture：`7-H11-D3-2-C7`。
-- 建议 detection：`15-C12-H6`。
+## 5. Prospective 分层短名单
 
-## 9. 外部结构工具 Handoff
+`09_prospective_candidates.csv` 不含两株已知阳性全序列。
+最终导出采用 `template × epitope` 分层配额；表中的 `rank` 仍是全局模拟分数排名，不能把入选状态解释为纯全局 Top12。
 
-外部工具输入已经写入：
+|rank|candidate_id|template_id|best_epitope_id|selection_stratum_rank|binding_confidence_score|developability_score|total_rank_score|selection_reason|
+|---|---|---|---|---|---|---|---|---|
+|1|DN-e6e8d7351d0d|template_15-C12-H6|C_boundary_368_377|1|72.65|76.32|72.62|balanced_template_epitope_quota|
+|2|DN-8df6f8cc4294|template_7-H11-D3-2-C7|C_boundary_368_377|1|82.81|67.77|72.44|balanced_template_epitope_quota|
+|3|DN-77576c381425|template_15-C12-H6|C_boundary_368_377|2|72.55|75.97|72.31|balanced_template_epitope_quota|
+|4|DN-a9cf24db579e|template_15-C12-H6|C_boundary_368_377|3|74.2|73.54|72.15|balanced_template_epitope_quota|
+|5|DN-c0d75e927e22|template_7-H11-D3-2-C7|C_boundary_368_377|2|73.9|78.01|72.14|balanced_template_epitope_quota|
+|7|DN-2ea27b071345|template_7-H11-D3-2-C7|C_boundary_368_377|3|73.91|76.35|71.71|balanced_template_epitope_quota|
+|78|DN-db51a6170580|template_7-H11-D3-2-C7|helix_surface_323_331|1|62.53|77.5|68.8|balanced_template_epitope_quota|
+|87|DN-870775f54c72|template_15-C12-H6|helix_surface_323_331|1|61.39|76.55|68.68|balanced_template_epitope_quota|
+|279|DN-98a428e115e9|template_7-H11-D3-2-C7|helix_surface_323_331|2|60.16|75.9|66.44|balanced_template_epitope_quota|
+|318|DN-6d8910dd2d15|template_15-C12-H6|helix_surface_323_331|2|65.54|75.97|66.0|balanced_template_epitope_quota|
+|368|DN-a78bf47c4ea2|template_7-H11-D3-2-C7|helix_surface_323_331|3|67.76|66.29|65.65|balanced_template_epitope_quota|
+|401|DN-9c287784eedf|template_15-C12-H6|helix_surface_323_331|3|60.21|75.21|65.43|balanced_template_epitope_quota|
 
-- `outputs/exports/fasta` for FASTA templates
-- `outputs/exports/af3_json` for AF3-style JSON templates
-- `outputs/exports/external_jobs/pipeline_jobs.tsv` for external pipeline jobs
-- `outputs/exports/external_jobs/run_external_pipelines.sh` for editable command sheet
+## 6. Retrospective 阳性对照 Top 2
 
-当前流程中的以下指标是代理指标，建议由外部结构或实验结果替换：
+已知阳性仅在 prospective ranking 完成后注入，并用明确的回顾性独立证据字段给分。
 
-- Fv/Fab 模型质量：应替换为 IgFold/ABodyBuilder3 的模型质量、CDR loop 收敛性和 VH/VL packing 结果。
-- 复合物可信度：应替换为 AF3/Chai-1/Boltz 的 ipTM、pTM、interface PAE、interface pLDDT、pDockQ/DockQ。
-- 界面物理量：应替换为 buried surface area、Rosetta interface ΔG、shape complementarity、氢键/盐桥和 buried unsatisfied polar atoms。
-- sandwich 空间兼容性：应替换为 Fab1:NfL:Fab2 三元复合物结构的实际 clash、Fab-Fab 最小距离和标记端可及性。
+|rank|candidate_id|control_status|best_epitope_id|independent_evidence_score|independent_evidence_provenance|total_rank_score|
+|---|---|---|---|---|---|---|
+|1|7-H11-D3-2-C7|retrospective_positive_control|helix_surface_323_331|97.0|known_positive_status_retrospective_demo_not_blind_discovery|90.08|
+|2|15-C12-H6|retrospective_positive_control|C_boundary_368_377|94.0|known_positive_status_retrospective_demo_not_blind_discovery|88.75|
 
-## 10. 方法学边界
+## 7. Sandwich pair 模拟优先级
 
-本流程用于计算复现、候选排序和外部结构预测输入准备。候选库中的扰动序列、表位分配和多目标评分均为确定性代理计算；正式结论应结合真实结构建模、亲和力测定、交叉反应性实验和 sandwich assay 数据。
+- Top pair：`7-H11-D3-2-C7` + `15-C12-H6`
+- 表位重叠：`0.0`
+- 线性间隔：`36` aa
+- 兼容性 proxy：`96.43`
+- 建议 capture/detection：`7-H11-D3-2-C7` / `15-C12-H6`
+
+|pair_rank|antibody_1|antibody_2|epitope_overlap_ratio|linear_epitope_gap_aa|sandwich_compatibility_score|data_status|claim_scope|
+|---|---|---|---|---|---|---|---|
+|1|7-H11-D3-2-C7|15-C12-H6|0.0|36|96.43|simulated|retrospective_demo|
+|2|7-H11-D3-2-C7|DN-e6e8d7351d0d|0.0|36|88.38|simulated|retrospective_demo|
+|3|7-H11-D3-2-C7|DN-c0d75e927e22|0.0|36|88.32|simulated|retrospective_demo|
+|4|7-H11-D3-2-C7|DN-77576c381425|0.0|36|88.26|simulated|retrospective_demo|
+|5|7-H11-D3-2-C7|DN-2ea27b071345|0.0|36|88.09|simulated|retrospective_demo|
+|6|7-H11-D3-2-C7|DN-a9cf24db579e|0.0|36|88.08|simulated|retrospective_demo|
+|7|7-H11-D3-2-C7|DN-9e5c3708b2c2|0.0|36|87.98|simulated|retrospective_demo|
+|8|7-H11-D3-2-C7|DN-80ac0338f825|0.0|36|87.88|simulated|retrospective_demo|
+
+## 8. 真实模型 Handoff
+
+已产生六 CDR 遮罩模板与 RFantibody/IgGM/Germinal 规范化请求，但当前缺少经验证的抗原 PDB、坐标映射、模型 runtime 和 checkpoint，所以保持 `not_run/blocked` 状态。Germinal 是独立 scFv 轨道，不视为 native paired-Fv 结果。
+
+- 遮罩模板：`outputs/exports/fasta/design_templates_six_cdr_masked.fasta`
+- 请求索引：`outputs/exports/design_requests/design_request_index.json`
+- job table：`outputs/exports/external_jobs/pipeline_jobs.tsv`
+- command sheet：`outputs/exports/external_jobs/run_external_pipelines.sh`
+
+## 9. 下一步才能取代 proxy 的证据
+
+- RFantibody/IgGM/Germinal 真实生成结果、日志、版本和 checkpoint。
+- Fv/Fab 结构质量、复合物 PAE/ipTM/pTM/DockQ、埋藏表面积和界面能量。
+- 亲和力、特异性、交叉反应、可开发性和 sandwich assay 实验。

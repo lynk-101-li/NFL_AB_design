@@ -1,8 +1,8 @@
-"""Reproducible NfL antibody design workflow.
+"""Reproducible NfL epitope-conditioned antibody design workflow.
 
 This module converts the repository project context, antigen-inference
 resources, design constraints, and validation antibodies into an executable
-computational replay pipeline. It intentionally uses only the Python standard
+de novo design simulation and real-model handoff. It intentionally uses the Python standard
 library so it can run in a clean workspace without structure-prediction
 dependencies.
 
@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import random
@@ -22,9 +23,12 @@ import re
 import shutil
 from collections import Counter
 from dataclasses import dataclass
+from datetime import datetime
+from itertools import combinations
 from pathlib import Path
 from typing import Any, Iterable
 
+from . import __version__ as PACKAGE_VERSION
 
 SCRIPT_PATH = Path(__file__).resolve()
 PACKAGE_ROOT = SCRIPT_PATH.parents[2]
@@ -43,8 +47,10 @@ TRUNCATION_CONSTRAINTS_PATH = PACKAGE_ROOT / "input" / "antigen_truncation" / "t
 ANTIBODY_TEMPLATE_FASTA_PATH = PACKAGE_ROOT / "input" / "antibody_templates" / "template_fv_backgrounds.fasta"
 CONFIG_DIR = PACKAGE_ROOT / "config"
 EXTERNAL_PIPELINE_CONFIG_PATH = CONFIG_DIR / "external_pipelines.example.json"
+DESIGN_CAMPAIGN_CONFIG_PATH = CONFIG_DIR / "design_campaign.json"
 OUTPUT_DIR = PACKAGE_ROOT / "outputs"
 EXPORT_DIR = OUTPUT_DIR / "exports"
+REAL_RUNS_DIR = PACKAGE_ROOT / "real_runs"
 
 
 AA_HYDROPATHY = {
@@ -103,6 +109,7 @@ ACIDIC = set("DE")
 CANONICAL_AA = "ACDEFGHIKLMNPQRSTVWY"
 MUTATION_AA = "ADEGIKLNQRSTVY"
 CYS322_POSITION = 322
+SUPPORTED_CDR_ANNOTATION_METHOD = "ANARCI 2020.04.23 Chothia"
 
 
 @dataclass(frozen=True)
@@ -138,8 +145,51 @@ def clamp(value: float, low: float = 0.0, high: float = 1.0) -> float:
 
 
 def ensure_clean_output_dir() -> None:
-    if OUTPUT_DIR.exists():
-        shutil.rmtree(OUTPUT_DIR)
+    """Remove only reproducible proxy artifacts and preserve real-run data.
+
+    Real model handoffs/results must live under ``real_runs/``.  This routine
+    nevertheless uses an allowlist instead of deleting ``outputs/`` wholesale,
+    so a misplaced external artifact is not silently destroyed.
+    """
+
+    reproducible_files = [
+        *OUTPUT_DIR.glob("00_antigen_truncation_*"),
+        *OUTPUT_DIR.glob("01_antigen_fragment_prioritization.csv"),
+        *OUTPUT_DIR.glob("02_epitope_windows.csv"),
+        *OUTPUT_DIR.glob("03_template_frameworks.csv"),
+        *OUTPUT_DIR.glob("03_antibody_developability.csv"),
+        *OUTPUT_DIR.glob("04_backbone_generation.csv"),
+        *OUTPUT_DIR.glob("04_candidate_library.csv"),
+        *OUTPUT_DIR.glob("05_sequence_candidates.csv"),
+        *OUTPUT_DIR.glob("05_candidate_ranking.csv"),
+        *OUTPUT_DIR.glob("06_structure_interface_screen.csv"),
+        *OUTPUT_DIR.glob("06_sandwich_pair_report.md"),
+        *OUTPUT_DIR.glob("07_developability_screen.csv"),
+        *OUTPUT_DIR.glob("08_screening_funnel.csv"),
+        *OUTPUT_DIR.glob("09_prospective_candidates.csv"),
+        *OUTPUT_DIR.glob("10_retrospective_demo_candidates.csv"),
+        *OUTPUT_DIR.glob("11_sandwich_pair_*"),
+        *OUTPUT_DIR.glob("workflow_report.md"),
+    ]
+    for path in reproducible_files:
+        if path.is_file() or path.is_symlink():
+            path.unlink()
+    reproducible_directories = [
+        OUTPUT_DIR / "exports" / "fasta",
+        OUTPUT_DIR / "exports" / "af3_json",
+        OUTPUT_DIR / "exports" / "design_requests",
+        OUTPUT_DIR / "exports" / "external_jobs",
+    ]
+    for directory in reproducible_directories:
+        if directory.exists():
+            shutil.rmtree(directory)
+    for path in (
+        OUTPUT_DIR / "exports" / "external_tool_manifest.json",
+        OUTPUT_DIR / "intermediate" / "source_manifest.json",
+        OUTPUT_DIR / "intermediate" / "run_manifest.json",
+    ):
+        if path.is_file() or path.is_symlink():
+            path.unlink()
     (OUTPUT_DIR / "exports" / "fasta").mkdir(parents=True, exist_ok=True)
     (OUTPUT_DIR / "exports" / "af3_json").mkdir(parents=True, exist_ok=True)
     (OUTPUT_DIR / "intermediate").mkdir(parents=True, exist_ok=True)
@@ -256,7 +306,7 @@ def write_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str] | No
                     keys.append(key)
         fieldnames = keys
     with path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         for row in rows:
             writer.writerow({key: row.get(key, "") for key in fieldnames})
@@ -265,6 +315,19 @@ def write_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str] | No
 def write_json(path: Path, data: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def sha256_json(data: Any) -> str:
+    payload = json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
 def parse_range(fragment: str) -> tuple[int, int]:
@@ -754,7 +817,7 @@ def epitope_score(sequence: str, start: int, end: int, label: str) -> dict[str, 
         anchor_boost += 0.35
     if any(abs(start - cut) <= 2 or abs(end - cut) <= 2 for cut in (279, 280, 281, 282, 375, 376, 377)):
         anchor_boost += 0.25
-    if "boundary" in label or "Cys322" in label:
+    if "boundary" in label or "helix_surface" in label:
         anchor_boost += 0.15
     anchor_score = clamp(0.35 + anchor_boost)
 
@@ -788,8 +851,8 @@ def epitope_score(sequence: str, start: int, end: int, label: str) -> dict[str, 
 
 def epitope_notes(start: int, end: int, net_charge: float, hydrophobic: float, label: str) -> str:
     notes: list[str] = []
-    if start <= 322 <= end:
-        notes.append("contains Cys322 disulfide-anchor region")
+    if label.startswith("helix_surface"):
+        notes.append("structure-reviewed monomer alpha-helical surface")
     if start <= 282 and end >= 279:
         notes.append("near inferred N-terminal cathepsin boundary")
     if start <= 377 and end >= 368:
@@ -809,7 +872,7 @@ def build_epitope_windows(full_sequence: str, primary_fragment: str) -> list[dic
     anchors = [
         ("N_boundary_279_290", 279, 290),
         ("N_boundary_280_291", 280, 291),
-        ("Cys322_anchor_316_331", 316, 331),
+        ("helix_surface_323_331", 323, 331),
         ("Cys322_core_319_327", 319, 327),
         ("C_boundary_368_377", 368, 377),
         ("C_boundary_369_380", 369, 380),
@@ -1249,6 +1312,275 @@ def write_fasta(path: Path, records: list[tuple[str, str]]) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def mask_antibody_cdrs(antibody: Antibody) -> dict[str, Any]:
+    """Return framework-only VH/VL templates with all six proxy CDRs masked."""
+
+    aliases = {
+        "HCDR1_proxy": "H1",
+        "HCDR2_proxy": "H2",
+        "HCDR3_proxy": "H3",
+        "LCDR1_proxy": "L1",
+        "LCDR2_proxy": "L2",
+        "LCDR3_proxy": "L3",
+    }
+    masked = {"VH": list(antibody.vh), "VL": list(antibody.vl)}
+    regions: list[dict[str, Any]] = []
+    for cdr in annotate_cdrs(antibody.vh, antibody.vl):
+        for index in range(cdr.start - 1, cdr.end):
+            masked[cdr.chain][index] = "X"
+        regions.append(
+            {
+                "region": aliases[cdr.name],
+                "chain": cdr.chain,
+                "start_1_based": cdr.start,
+                "end_1_based_inclusive": cdr.end,
+                "length_aa": cdr.end - cdr.start + 1,
+            }
+        )
+    regions.sort(key=lambda row: ("HL".index(str(row["chain"])[1]), int(row["start_1_based"])))
+    source_digest = hashlib.sha256(f"{antibody.vh}|{antibody.vl}".encode("ascii")).hexdigest()
+    return {
+        "template_id": f"template_{antibody.antibody_id}",
+        "framework_source_id": antibody.antibody_id,
+        "template_role": "framework_source_only",
+        "masked_vh": "".join(masked["VH"]),
+        "masked_vl": "".join(masked["VL"]),
+        "design_regions": regions,
+        "designed_regions": "H1;H2;H3;L1;L2;L3",
+        "source_sequence_sha256": source_digest,
+    }
+
+
+def prepared_template_request_rows(
+    prepared_rows: list[dict[str, Any]],
+    antibodies: list[Antibody],
+) -> list[dict[str, Any]]:
+    """Translate the exact pipeline masks into normalized adapter templates."""
+
+    source_by_id = {antibody.antibody_id: antibody for antibody in antibodies}
+    result: list[dict[str, Any]] = []
+    expected_regions = ("H1", "H2", "H3", "L1", "L2", "L3")
+    for row in prepared_rows:
+        source_id = str(row["framework_source_antibody_id"])
+        if source_id not in source_by_id:
+            raise ValueError(f"Prepared template refers to unknown framework source: {source_id}")
+        region_map = row.get("region_coordinates_json")
+        if isinstance(region_map, str):
+            region_map = json.loads(region_map)
+        if not isinstance(region_map, dict) or set(region_map) != set(expected_regions):
+            raise ValueError(f"Prepared template {row.get('template_id')} must contain all six CDR ranges")
+        regions: list[dict[str, Any]] = []
+        for name in expected_regions:
+            spec = region_map[name]
+            chain = str(spec["chain"])
+            start = int(spec["start"])
+            end = int(spec["end"])
+            regions.append(
+                {
+                    "region": name,
+                    "chain": chain,
+                    "start_1_based": start,
+                    "end_1_based_inclusive": end,
+                    "length_aa": end - start + 1,
+                }
+            )
+        source = source_by_id[source_id]
+        result.append(
+            {
+                "template_id": str(row["template_id"]),
+                "framework_source_id": source_id,
+                "template_role": "framework_source_only",
+                "masked_vh": str(row["vh_framework_masked"]),
+                "masked_vl": str(row["vl_framework_masked"]),
+                "design_regions": regions,
+                "designed_regions": ";".join(expected_regions),
+                "source_sequence_sha256": hashlib.sha256(
+                    f"{source.vh}|{source.vl}".encode("ascii")
+                ).hexdigest(),
+            }
+        )
+    if len(result) < 2:
+        raise ValueError("Real-model requests require at least two prepared framework templates")
+    return result
+
+
+def _configured_epitope_ids(config: dict[str, Any]) -> list[str]:
+    raw = config.get("target_epitopes")
+    if raw is None:
+        raw = config.get("epitopes", [])
+    if isinstance(raw, dict):
+        raw = raw.get("targets", raw.get("ids", []))
+    ids: list[str] = []
+    if isinstance(raw, list):
+        for item in raw:
+            if isinstance(item, str):
+                ids.append(item)
+            elif isinstance(item, dict):
+                value = item.get("epitope_id", item.get("id", ""))
+                if value:
+                    ids.append(str(value))
+    if not ids:
+        raise ValueError("Design campaign must configure at least one target epitope")
+    if len(ids) != len(set(ids)):
+        raise ValueError("Design campaign target epitope IDs must be unique")
+    return ids
+
+
+def export_de_novo_model_requests(
+    templates: list[Antibody],
+    epitope_rows: list[dict[str, Any]],
+    full_sequence: str,
+    design_config: dict[str, Any],
+    *,
+    prepared_template_rows: list[dict[str, Any]] | None = None,
+    run_metadata: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Export normalized, non-executed RFantibody/IgGM/Germinal requests.
+
+    The repository does not contain an antigen structure or model checkpoints.
+    These manifests therefore stop at an explicit blocked/not-run handoff.
+    """
+
+    request_dir = EXPORT_DIR / "design_requests"
+    fasta_dir = EXPORT_DIR / "fasta"
+    request_dir.mkdir(parents=True, exist_ok=True)
+    template_rows = (
+        prepared_template_request_rows(prepared_template_rows, templates)
+        if prepared_template_rows is not None
+        else [mask_antibody_cdrs(antibody) for antibody in templates]
+    )
+
+    configured_ids = _configured_epitope_ids(design_config)
+    by_id = {str(row["epitope_id"]): row for row in epitope_rows}
+    selected = [by_id[item] for item in configured_ids if item in by_id]
+    if not selected:
+        selected = epitope_rows[:2]
+
+    template_fasta = fasta_dir / "design_templates_six_cdr_masked.fasta"
+    fasta_records: list[tuple[str, str]] = []
+    for row in template_rows:
+        fasta_records.extend(
+            [
+                (f"{row['template_id']}|VH|six_CDR_masked", str(row["masked_vh"])),
+                (f"{row['template_id']}|VL|six_CDR_masked", str(row["masked_vl"])),
+            ]
+        )
+    write_fasta(template_fasta, fasta_records)
+
+    epitope_requests = []
+    for row in selected:
+        start = int(row["start"])
+        end = int(row["end"])
+        epitope_requests.append(
+            {
+                "epitope_id": row["epitope_id"],
+                "sequence": row["sequence"],
+                "start_1_based": start,
+                "end_1_based_inclusive": end,
+                "candidate_hotspot_residue_indices": list(range(start, end + 1)),
+                "selection_basis": "configured_target_epitope",
+            }
+        )
+
+    common = {
+        "schema": "nfl_ab_design.normalized_de_novo_request.v1",
+        "campaign_mode": "paired_Fv_six_CDR_de_novo_design",
+        "execution_state": "not_run",
+        "result_provenance": "adapter_request_only",
+        "antigen": {
+            "protein": "NEFL",
+            "full_sequence": full_sequence,
+            "antigen_pdb_path": "",
+            "structure_input_state": "blocked_missing_antigen_pdb",
+        },
+        "epitopes": epitope_requests,
+        "templates": template_rows,
+        "cdr_annotation": _configured_cdr_annotation_metadata(design_config),
+        "important_note": (
+            "Only framework residues and CDR masks are exported. Known CDR amino-acid identities are not "
+            "included in this generation request. Translate this normalized request to the checked-out model version."
+        ),
+        "run_metadata": dict(run_metadata or {}),
+    }
+    engine_specs = [
+        {
+            "engine": "RFantibody",
+            "role": "primary_structure_conditioned_generator",
+            "required_external_inputs": [
+                "antigen_pdb_path",
+                "per_template_Chothia_HLT_PDB",
+                "full_antigen_coordinate_to_PDB_residue_map",
+                "curated_PDB_hotspots",
+                "RFantibody_environment_and_checkpoints",
+            ],
+            "adapter_state": "blocked_missing_antigen_pdb_and_runtime",
+        },
+        {
+            "engine": "IgGM",
+            "role": "paired_VH_VL_template_conditioned_generator",
+            "required_external_inputs": [
+                "antigen_pdb_path",
+                "PDB_antigen_chain_sequence",
+                "full_antigen_coordinate_to_PDB_local_position_map",
+                "IgGM_environment_and_checkpoints",
+            ],
+            "adapter_state": "blocked_missing_antigen_pdb_and_runtime",
+        },
+        {
+            "engine": "Germinal",
+            "role": "parallel_epitope_conditioned_scFv_generator",
+            "required_external_inputs": [
+                "antigen_pdb_path",
+                "per_template_scFv_coordinate_pdb",
+                "full_antigen_coordinate_to_PDB_residue_map",
+                "curated_PDB_hotspots",
+                "Germinal_environment_and_structure_backend",
+            ],
+            "adapter_state": "blocked_missing_antigen_pdb_scFv_templates_and_runtime",
+            "geometry_note": (
+                "Germinal designs a single-chain scFv (VH-linker-VL), not a native two-chain paired Fv. "
+                "Its candidates must remain a separate geometry track until converted and revalidated."
+            ),
+        },
+    ]
+    request_files: list[str] = []
+    request_hashes: dict[str, str] = {}
+    for spec in engine_specs:
+        request_path = request_dir / f"{spec['engine'].lower()}_design_request.json"
+        write_json(request_path, {**common, **spec})
+        request_files.append(relative_to_package(request_path))
+        request_hashes[spec["engine"]] = sha256_file(request_path)
+
+    index_path = request_dir / "design_request_index.json"
+    write_json(
+        index_path,
+        {
+            "schema": "nfl_ab_design.design_request_index.v1",
+            "execution_state": "not_run",
+            "run_metadata": dict(run_metadata or {}),
+            "masked_template_fasta": relative_to_package(template_fasta),
+            "request_files": request_files,
+            "template_count": len(template_rows),
+            "epitope_count": len(epitope_requests),
+            "designed_regions": ["H1", "H2", "H3", "L1", "L2", "L3"],
+            "engines": [spec["engine"] for spec in engine_specs],
+            "request_sha256_by_engine": request_hashes,
+            "shared_three_engine_handoff_supported_state": "single_chain_monomer",
+            "future_engine_specific_target_question": (
+                "single_chain_monomer_only; any oligomeric target requires a separate campaign"
+            ),
+        },
+    )
+    return {
+        "masked_template_fasta": relative_to_package(template_fasta),
+        "design_request_files": request_files,
+        "design_request_index": relative_to_package(index_path),
+        "design_request_index_sha256": sha256_file(index_path),
+        "design_request_sha256_by_engine": request_hashes,
+        "design_adapter_execution_state": "not_run",
+    }
+
+
 def af3_json(name: str, chains: list[tuple[str, str]]) -> dict[str, Any]:
     return {
         "name": name,
@@ -1268,9 +1600,341 @@ def relative_to_package(path: Path) -> str:
 
 
 def load_external_pipeline_config(config_path: Path | None) -> dict[str, Any]:
-    if config_path is None or not config_path.exists():
-        return {"pipelines": []}
-    return json.loads(config_path.read_text(encoding="utf-8"))
+    if config_path is None:
+        return {"schema": "nfl_ab_design.external_pipelines.v1", "pipelines": []}
+    if not config_path.is_file():
+        raise FileNotFoundError(f"External pipeline config does not exist: {config_path}")
+    loaded = json.loads(config_path.read_text(encoding="utf-8"))
+    if not isinstance(loaded, dict):
+        raise ValueError("External pipeline config root must be an object")
+    if loaded.get("schema") != "nfl_ab_design.external_pipelines.v1":
+        raise ValueError("Unsupported or missing external pipeline config schema")
+    pipelines = loaded.get("pipelines")
+    if not isinstance(pipelines, list):
+        raise ValueError("External pipeline config pipelines must be a list")
+    supported_selectors = {
+        "design_request_index",
+        "design_request_files",
+        "masked_template_fasta",
+        "candidate_fv_chains_fasta",
+        "complex_fastas",
+        "af3_json_files",
+        "sandwich_fasta",
+    }
+    for index, item in enumerate(pipelines):
+        if not isinstance(item, dict):
+            raise ValueError(f"External pipeline entry {index} must be an object")
+        if not isinstance(item.get("enabled"), bool):
+            raise ValueError(f"External pipeline {item.get('name', index)!r} enabled must be boolean")
+        selector = item.get("input_selector")
+        if selector not in supported_selectors:
+            raise ValueError(
+                f"External pipeline {item.get('name', index)!r} uses unsupported input_selector {selector!r}"
+            )
+        if not str(item.get("name", "")).strip():
+            raise ValueError(f"External pipeline entry {index} lacks a name")
+        if not str(item.get("command_template", "")).strip():
+            raise ValueError(f"External pipeline {item['name']!r} lacks a command_template")
+    return loaded
+
+
+def load_design_campaign_config(config_path: Path | None) -> dict[str, Any]:
+    default = {
+        "schema_version": "1.0",
+        "seed": 20260812,
+        "simulation": {
+            "mode": "deterministic_proxy_simulation",
+            "designs_per_template_epitope": 24,
+            "real_model_execution": False,
+        },
+        "target_epitopes": ["helix_surface_323_331", "C_boundary_368_377"],
+    }
+    if config_path is None:
+        return default
+    if not config_path.is_file():
+        raise FileNotFoundError(f"Design campaign config does not exist: {config_path}")
+    loaded = json.loads(config_path.read_text(encoding="utf-8"))
+    if not isinstance(loaded, dict):
+        raise ValueError(f"Design campaign config must contain a JSON object: {config_path}")
+    return {**default, **loaded}
+
+
+def _configured_template_specs(config: dict[str, Any]) -> list[dict[str, Any]] | None:
+    raw = config.get("templates")
+    if raw is None:
+        return None
+    if not isinstance(raw, list) or not raw:
+        raise ValueError("design_campaign.templates must be a non-empty list")
+    if not all(isinstance(item, dict) for item in raw):
+        raise ValueError("Every design_campaign.templates entry must be an object")
+    return [dict(item) for item in raw]
+
+
+def _configured_cdr_ranges(config: dict[str, Any]) -> dict[str, Any] | None:
+    raw = config.get("cdr_ranges")
+    if raw is None:
+        return None
+    if not isinstance(raw, dict):
+        raise ValueError("design_campaign.cdr_ranges must be an object")
+    coordinate_system = raw.get("coordinate_system")
+    if coordinate_system != "1_based_inclusive_chain_positions":
+        raise ValueError(
+            "Only cdr_ranges.coordinate_system='1_based_inclusive_chain_positions' is supported"
+        )
+    _configured_cdr_annotation_metadata(config)
+    by_template = raw.get("by_template")
+    if not isinstance(by_template, dict) or not by_template:
+        raise ValueError("design_campaign.cdr_ranges.by_template must be a non-empty object")
+    return {str(key): value for key, value in by_template.items()}
+
+
+def _configured_cdr_annotation_metadata(config: dict[str, Any]) -> dict[str, Any]:
+    """Validate and summarize the pinned ANARCI/Chothia numbering evidence."""
+
+    raw = config.get("cdr_ranges")
+    if raw is None:
+        return {
+            "annotation_method": "legacy_heuristic_fallback",
+            "coordinate_system": "1_based_inclusive_chain_positions",
+            "annotation_evidence_path": "",
+            "annotation_evidence_sha256": "",
+        }
+    if not isinstance(raw, dict):
+        raise ValueError("design_campaign.cdr_ranges must be an object")
+    method = raw.get("annotation_method")
+    if method != SUPPORTED_CDR_ANNOTATION_METHOD:
+        raise ValueError(
+            "cdr_ranges.annotation_method must be "
+            f"{SUPPORTED_CDR_ANNOTATION_METHOD!r}; got {method!r}"
+        )
+    evidence_value = raw.get("annotation_evidence_path")
+    if not isinstance(evidence_value, str) or not evidence_value.strip():
+        raise ValueError("cdr_ranges.annotation_evidence_path must be a non-empty relative path")
+    evidence_rel = Path(evidence_value)
+    if evidence_rel.is_absolute():
+        raise ValueError("cdr_ranges.annotation_evidence_path must be relative to the package root")
+    evidence_path = (PACKAGE_ROOT / evidence_rel).resolve()
+    try:
+        evidence_path.relative_to(PACKAGE_ROOT.resolve())
+    except ValueError as exc:
+        raise ValueError("cdr_ranges.annotation_evidence_path escapes the package root") from exc
+    if not evidence_path.is_file():
+        raise FileNotFoundError(f"CDR annotation evidence does not exist: {evidence_path}")
+    evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+    if not isinstance(evidence, dict):
+        raise ValueError("CDR annotation evidence root must be an object")
+    if evidence.get("annotation_method") != method:
+        raise ValueError("CDR annotation method differs between campaign and evidence")
+    tool = evidence.get("tool")
+    if not isinstance(tool, dict) or tool.get("name") != "ANARCI" or tool.get("version") != "2020.04.23":
+        raise ValueError("CDR annotation evidence must identify ANARCI version 2020.04.23")
+    evidence_input = evidence.get("input")
+    if not isinstance(evidence_input, dict):
+        raise ValueError("CDR annotation evidence lacks input provenance")
+    source_value = evidence_input.get("path")
+    if source_value != relative_to_package(ANTIBODY_FASTA_PATH):
+        raise ValueError("CDR annotation evidence input path does not match the validation FASTA")
+    if evidence_input.get("sha256") != sha256_file(ANTIBODY_FASTA_PATH):
+        raise ValueError("CDR annotation evidence input hash does not match the validation FASTA")
+
+    by_template = raw.get("by_template")
+    evidence_templates = evidence.get("templates")
+    if not isinstance(by_template, dict) or not isinstance(evidence_templates, dict):
+        raise ValueError("Campaign and evidence must both contain per-template CDR definitions")
+    if set(by_template) != set(evidence_templates):
+        raise ValueError("CDR annotation evidence template IDs do not match the campaign")
+    for template_id, regions in by_template.items():
+        if not isinstance(regions, dict):
+            raise ValueError(f"Campaign CDR definitions for {template_id} must be an object")
+        template_evidence = evidence_templates.get(template_id)
+        if not isinstance(template_evidence, dict):
+            raise ValueError(f"CDR annotation evidence is missing template {template_id}")
+        chains = template_evidence.get("chains")
+        if not isinstance(chains, dict):
+            raise ValueError(f"CDR annotation evidence is missing chains for {template_id}")
+        for name, spec in regions.items():
+            if not isinstance(spec, dict):
+                raise ValueError(f"Campaign CDR definition {template_id}/{name} must be an object")
+            chain = spec.get("chain")
+            chain_evidence = chains.get(chain) if isinstance(chain, str) else None
+            cdrs = chain_evidence.get("cdrs") if isinstance(chain_evidence, dict) else None
+            cdr_evidence = cdrs.get(name) if isinstance(cdrs, dict) else None
+            if not isinstance(cdr_evidence, dict):
+                raise ValueError(f"CDR annotation evidence is missing {template_id}/{name}")
+            if (
+                cdr_evidence.get("raw_start_1_based") != spec.get("start")
+                or cdr_evidence.get("raw_end_1_based_inclusive") != spec.get("end")
+            ):
+                raise ValueError(f"Campaign range differs from CDR evidence for {template_id}/{name}")
+
+    return {
+        "annotation_method": method,
+        "coordinate_system": raw.get("coordinate_system"),
+        "annotation_evidence_path": evidence_value,
+        "annotation_evidence_sha256": sha256_file(evidence_path),
+    }
+
+
+def resolve_campaign_epitopes(
+    config: dict[str, Any],
+    computed_rows: list[dict[str, Any]],
+    full_sequence: str,
+) -> list[dict[str, Any]]:
+    """Resolve configured targets in configuration order and verify coordinates."""
+
+    raw = config.get("target_epitopes")
+    if raw is None:
+        raw = config.get("epitopes", [])
+    if not isinstance(raw, list):
+        raise ValueError("design_campaign.target_epitopes must be a list")
+    by_id = {str(row["epitope_id"]): row for row in computed_rows}
+    resolved: list[dict[str, Any]] = []
+    for index, item in enumerate(raw, start=1):
+        if isinstance(item, str):
+            if item not in by_id:
+                raise ValueError(f"Configured target epitope is not present in computed windows: {item}")
+            resolved.append(dict(by_id[item]))
+            continue
+        if not isinstance(item, dict):
+            raise ValueError("Every target_epitopes entry must be a string or object")
+        epitope_id = str(item.get("epitope_id", item.get("id", ""))).strip()
+        if not epitope_id:
+            raise ValueError(f"target_epitopes[{index}] lacks id/epitope_id")
+        try:
+            start = int(item["start"])
+            end = int(item["end"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError(f"Target epitope {epitope_id} requires integer start/end") from exc
+        if start < 1 or end < start or end > len(full_sequence):
+            raise ValueError(f"Target epitope {epitope_id} coordinates are outside NEFL")
+        expected_sequence = subseq(full_sequence, start, end)
+        configured_sequence = str(item.get("sequence", expected_sequence)).strip().upper()
+        if configured_sequence != expected_sequence:
+            raise ValueError(
+                f"Target epitope {epitope_id} sequence does not match NEFL {start}-{end}"
+            )
+        if epitope_id in by_id:
+            base = dict(by_id[epitope_id])
+            if (
+                int(base["start"]) != start
+                or int(base["end"]) != end
+                or str(base["sequence"]) != expected_sequence
+            ):
+                raise ValueError(
+                    f"Target epitope {epitope_id} conflicts with the computed epitope definition"
+                )
+        else:
+            base = {
+                "epitope_rank": index,
+                "epitope_id": epitope_id,
+                "start": start,
+                "end": end,
+                "sequence": expected_sequence,
+                "epitope_priority_score": float(item.get("epitope_priority_score", 0.0)),
+                "notes": str(item.get("notes", "explicit campaign target")),
+            }
+        resolved.append(base)
+    configured_ids = _configured_epitope_ids(config)
+    if [str(row["epitope_id"]) for row in resolved] != configured_ids:
+        raise ValueError("Resolved epitope order does not match configured target epitope IDs")
+    return resolved
+
+
+def design_context_fragment(
+    primary_fragment: str,
+    config: dict[str, Any],
+    full_sequence: str,
+) -> str:
+    """Expand the biochemical lead fragment to contain every configured epitope."""
+
+    start, end = parse_range(primary_fragment)
+    raw = config.get("target_epitopes")
+    if isinstance(raw, list):
+        for item in raw:
+            if isinstance(item, dict):
+                try:
+                    target_start = int(item["start"])
+                    target_end = int(item["end"])
+                except (KeyError, TypeError, ValueError) as exc:
+                    raise ValueError("Configured target epitope requires integer start/end") from exc
+                start = min(start, target_start)
+                end = max(end, target_end)
+    if start < 1 or end > len(full_sequence):
+        raise ValueError("Modeling antigen context falls outside the NEFL sequence")
+    return f"{start}-{end}"
+
+
+def validate_design_campaign_contract(
+    config: dict[str, Any],
+    target_epitopes: list[dict[str, Any]],
+    validated_antibodies: list[Antibody],
+) -> None:
+    """Fail closed when a declared campaign field is unsupported or inconsistent."""
+
+    if str(config.get("schema_version", "1.0")) != "1.0":
+        raise ValueError("Unsupported design campaign schema_version")
+    regions = config.get("design_regions")
+    expected_regions = ["H1", "H2", "H3", "L1", "L2", "L3"]
+    if regions is not None and list(regions) != expected_regions:
+        raise ValueError("This campaign requires design_regions H1,H2,H3,L1,L2,L3 in order")
+    preprocessing = config.get("template_preprocessing", {})
+    if isinstance(preprocessing, dict):
+        if preprocessing.get("mask_source_cdrs_before_generation") is False:
+            raise ValueError("Source CDR masking cannot be disabled")
+        if preprocessing.get("allow_known_cdr_feature_leakage") is True:
+            raise ValueError("Known CDR feature leakage cannot be enabled")
+        if preprocessing.get("allow_full_known_sequence_feature_leakage") is True:
+            raise ValueError("Known full-sequence feature leakage cannot be enabled")
+    simulation = config.get("simulation", {})
+    if isinstance(simulation, dict) and simulation.get("real_model_execution") is True:
+        raise ValueError("The local design campaign cannot relabel proxy simulation as real-model execution")
+    retrospective = config.get("retrospective_controls", {})
+    if isinstance(retrospective, dict):
+        if retrospective.get("enabled") is False:
+            raise ValueError("This workflow contract requires the separate retrospective control track")
+        if retrospective.get("eligible_for_prospective_selection") is True:
+            raise ValueError("Retrospective controls cannot be eligible for prospective selection")
+        if retrospective.get("injection_stage") not in (None, "after_prospective_candidate_ranking"):
+            raise ValueError("Retrospective controls must be injected after prospective ranking")
+        if retrospective.get("status_label") not in (None, "retrospective_positive_control"):
+            raise ValueError("Unsupported retrospective control status_label")
+        if retrospective.get("blind_discovery_claim_allowed") is True:
+            raise ValueError("A blind-discovery claim cannot be enabled for retrospective controls")
+        configured_controls = retrospective.get("known_positive_ids")
+        loaded_controls = [antibody.antibody_id for antibody in validated_antibodies]
+        if configured_controls is not None and list(configured_controls) != loaded_controls:
+            raise ValueError(
+                "retrospective_controls.known_positive_ids must match the loaded validation FASTA in order"
+            )
+        source_fasta = retrospective.get("source_fasta")
+        if source_fasta is not None and str(source_fasta) != relative_to_package(ANTIBODY_FASTA_PATH):
+            raise ValueError("retrospective_controls.source_fasta does not match the loaded validation FASTA")
+    template_specs = _configured_template_specs(config)
+    if template_specs is not None:
+        for spec in template_specs:
+            source_fasta = spec.get("source_fasta")
+            if source_fasta is not None and str(source_fasta) != relative_to_package(ANTIBODY_FASTA_PATH):
+                raise ValueError(
+                    f"Template {spec.get('template_id')} source_fasta does not match the loaded framework source"
+                )
+    template_count = len(template_specs) if template_specs is not None else 2
+    designs_per = _simulation_setting(config, "designs_per_template_epitope", 24)
+    if isinstance(simulation, dict):
+        expected_combinations = template_count * len(target_epitopes)
+        declared_combinations = simulation.get("template_epitope_combinations")
+        if declared_combinations is not None and int(declared_combinations) != expected_combinations:
+            raise ValueError("simulation.template_epitope_combinations is inconsistent with templates × epitopes")
+        declared_designs = simulation.get("planned_prospective_designs")
+        if declared_designs is not None and int(declared_designs) != expected_combinations * designs_per:
+            raise ValueError("simulation.planned_prospective_designs is inconsistent with campaign scale")
+
+
+def _simulation_setting(config: dict[str, Any], key: str, default: int) -> int:
+    for section_name in ("simulation", "generation", "campaign"):
+        section = config.get(section_name, {})
+        if isinstance(section, dict) and key in section:
+            return int(section[key])
+    return int(config.get(key, default))
 
 
 def select_external_inputs(exported: dict[str, Any], selector: str) -> list[str]:
@@ -1289,11 +1953,21 @@ def render_external_command(template: str, input_path: str, output_dir: str, too
         output_dir=output_dir,
         stem=Path(input_path).stem,
         tool=tool_name,
-        package_root=str(PACKAGE_ROOT),
+        # Generated command sheets are repository artifacts and must remain
+        # portable across student checkouts. They are intended to run from the
+        # repository root, so never embed the maintainer's absolute path.
+        package_root=".",
     )
 
 
-def prepare_external_pipeline_handoff(exported: dict[str, Any], config_path: Path | None) -> dict[str, Any]:
+def prepare_external_pipeline_handoff(
+    exported: dict[str, Any],
+    config_path: Path | None,
+    *,
+    run_id: str,
+) -> dict[str, Any]:
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+", run_id):
+        raise ValueError(f"Unsafe external handoff run_id: {run_id!r}")
     config = load_external_pipeline_config(config_path)
     job_dir = EXPORT_DIR / "external_jobs"
     job_dir.mkdir(parents=True, exist_ok=True)
@@ -1306,13 +1980,20 @@ def prepare_external_pipeline_handoff(exported: dict[str, Any], config_path: Pat
         selector = str(item.get("input_selector", "")).strip()
         command_template = str(item.get("command_template", "")).strip()
         stage = str(item.get("stage", "external_structure")).strip()
-        enabled = bool(item.get("enabled", False))
-        for input_path in select_external_inputs(exported, selector):
-            result_dir = OUTPUT_DIR / "external_results" / name / Path(input_path).stem
+        enabled = item["enabled"]
+        selected_inputs = select_external_inputs(exported, selector)
+        if not selected_inputs:
+            raise ValueError(f"External pipeline {name!r} selector {selector!r} resolved no inputs")
+        for input_path in selected_inputs:
+            if name == "compile_real_generation_handoff":
+                result_dir = REAL_RUNS_DIR / "handoffs" / run_id
+            else:
+                result_dir = REAL_RUNS_DIR / "results" / run_id / name / Path(input_path).stem
             output_dir = relative_to_package(result_dir)
             command = render_external_command(command_template, input_path, output_dir, name) if command_template else ""
             jobs.append(
                 {
+                    "run_id": run_id,
                     "stage": stage,
                     "tool": name,
                     "enabled": "yes" if enabled else "no",
@@ -1327,8 +2008,9 @@ def prepare_external_pipeline_handoff(exported: dict[str, Any], config_path: Pat
     with job_table.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(
             handle,
-            fieldnames=["stage", "tool", "enabled", "input_selector", "input_path", "output_dir", "command"],
+            fieldnames=["run_id", "stage", "tool", "enabled", "input_selector", "input_path", "output_dir", "command"],
             delimiter="\t",
+            lineterminator="\n",
         )
         writer.writeheader()
         writer.writerows(jobs)
@@ -1361,15 +2043,35 @@ def prepare_external_pipeline_handoff(exported: dict[str, Any], config_path: Pat
 
 
 def export_structure_inputs(
-    validated: list[Antibody],
+    candidates: list[Antibody],
     prioritized_fragments: list[dict[str, Any]],
     full_sequence: str,
     sandwich: dict[str, Any],
     external_config_path: Path | None,
+    *,
+    template_antibodies: list[Antibody] | None = None,
+    prepared_template_rows: list[dict[str, Any]] | None = None,
+    sandwich_antibodies: list[Antibody] | None = None,
+    epitope_rows: list[dict[str, Any]] | None = None,
+    design_config: dict[str, Any] | None = None,
+    run_metadata: dict[str, Any] | None = None,
+    modeling_fragment: str | None = None,
 ) -> dict[str, Any]:
     fasta_dir = EXPORT_DIR / "fasta"
     af3_dir = EXPORT_DIR / "af3_json"
-    top_fragments = prioritized_fragments[:3]
+    top_fragments = [dict(row) for row in prioritized_fragments[:3]]
+    if modeling_fragment is not None and modeling_fragment not in {
+        str(row["fragment"]) for row in top_fragments
+    }:
+        context_start, context_end = parse_range(modeling_fragment)
+        top_fragments.insert(
+            0,
+            {
+                "fragment": modeling_fragment,
+                "modeling_context_only": True,
+                "length_aa": context_end - context_start + 1,
+            },
+        )
     antigen_records: list[tuple[str, str]] = []
     for row in top_fragments:
         start, end = parse_range(row["fragment"])
@@ -1378,26 +2080,29 @@ def export_structure_inputs(
     write_fasta(antigen_fasta_path, antigen_records)
 
     antibody_records: list[tuple[str, str]] = []
-    for antibody in validated:
+    for antibody in candidates:
         antibody_records.append((f"{antibody.antibody_id}|VH|{antibody.vh_id}", antibody.vh))
         antibody_records.append((f"{antibody.antibody_id}|VL|{antibody.vl_id}", antibody.vl))
-    validated_fv_path = fasta_dir / "validated_fv_chains.fasta"
-    write_fasta(validated_fv_path, antibody_records)
+    candidate_fv_path = fasta_dir / "selected_candidate_fv_chains.fasta"
+    write_fasta(candidate_fv_path, antibody_records)
 
-    primary_fragment = top_fragments[0]["fragment"]
+    primary_fragment = modeling_fragment or str(top_fragments[0]["fragment"])
     primary_start, primary_end = parse_range(primary_fragment)
     primary_antigen = subseq(full_sequence, primary_start, primary_end)
     exported: dict[str, Any] = {
         "primary_antigen_fragment": primary_fragment,
+        "primary_antigen_fragment_role": "modeling_context_covering_all_configured_epitopes",
         "antigen_fragments_fasta": relative_to_package(antigen_fasta_path),
-        "validated_fv_chains_fasta": relative_to_package(validated_fv_path),
+        "candidate_fv_chains_fasta": relative_to_package(candidate_fv_path),
         "complex_fastas": [],
         "sandwich_fasta": "",
+        "sandwich_export_scope": "",
+        "sandwich_candidate_ids": [],
         "fasta_files": [],
         "af3_json_files": [],
     }
 
-    for antibody in validated:
+    for antibody in candidates:
         safe_id = antibody.antibody_id.replace("/", "_")
         chains = [
             ("A", primary_antigen),
@@ -1419,8 +2124,15 @@ def export_structure_inputs(
         exported["fasta_files"].append(relative_to_package(fasta_path))
         exported["af3_json_files"].append(relative_to_package(json_path))
 
-    if len(validated) >= 2:
-        ab1, ab2 = validated[:2]
+    sandwich_pool = sandwich_antibodies if sandwich_antibodies is not None else candidates
+    if len(sandwich_pool) >= 2:
+        candidate_by_id = {candidate.antibody_id: candidate for candidate in sandwich_pool}
+        ab1 = candidate_by_id.get(str(sandwich.get("antibody_1", "")))
+        ab2 = candidate_by_id.get(str(sandwich.get("antibody_2", "")))
+    else:
+        ab1 = None
+        ab2 = None
+    if ab1 is not None and ab2 is not None and ab1.antibody_id != ab2.antibody_id:
         chains = [
             ("A", primary_antigen),
             ("H", ab1.vh),
@@ -1442,19 +2154,43 @@ def export_structure_inputs(
         json_path = af3_dir / f"af3_sandwich_{ab1.antibody_id}_{ab2.antibody_id}_NEFL_{primary_fragment}.json"
         write_json(json_path, af3_json(f"sandwich_{ab1.antibody_id}_{ab2.antibody_id}_NEFL_{primary_fragment}", chains))
         exported["sandwich_fasta"] = relative_to_package(fasta_path)
+        exported["sandwich_export_scope"] = str(sandwich.get("claim_scope", "unlabeled"))
+        exported["sandwich_candidate_ids"] = [ab1.antibody_id, ab2.antibody_id]
         exported["fasta_files"].append(relative_to_package(fasta_path))
         exported["af3_json_files"].append(relative_to_package(json_path))
 
-    external_handoff = prepare_external_pipeline_handoff(exported, external_config_path)
+    if template_antibodies and epitope_rows is not None:
+        exported.update(
+            export_de_novo_model_requests(
+                templates=template_antibodies,
+                epitope_rows=epitope_rows,
+                full_sequence=full_sequence,
+                design_config=design_config or {},
+                prepared_template_rows=prepared_template_rows,
+                run_metadata=run_metadata,
+            )
+        )
+
+    external_handoff = prepare_external_pipeline_handoff(
+        exported,
+        external_config_path,
+        run_id=str((run_metadata or {}).get("run_id", "unversioned_proxy_handoff")),
+    )
 
     manifest = {
+        "schema": "nfl_ab_design.external_tool_manifest.v2",
+        "run_metadata": dict(run_metadata or {}),
         "purpose": "Structure-tool input handoff for the NfL antibody design workflow.",
         "limitations": [
             "VH/VL Fv chains are exported without constant regions.",
+            "RFantibody, IgGM, and Germinal requests were not executed; all remain blocked until validated coordinate inputs and verified model runtimes are supplied.",
+            "The selected candidate Fv export contains prospective designs only; the separately labeled sandwich export may contain retrospective positive controls.",
             "AF3 JSON files are schema templates and should be checked against the active runner.",
             "Proxy ranking metrics should be replaced by measured or modeled ipTM, pTM, interface PAE, pDockQ, buried surface area, Rosetta interface dG, and clash metrics when structures are available.",
         ],
         "recommended_tool_order": [
+            "RFantibody as the primary native paired-Fv structure-conditioned generator and IgGM as a paired-Fv template-conditioned generator",
+            "Germinal as an independent scFv-only design track whose candidates require paired-Fv rebuilding and revalidation",
             "IgFold or ABodyBuilder3 for Fv/Fab sanity checks",
             "AF3, Chai-1, or Boltz co-folding for antibody-antigen complexes",
             "Rosetta relax/interface analyzer for post-prediction interface metrics",
@@ -1463,6 +2199,14 @@ def export_structure_inputs(
         "sandwich_pair_proxy": sandwich,
         "exports": exported,
         "external_pipeline_handoff": external_handoff,
+        "external_pipeline_config": (
+            {
+                "path": relative_to_package(external_config_path),
+                "sha256": sha256_file(external_config_path),
+            }
+            if external_config_path is not None and external_config_path.is_file()
+            else None
+        ),
     }
     write_json(EXPORT_DIR / "external_tool_manifest.json", manifest)
     return manifest
@@ -1516,7 +2260,120 @@ Interpretation: low epitope overlap and a low clash proxy support taking this pa
     path.write_text(body, encoding="utf-8")
 
 
-def write_workflow_report(
+def _row_to_antibody(row: dict[str, Any]) -> Antibody:
+    candidate_id = str(row["candidate_id"])
+    return Antibody(
+        antibody_id=candidate_id,
+        vh_id=str(row.get("vh_id", f"{candidate_id}_VH")),
+        vl_id=str(row.get("vl_id", f"{candidate_id}_VL")),
+        vh=str(row["vh_sequence"]),
+        vl=str(row["vl_sequence"]),
+        experimental_status=str(row.get("control_status", "prospective_design")),
+        generation_method=str(row.get("generation_method", "de_novo_epitope_conditioned")),
+        parent_id=str(row.get("framework_source_antibody_id", row.get("template_id", ""))),
+    )
+
+
+def sandwich_pair_ranking(candidate_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Rank candidate pairs from candidate-level epitope and simulation evidence."""
+
+    survivors = [row for row in candidate_rows if str(row.get("funnel_status", "pass")) != "fail"]
+    if len(survivors) < 2:
+        survivors = candidate_rows
+    pair_rows: list[dict[str, Any]] = []
+    for first, second in combinations(survivors[:12], 2):
+        first_start = int(first.get("best_epitope_start", first.get("epitope_start", 0)))
+        first_end = int(first.get("best_epitope_end", first.get("epitope_end", first_start)))
+        second_start = int(second.get("best_epitope_start", second.get("epitope_start", 0)))
+        second_end = int(second.get("best_epitope_end", second.get("epitope_end", second_start)))
+        intersection, overlap_ratio, distance = pair_overlap(first_start, first_end, second_start, second_end)
+        first_score = float(first.get("total_rank_score", first.get("composite_score", 0.0)))
+        second_score = float(second.get("total_rank_score", second.get("composite_score", 0.0)))
+        first_dev = float(first.get("developability_score", 0.0))
+        second_dev = float(second.get("developability_score", 0.0))
+        independent_bonus = min(
+            5.0,
+            0.025
+            * (
+                float(first.get("independent_evidence_score", 0.0))
+                + float(second.get("independent_evidence_score", 0.0))
+            ),
+        )
+        clash_score = 100.0 * clamp(overlap_ratio * 0.80 + max(0.0, 8 - distance) / 42.0)
+        pair_score = clamp(
+            (
+                0.32 * first_score
+                + 0.32 * second_score
+                + 0.17 * (100.0 * (1.0 - overlap_ratio))
+                + 0.08 * (100.0 * clamp(distance / 35.0))
+                + 0.11 * ((first_dev + second_dev) / 2.0)
+                + independent_bonus
+            )
+            / 100.0
+        ) * 100.0
+        # Capture orientation is a deterministic heuristic, not an experimental
+        # fact: first prefer stronger retrospective/functional evidence, then
+        # developability, then a content-stable sequence digest.
+        def capture_key(row: dict[str, Any]) -> tuple[float, float, int]:
+            sequence_digest = int(
+                hashlib.sha256(f"{row.get('vh_sequence', '')}|{row.get('vl_sequence', '')}".encode("ascii")).hexdigest()[:12],
+                16,
+            )
+            return (
+                float(row.get("independent_evidence_score", 0.0)),
+                float(row.get("developability_score", 0.0)),
+                -sequence_digest,
+            )
+
+        if capture_key(first) >= capture_key(second):
+            capture, detection = first, second
+        else:
+            capture, detection = second, first
+        pair_rows.append(
+            {
+                "antibody_1": first["candidate_id"],
+                "antibody_1_control_status": first.get("control_status", ""),
+                "antibody_1_epitope_id": first.get("best_epitope_id", ""),
+                "antibody_1_epitope_start": first_start,
+                "antibody_1_epitope_end": first_end,
+                "antibody_1_binding_score": first.get("binding_confidence_score", first_score),
+                "antibody_2": second["candidate_id"],
+                "antibody_2_control_status": second.get("control_status", ""),
+                "antibody_2_epitope_id": second.get("best_epitope_id", ""),
+                "antibody_2_epitope_start": second_start,
+                "antibody_2_epitope_end": second_end,
+                "antibody_2_binding_score": second.get("binding_confidence_score", second_score),
+                "epitope_overlap_aa": intersection,
+                "epitope_overlap_ratio": round(overlap_ratio, 3),
+                "linear_epitope_gap_aa": distance,
+                "clash_score_proxy": round(clash_score, 2),
+                "sandwich_compatibility_score": round(pair_score, 2),
+                "recommended_capture": capture["candidate_id"],
+                "recommended_detection": detection["candidate_id"],
+                "orientation_reason": (
+                    "capture orientation prioritizes explicit retrospective evidence when present, then simulated developability; "
+                    "experimental label-site and orientation tests remain required"
+                ),
+                "data_status": "simulated",
+                "claim_scope": "retrospective_demo" if (
+                    first.get("control_status") == "retrospective_positive_control"
+                    or second.get("control_status") == "retrospective_positive_control"
+                ) else "prospective_simulation",
+            }
+        )
+    pair_rows.sort(
+        key=lambda row: (
+            -float(row["sandwich_compatibility_score"]),
+            str(row["antibody_1"]),
+            str(row["antibody_2"]),
+        )
+    )
+    for rank, row in enumerate(pair_rows, start=1):
+        row["pair_rank"] = rank
+    return pair_rows
+
+
+def _write_legacy_workflow_report(
     story: str,
     research_plan: str,
     cleavage_rows: list[dict[str, Any]],
@@ -1621,7 +2478,7 @@ Top 10 候选：
     (OUTPUT_DIR / "workflow_report.md").write_text(report, encoding="utf-8")
 
 
-def run_workflow(external_config_path: Path | None = EXTERNAL_PIPELINE_CONFIG_PATH) -> dict[str, Any]:
+def _run_legacy_workflow(external_config_path: Path | None = EXTERNAL_PIPELINE_CONFIG_PATH) -> dict[str, Any]:
     ensure_clean_output_dir()
 
     story = read_text(STORY_PATH)
@@ -1702,10 +2559,290 @@ def run_workflow(external_config_path: Path | None = EXTERNAL_PIPELINE_CONFIG_PA
     }
 
 
+def write_workflow_report(
+    *,
+    cleavage_rows: list[dict[str, Any]],
+    medium_high_sites: list[dict[str, Any]],
+    inferred_fragments: list[dict[str, Any]],
+    epitope_rows: list[dict[str, Any]],
+    design_result: dict[str, Any],
+    pair_rows: list[dict[str, Any]],
+    sandwich: dict[str, Any],
+    manifest: dict[str, Any],
+    run_timestamp: str,
+    biochemical_lead_fragment: str,
+    modeling_context_fragment: str,
+) -> None:
+    prospective = design_result["prospective_ranking_rows"]
+    selected_prospective = [row for row in prospective if row["selected_for_export"]]
+    retrospective = design_result["retrospective_ranking_rows"]
+    controls = [row for row in retrospective if row["control_status"] == "retrospective_positive_control"]
+    report = f"""# NfL 抗体从头设计与回顾性对照演示报告
+
+运行时间：`{run_timestamp}`
+
+> **证据边界：** 本次生成、结构/界面、可开发性和 sandwich 数值均为确定性 `simulated proxy`。
+> RFantibody、IgGM、Germinal、tFold 及后续结构工具均未在本次运行中执行。
+> 两株已知抗体在前瞻排名完成后才以 `retrospective_positive_control` 注入；其 Top 2 不是盲法从头发现。
+
+## 1. 输入与设计边界
+
+- 抗原推断资源：`{relative_to_package(ANTIGEN_DIR)}`
+- 设计 campaign：`{relative_to_package(DESIGN_CAMPAIGN_CONFIG_PATH)}`
+- 回顾性阳性对照：`{relative_to_package(ANTIBODY_FASTA_PATH)}`
+
+工作抗原采用 NfL rod/coil-2B 的 aa280–377 单链单体上下文；设计热点不包含 Cys322，也不要求抗体接触半胱氨酸。两株已知抗体只在生成轨道中提供两个不同的配对 VH/VL framework；H1/H2/H3/L1/L2/L3 全部遮罩并重新设计。已知 CDR 氨基酸和完整已知 VH/VL 不作为 prospective generation feature。
+
+CDR 坐标由 `ANARCI 2020.04.23 Chothia` 编号后映射到链内 1-based inclusive raw 坐标；模拟生成和真实模型请求共用同一组精确遮罩。编号 labels、工具版本与输入哈希见 `input/antibody_templates/chothia_numbering_evidence.json`。
+
+## 2. 抗原截断与表位
+
+- 全长 NfL 肽键 proxy：`{len(cleavage_rows)}`
+- 中高优先级 cathepsin-like 切点：`{len(medium_high_sites)}`
+- 约束内候选截断片段：`{len(inferred_fragments)}`
+- 生化截断排序第一名：`NEFL {biochemical_lead_fragment}`
+- 覆盖全部配置表位的建模上下文：`NEFL {modeling_context_fragment}`
+
+{markdown_table(epitope_rows, ['epitope_rank', 'epitope_id', 'start', 'end', 'sequence', 'epitope_priority_score', 'notes'], limit=8)}
+
+## 3. 双模板、六 CDR 与模拟生成
+
+{markdown_table(design_result['template_rows'], ['template_id', 'framework_source_antibody_id', 'template_role', 'design_regions', 'known_cdr_sequences_used_for_generation', 'data_status'])}
+
+本地 proxy 生成 `{len(design_result['generation_rows'])}` 个 prospective candidates。这不是 RFantibody、IgGM 或 Germinal 的实际生成量。
+
+## 4. 分步筛选漏斗
+
+{markdown_table(design_result['funnel_rows'], ['stage_order', 'stage', 'metric', 'threshold', 'input_count', 'pass_count', 'removed_count', 'data_status'])}
+
+`06` 和 `07` 表中的分数均保留 `*_is_simulated=True` 与 `metric_provenance`。
+
+## 5. Prospective 分层短名单
+
+`09_prospective_candidates.csv` 不含两株已知阳性全序列。
+最终导出采用 `template × epitope` 分层配额；表中的 `rank` 仍是全局模拟分数排名，不能把入选状态解释为纯全局 Top12。
+
+{markdown_table(selected_prospective, ['rank', 'candidate_id', 'template_id', 'best_epitope_id', 'selection_stratum_rank', 'binding_confidence_score', 'developability_score', 'total_rank_score', 'selection_reason'], limit=12)}
+
+## 6. Retrospective 阳性对照 Top 2
+
+已知阳性仅在 prospective ranking 完成后注入，并用明确的回顾性独立证据字段给分。
+
+{markdown_table(controls, ['rank', 'candidate_id', 'control_status', 'best_epitope_id', 'independent_evidence_score', 'independent_evidence_provenance', 'total_rank_score'])}
+
+## 7. Sandwich pair 模拟优先级
+
+- Top pair：`{sandwich.get('antibody_1', 'NA')}` + `{sandwich.get('antibody_2', 'NA')}`
+- 表位重叠：`{sandwich.get('epitope_overlap_ratio', 'NA')}`
+- 线性间隔：`{sandwich.get('linear_epitope_gap_aa', 'NA')}` aa
+- 兼容性 proxy：`{sandwich.get('sandwich_compatibility_score', 'NA')}`
+- 建议 capture/detection：`{sandwich.get('recommended_capture', 'NA')}` / `{sandwich.get('recommended_detection', 'NA')}`
+
+{markdown_table(pair_rows, ['pair_rank', 'antibody_1', 'antibody_2', 'epitope_overlap_ratio', 'linear_epitope_gap_aa', 'sandwich_compatibility_score', 'data_status', 'claim_scope'], limit=8)}
+
+## 8. 真实模型 Handoff
+
+已产生六 CDR 遮罩模板与 RFantibody/IgGM/Germinal 规范化请求，但当前缺少经验证的抗原 PDB、坐标映射、模型 runtime 和 checkpoint，所以保持 `not_run/blocked` 状态。Germinal 是独立 scFv 轨道，不视为 native paired-Fv 结果。
+
+- 遮罩模板：`{manifest['exports'].get('masked_template_fasta', 'NA')}`
+- 请求索引：`{manifest['exports'].get('design_request_index', 'NA')}`
+- job table：`{manifest['external_pipeline_handoff']['job_table']}`
+- command sheet：`{manifest['external_pipeline_handoff']['runner_script']}`
+
+## 9. 下一步才能取代 proxy 的证据
+
+- RFantibody/IgGM/Germinal 真实生成结果、日志、版本和 checkpoint。
+- Fv/Fab 结构质量、复合物 PAE/ipTM/pTM/DockQ、埋藏表面积和界面能量。
+- 亲和力、特异性、交叉反应、可开发性和 sandwich assay 实验。
+"""
+    (OUTPUT_DIR / "workflow_report.md").write_text(report, encoding="utf-8")
+
+
+def run_workflow(
+    external_config_path: Path | None = EXTERNAL_PIPELINE_CONFIG_PATH,
+    design_config_path: Path | None = DESIGN_CAMPAIGN_CONFIG_PATH,
+) -> dict[str, Any]:
+    from .design_pipeline import run_design_pipeline
+
+    # Validate explicit config paths before touching any existing artifacts.
+    design_config = load_design_campaign_config(design_config_path)
+    load_external_pipeline_config(external_config_path)
+    story = read_text(STORY_PATH)
+    research_plan = read_text(RESEARCH_PLAN_PATH)
+    antigen_report = read_text(ANTIGEN_REPORT_PATH)
+    full_sequence = parse_genpept_sequence(GENPEPT_PATH)
+    cleavage_sites = read_csv_dicts(CLEAVAGE_SITES_PATH)
+    validated = load_antibodies(ANTIBODY_FASTA_PATH)
+    truncation_constraints = load_truncation_constraints(TRUNCATION_CONSTRAINTS_PATH)
+    run_timestamp = datetime.now().astimezone().isoformat(timespec="microseconds")
+    run_id = "nfl_design_" + re.sub(r"[^0-9A-Za-z]+", "", run_timestamp)
+    design_config_sha256 = (
+        sha256_file(design_config_path)
+        if design_config_path is not None and design_config_path.is_file()
+        else sha256_json(design_config)
+    )
+    run_metadata = {
+        "run_id": run_id,
+        "generated_at": run_timestamp,
+        "nfl_ab_design_version": PACKAGE_VERSION,
+        "design_campaign_sha256": design_config_sha256,
+        "workflow_source_sha256": sha256_file(SCRIPT_PATH),
+        "design_pipeline_source_sha256": sha256_file(SCRIPT_PATH.with_name("design_pipeline.py")),
+    }
+
+    cleavage_rows, medium_high_sites, inferred_fragments = infer_antigen_truncation(full_sequence, truncation_constraints)
+    prioritized_fragments = prioritize_antigen_fragments(inferred_fragments, truncation_constraints)
+    primary_fragment = prioritized_fragments[0]["fragment"]
+    modeling_fragment = design_context_fragment(primary_fragment, design_config, full_sequence)
+    epitope_rows = build_epitope_windows(full_sequence, modeling_fragment)
+    target_epitope_rows = resolve_campaign_epitopes(design_config, epitope_rows, full_sequence)
+    validate_design_campaign_contract(design_config, target_epitope_rows, validated)
+    target_epitope_ids = _configured_epitope_ids(design_config)
+    target_id_set = set(target_epitope_ids)
+    for row in epitope_rows:
+        row["configured_design_target"] = str(row["epitope_id"]) in target_id_set
+    for row in target_epitope_rows:
+        if str(row["epitope_id"]) not in {str(item["epitope_id"]) for item in epitope_rows}:
+            epitope_rows.append({**row, "configured_design_target": True})
+    thresholds = design_config.get("stage_thresholds", {})
+    design_run = run_design_pipeline(
+        validated,
+        target_epitope_rows,
+        seed=_simulation_setting(design_config, "seed", 20260812),
+        designs_per_template_epitope=_simulation_setting(design_config, "designs_per_template_epitope", 24),
+        selection_count=int(thresholds.get("selection_count", 12)),
+        thresholds=thresholds,
+        template_specs=_configured_template_specs(design_config),
+        cdr_ranges_by_template=_configured_cdr_ranges(design_config),
+        epitope_ids=target_epitope_ids,
+    )
+    design_result = design_run.as_dict()
+    prospective_rows = design_result["prospective_ranking_rows"]
+    retrospective_rows = design_result["retrospective_ranking_rows"]
+    pair_rows = sandwich_pair_ranking(retrospective_rows)
+    sandwich = pair_rows[0] if pair_rows else {"status": "not_enough_candidates"}
+    export_count = int(thresholds.get("selection_count", 12))
+    selected_prospective_rows = [row for row in prospective_rows if bool(row.get("selected_for_export"))]
+    exported_candidates = [_row_to_antibody(row) for row in selected_prospective_rows[:export_count]]
+    ensure_clean_output_dir()
+    manifest = export_structure_inputs(
+        exported_candidates,
+        prioritized_fragments,
+        full_sequence,
+        sandwich,
+        external_config_path,
+        template_antibodies=validated,
+        prepared_template_rows=design_result["template_rows"],
+        sandwich_antibodies=validated,
+        epitope_rows=target_epitope_rows,
+        design_config=design_config,
+        run_metadata=run_metadata,
+        modeling_fragment=modeling_fragment,
+    )
+
+    write_csv(OUTPUT_DIR / "00_antigen_truncation_all_peptide_bonds.csv", cleavage_rows)
+    write_csv(OUTPUT_DIR / "00_antigen_truncation_medium_high_sites.csv", medium_high_sites)
+    write_csv(OUTPUT_DIR / "00_antigen_truncation_fragment_candidates.csv", inferred_fragments)
+    write_truncation_report(cleavage_rows, medium_high_sites, inferred_fragments, OUTPUT_DIR / "00_antigen_truncation_report.md")
+    write_csv(OUTPUT_DIR / "01_antigen_fragment_prioritization.csv", prioritized_fragments)
+    write_csv(OUTPUT_DIR / "02_epitope_windows.csv", epitope_rows)
+    write_csv(OUTPUT_DIR / "03_template_frameworks.csv", design_result["template_rows"])
+    backbone_rows = [
+        {
+            "candidate_id": row["candidate_id"],
+            "template_id": row["template_id"],
+            "framework_source_antibody_id": row["framework_source_antibody_id"],
+            "target_epitope_id": row["target_epitope_id"],
+            "design_regions": row["design_regions"],
+            "generation_stage": "simulated_backbone_and_six_CDR_proposal",
+            "requested_real_engines": "RFantibody;IgGM;Germinal",
+            "real_engine_execution_state": "not_run",
+            "data_status": "simulated",
+            "metric_provenance": row["metric_provenance"],
+        }
+        for row in design_result["generation_rows"]
+    ]
+    write_csv(OUTPUT_DIR / "04_backbone_generation.csv", backbone_rows)
+    write_csv(OUTPUT_DIR / "05_sequence_candidates.csv", design_result["generation_rows"])
+    write_csv(OUTPUT_DIR / "06_structure_interface_screen.csv", design_result["structure_rows"])
+    write_csv(OUTPUT_DIR / "07_developability_screen.csv", design_result["developability_rows"])
+    write_csv(OUTPUT_DIR / "08_screening_funnel.csv", design_result["funnel_rows"])
+    write_csv(OUTPUT_DIR / "09_prospective_candidates.csv", design_result["prospective_ranking_rows"])
+    write_csv(OUTPUT_DIR / "10_retrospective_demo_candidates.csv", retrospective_rows)
+    write_csv(OUTPUT_DIR / "11_sandwich_pair_ranking.csv", pair_rows)
+    write_sandwich_report(sandwich, OUTPUT_DIR / "11_sandwich_pair_report.md")
+
+    source_manifest = {
+        "schema": "nfl_ab_design.run_manifest.v2",
+        **run_metadata,
+        "run_timestamp": run_timestamp,
+        "run_mode": "deterministic_proxy_simulation_with_retrospective_positive_controls",
+        "real_model_execution": False,
+        "story_path": relative_to_package(STORY_PATH),
+        "research_plan_path": relative_to_package(RESEARCH_PLAN_PATH),
+        "antigen_report_path": relative_to_package(ANTIGEN_REPORT_PATH),
+        "cleavage_sites_path": relative_to_package(CLEAVAGE_SITES_PATH),
+        "genpept_path": relative_to_package(GENPEPT_PATH),
+        "truncation_constraints_path": relative_to_package(TRUNCATION_CONSTRAINTS_PATH),
+        "design_campaign_config_path": relative_to_package(design_config_path) if design_config_path else "",
+        "design_campaign_config": design_config,
+        "design_campaign_config_sha256": design_config_sha256,
+        "validation_antibody_fasta_path": relative_to_package(ANTIBODY_FASTA_PATH),
+        "validation_sequence_usage": "framework_only_during_generation;full_sequence_only_after_prospective_ranking",
+        "nfl_sequence_length": len(full_sequence),
+        "upstream_cleavage_site_rows": len(cleavage_sites),
+        "computed_peptide_bond_rows": len(cleavage_rows),
+        "computed_medium_high_site_rows": len(medium_high_sites),
+        "computed_fragment_candidate_rows": len(inferred_fragments),
+        "generation_candidate_count": len(design_result["generation_rows"]),
+        "biochemical_lead_fragment": primary_fragment,
+        "modeling_context_fragment": modeling_fragment,
+        "prospective_survivor_count": len(design_result["prospective_ranking_rows"]),
+        "prospective_export_count": len(exported_candidates),
+        "retrospective_control_count": sum(
+            row["control_status"] == "retrospective_positive_control" for row in retrospective_rows
+        ),
+        "story_characters": len(story),
+        "research_plan_characters": len(research_plan),
+        "antigen_report_characters": len(antigen_report),
+        "design_request_index_sha256": manifest["exports"].get("design_request_index_sha256", ""),
+        "external_tool_manifest_sha256": sha256_file(EXPORT_DIR / "external_tool_manifest.json"),
+    }
+    write_json(OUTPUT_DIR / "intermediate" / "source_manifest.json", source_manifest)
+    write_json(OUTPUT_DIR / "intermediate" / "run_manifest.json", source_manifest)
+    write_workflow_report(
+        cleavage_rows=cleavage_rows,
+        medium_high_sites=medium_high_sites,
+        inferred_fragments=inferred_fragments,
+        epitope_rows=epitope_rows,
+        design_result=design_result,
+        pair_rows=pair_rows,
+        sandwich=sandwich,
+        manifest=manifest,
+        run_timestamp=run_timestamp,
+        biochemical_lead_fragment=primary_fragment,
+        modeling_context_fragment=modeling_fragment,
+    )
+    return {
+        "output_dir": OUTPUT_DIR,
+        "primary_fragment": primary_fragment,
+        "modeling_fragment": modeling_fragment,
+        "ranking_rows": prospective_rows,
+        "ranking_rows_scope": "prospective_simulation",
+        "prospective_ranking_rows": design_result["prospective_ranking_rows"],
+        "retrospective_ranking_rows": retrospective_rows,
+        "design_result": design_result,
+        "target_epitope_rows": target_epitope_rows,
+        "pair_rows": pair_rows,
+        "sandwich": sandwich,
+        "manifest": manifest,
+    }
+
+
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="nfl-ab-design",
-        description="Run the NfL antibody design replay workflow and prepare external structure-pipeline inputs.",
+        description="Run the NfL epitope-conditioned de novo design workflow and prepare real-model handoff inputs.",
     )
     parser.add_argument(
         "--external-config",
@@ -1713,20 +2850,42 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default=EXTERNAL_PIPELINE_CONFIG_PATH,
         help="JSON file describing external structure/docking pipeline adapters.",
     )
+    parser.add_argument(
+        "--design-config",
+        type=Path,
+        default=DESIGN_CAMPAIGN_CONFIG_PATH,
+        help="JSON campaign defining templates, all-six-CDR coordinates, target epitopes, simulation scale, and thresholds.",
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_arg_parser().parse_args(argv)
-    result = run_workflow(external_config_path=args.external_config)
-    ranking_rows = result["ranking_rows"]
+    result = run_workflow(
+        external_config_path=args.external_config,
+        design_config_path=args.design_config,
+    )
+    prospective_rows = result["prospective_ranking_rows"]
+    retrospective_controls = [
+        row
+        for row in result["retrospective_ranking_rows"]
+        if row.get("control_status") == "retrospective_positive_control"
+    ]
 
     print(f"NfL antibody workflow complete. Outputs written to: {result['output_dir']}")
     print(f"Primary antigen fragment: NEFL {result['primary_fragment']}")
-    for row in ranking_rows[:5]:
+    print(f"Modeling context covering all target epitopes: NEFL {result['modeling_fragment']}")
+    print("Prospective simulated candidates (not real-model results):")
+    for row in prospective_rows[:5]:
         print(
             f"Rank {row['rank']:>2}: {row['candidate_id']} | "
             f"{row['best_epitope_id']} | total={row['total_rank_score']}"
+        )
+    print("Retrospective positive-control demonstration (not blind discovery):")
+    for row in retrospective_controls:
+        print(
+            f"Demo rank {row['rank']:>2}: {row['candidate_id']} | "
+            f"status={row['control_status']} | total={row['total_rank_score']}"
         )
     return 0
 
