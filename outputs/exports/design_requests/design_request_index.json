@@ -1,0 +1,40 @@
+{
+  "schema": "nfl_ab_design.design_request_index.v1",
+  "execution_state": "not_run",
+  "run_metadata": {
+    "run_id": "nfl_design_20260813T0935566056980800",
+    "generated_at": "2026-08-13T09:35:56.605698+08:00",
+    "nfl_ab_design_version": "0.2.1",
+    "design_campaign_sha256": "932f45194685a888f33fe932f8dbec0d252860f1ea7fea6e9a289e8a4db8ff09",
+    "workflow_source_sha256": "8aa4550ce5a5ffa625c40cd7beb982288ea423312ec50c62eea93a3db6a9abaf",
+    "design_pipeline_source_sha256": "16cf851a402bb3ddeb193e3230c44bef76c02ffd0b226a663068352696d55029"
+  },
+  "masked_template_fasta": "outputs/exports/fasta/design_templates_six_cdr_masked.fasta",
+  "request_files": [
+    "outputs/exports/design_requests/rfantibody_design_request.json",
+    "outputs/exports/design_requests/iggm_design_request.json",
+    "outputs/exports/design_requests/germinal_design_request.json"
+  ],
+  "template_count": 2,
+  "epitope_count": 2,
+  "designed_regions": [
+    "H1",
+    "H2",
+    "H3",
+    "L1",
+    "L2",
+    "L3"
+  ],
+  "engines": [
+    "RFantibody",
+    "IgGM",
+    "Germinal"
+  ],
+  "request_sha256_by_engine": {
+    "RFantibody": "832c881df25d30b61fc004e839104620dc5bf0a43fec1701074316e5ca7a308a",
+    "IgGM": "189e47cb31b119d3fdf2c426dbe0eec44b63dbca3bc25dd107766175abbf610d",
+    "Germinal": "3e802de5da0df1246f6422f08b3ab7e55be1c81fbb301b95965c253c1f43ba89"
+  },
+  "shared_three_engine_handoff_supported_state": "single_chain_monomer",
+  "future_engine_specific_target_question": "single_chain_monomer_only; any oligomeric target requires a separate campaign"
+}

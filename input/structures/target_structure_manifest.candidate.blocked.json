@@ -1,0 +1,660 @@
+{
+  "schema": "nfl_ab_design.target_structure_manifest.v1",
+  "execution_state": "blocked_pending_human_review",
+  "review": {
+    "reviewed_by": "",
+    "reviewed_at": "",
+    "contracts_acknowledged": false
+  },
+  "conformation_id": "AFDB-P07196-F1-v6-NEFL-280-377-monomer-candidate",
+  "oligomeric_state": "single_chain_monomer",
+  "target_pdb_path": "input/structures/NEFL_P07196_AFDB_v6_280-377_chainA.pdb",
+  "target_chain": "A",
+  "antigen_sequence_in_pdb_order": "FKSRFTVLTESAAKNTDAVRAAKDEVSESRRLLKAKTLEIEACRGMNEALEKQLQELEDKQNADISAMQDTINKLENELRTTKSEMARYLKEYQDLLN",
+  "full_coordinate_to_pdb": {
+    "280": {
+      "chain_id": "A",
+      "residue_number": 280,
+      "insertion_code": ""
+    },
+    "281": {
+      "chain_id": "A",
+      "residue_number": 281,
+      "insertion_code": ""
+    },
+    "282": {
+      "chain_id": "A",
+      "residue_number": 282,
+      "insertion_code": ""
+    },
+    "283": {
+      "chain_id": "A",
+      "residue_number": 283,
+      "insertion_code": ""
+    },
+    "284": {
+      "chain_id": "A",
+      "residue_number": 284,
+      "insertion_code": ""
+    },
+    "285": {
+      "chain_id": "A",
+      "residue_number": 285,
+      "insertion_code": ""
+    },
+    "286": {
+      "chain_id": "A",
+      "residue_number": 286,
+      "insertion_code": ""
+    },
+    "287": {
+      "chain_id": "A",
+      "residue_number": 287,
+      "insertion_code": ""
+    },
+    "288": {
+      "chain_id": "A",
+      "residue_number": 288,
+      "insertion_code": ""
+    },
+    "289": {
+      "chain_id": "A",
+      "residue_number": 289,
+      "insertion_code": ""
+    },
+    "290": {
+      "chain_id": "A",
+      "residue_number": 290,
+      "insertion_code": ""
+    },
+    "291": {
+      "chain_id": "A",
+      "residue_number": 291,
+      "insertion_code": ""
+    },
+    "292": {
+      "chain_id": "A",
+      "residue_number": 292,
+      "insertion_code": ""
+    },
+    "293": {
+      "chain_id": "A",
+      "residue_number": 293,
+      "insertion_code": ""
+    },
+    "294": {
+      "chain_id": "A",
+      "residue_number": 294,
+      "insertion_code": ""
+    },
+    "295": {
+      "chain_id": "A",
+      "residue_number": 295,
+      "insertion_code": ""
+    },
+    "296": {
+      "chain_id": "A",
+      "residue_number": 296,
+      "insertion_code": ""
+    },
+    "297": {
+      "chain_id": "A",
+      "residue_number": 297,
+      "insertion_code": ""
+    },
+    "298": {
+      "chain_id": "A",
+      "residue_number": 298,
+      "insertion_code": ""
+    },
+    "299": {
+      "chain_id": "A",
+      "residue_number": 299,
+      "insertion_code": ""
+    },
+    "300": {
+      "chain_id": "A",
+      "residue_number": 300,
+      "insertion_code": ""
+    },
+    "301": {
+      "chain_id": "A",
+      "residue_number": 301,
+      "insertion_code": ""
+    },
+    "302": {
+      "chain_id": "A",
+      "residue_number": 302,
+      "insertion_code": ""
+    },
+    "303": {
+      "chain_id": "A",
+      "residue_number": 303,
+      "insertion_code": ""
+    },
+    "304": {
+      "chain_id": "A",
+      "residue_number": 304,
+      "insertion_code": ""
+    },
+    "305": {
+      "chain_id": "A",
+      "residue_number": 305,
+      "insertion_code": ""
+    },
+    "306": {
+      "chain_id": "A",
+      "residue_number": 306,
+      "insertion_code": ""
+    },
+    "307": {
+      "chain_id": "A",
+      "residue_number": 307,
+      "insertion_code": ""
+    },
+    "308": {
+      "chain_id": "A",
+      "residue_number": 308,
+      "insertion_code": ""
+    },
+    "309": {
+      "chain_id": "A",
+      "residue_number": 309,
+      "insertion_code": ""
+    },
+    "310": {
+      "chain_id": "A",
+      "residue_number": 310,
+      "insertion_code": ""
+    },
+    "311": {
+      "chain_id": "A",
+      "residue_number": 311,
+      "insertion_code": ""
+    },
+    "312": {
+      "chain_id": "A",
+      "residue_number": 312,
+      "insertion_code": ""
+    },
+    "313": {
+      "chain_id": "A",
+      "residue_number": 313,
+      "insertion_code": ""
+    },
+    "314": {
+      "chain_id": "A",
+      "residue_number": 314,
+      "insertion_code": ""
+    },
+    "315": {
+      "chain_id": "A",
+      "residue_number": 315,
+      "insertion_code": ""
+    },
+    "316": {
+      "chain_id": "A",
+      "residue_number": 316,
+      "insertion_code": ""
+    },
+    "317": {
+      "chain_id": "A",
+      "residue_number": 317,
+      "insertion_code": ""
+    },
+    "318": {
+      "chain_id": "A",
+      "residue_number": 318,
+      "insertion_code": ""
+    },
+    "319": {
+      "chain_id": "A",
+      "residue_number": 319,
+      "insertion_code": ""
+    },
+    "320": {
+      "chain_id": "A",
+      "residue_number": 320,
+      "insertion_code": ""
+    },
+    "321": {
+      "chain_id": "A",
+      "residue_number": 321,
+      "insertion_code": ""
+    },
+    "322": {
+      "chain_id": "A",
+      "residue_number": 322,
+      "insertion_code": ""
+    },
+    "323": {
+      "chain_id": "A",
+      "residue_number": 323,
+      "insertion_code": ""
+    },
+    "324": {
+      "chain_id": "A",
+      "residue_number": 324,
+      "insertion_code": ""
+    },
+    "325": {
+      "chain_id": "A",
+      "residue_number": 325,
+      "insertion_code": ""
+    },
+    "326": {
+      "chain_id": "A",
+      "residue_number": 326,
+      "insertion_code": ""
+    },
+    "327": {
+      "chain_id": "A",
+      "residue_number": 327,
+      "insertion_code": ""
+    },
+    "328": {
+      "chain_id": "A",
+      "residue_number": 328,
+      "insertion_code": ""
+    },
+    "329": {
+      "chain_id": "A",
+      "residue_number": 329,
+      "insertion_code": ""
+    },
+    "330": {
+      "chain_id": "A",
+      "residue_number": 330,
+      "insertion_code": ""
+    },
+    "331": {
+      "chain_id": "A",
+      "residue_number": 331,
+      "insertion_code": ""
+    },
+    "332": {
+      "chain_id": "A",
+      "residue_number": 332,
+      "insertion_code": ""
+    },
+    "333": {
+      "chain_id": "A",
+      "residue_number": 333,
+      "insertion_code": ""
+    },
+    "334": {
+      "chain_id": "A",
+      "residue_number": 334,
+      "insertion_code": ""
+    },
+    "335": {
+      "chain_id": "A",
+      "residue_number": 335,
+      "insertion_code": ""
+    },
+    "336": {
+      "chain_id": "A",
+      "residue_number": 336,
+      "insertion_code": ""
+    },
+    "337": {
+      "chain_id": "A",
+      "residue_number": 337,
+      "insertion_code": ""
+    },
+    "338": {
+      "chain_id": "A",
+      "residue_number": 338,
+      "insertion_code": ""
+    },
+    "339": {
+      "chain_id": "A",
+      "residue_number": 339,
+      "insertion_code": ""
+    },
+    "340": {
+      "chain_id": "A",
+      "residue_number": 340,
+      "insertion_code": ""
+    },
+    "341": {
+      "chain_id": "A",
+      "residue_number": 341,
+      "insertion_code": ""
+    },
+    "342": {
+      "chain_id": "A",
+      "residue_number": 342,
+      "insertion_code": ""
+    },
+    "343": {
+      "chain_id": "A",
+      "residue_number": 343,
+      "insertion_code": ""
+    },
+    "344": {
+      "chain_id": "A",
+      "residue_number": 344,
+      "insertion_code": ""
+    },
+    "345": {
+      "chain_id": "A",
+      "residue_number": 345,
+      "insertion_code": ""
+    },
+    "346": {
+      "chain_id": "A",
+      "residue_number": 346,
+      "insertion_code": ""
+    },
+    "347": {
+      "chain_id": "A",
+      "residue_number": 347,
+      "insertion_code": ""
+    },
+    "348": {
+      "chain_id": "A",
+      "residue_number": 348,
+      "insertion_code": ""
+    },
+    "349": {
+      "chain_id": "A",
+      "residue_number": 349,
+      "insertion_code": ""
+    },
+    "350": {
+      "chain_id": "A",
+      "residue_number": 350,
+      "insertion_code": ""
+    },
+    "351": {
+      "chain_id": "A",
+      "residue_number": 351,
+      "insertion_code": ""
+    },
+    "352": {
+      "chain_id": "A",
+      "residue_number": 352,
+      "insertion_code": ""
+    },
+    "353": {
+      "chain_id": "A",
+      "residue_number": 353,
+      "insertion_code": ""
+    },
+    "354": {
+      "chain_id": "A",
+      "residue_number": 354,
+      "insertion_code": ""
+    },
+    "355": {
+      "chain_id": "A",
+      "residue_number": 355,
+      "insertion_code": ""
+    },
+    "356": {
+      "chain_id": "A",
+      "residue_number": 356,
+      "insertion_code": ""
+    },
+    "357": {
+      "chain_id": "A",
+      "residue_number": 357,
+      "insertion_code": ""
+    },
+    "358": {
+      "chain_id": "A",
+      "residue_number": 358,
+      "insertion_code": ""
+    },
+    "359": {
+      "chain_id": "A",
+      "residue_number": 359,
+      "insertion_code": ""
+    },
+    "360": {
+      "chain_id": "A",
+      "residue_number": 360,
+      "insertion_code": ""
+    },
+    "361": {
+      "chain_id": "A",
+      "residue_number": 361,
+      "insertion_code": ""
+    },
+    "362": {
+      "chain_id": "A",
+      "residue_number": 362,
+      "insertion_code": ""
+    },
+    "363": {
+      "chain_id": "A",
+      "residue_number": 363,
+      "insertion_code": ""
+    },
+    "364": {
+      "chain_id": "A",
+      "residue_number": 364,
+      "insertion_code": ""
+    },
+    "365": {
+      "chain_id": "A",
+      "residue_number": 365,
+      "insertion_code": ""
+    },
+    "366": {
+      "chain_id": "A",
+      "residue_number": 366,
+      "insertion_code": ""
+    },
+    "367": {
+      "chain_id": "A",
+      "residue_number": 367,
+      "insertion_code": ""
+    },
+    "368": {
+      "chain_id": "A",
+      "residue_number": 368,
+      "insertion_code": ""
+    },
+    "369": {
+      "chain_id": "A",
+      "residue_number": 369,
+      "insertion_code": ""
+    },
+    "370": {
+      "chain_id": "A",
+      "residue_number": 370,
+      "insertion_code": ""
+    },
+    "371": {
+      "chain_id": "A",
+      "residue_number": 371,
+      "insertion_code": ""
+    },
+    "372": {
+      "chain_id": "A",
+      "residue_number": 372,
+      "insertion_code": ""
+    },
+    "373": {
+      "chain_id": "A",
+      "residue_number": 373,
+      "insertion_code": ""
+    },
+    "374": {
+      "chain_id": "A",
+      "residue_number": 374,
+      "insertion_code": ""
+    },
+    "375": {
+      "chain_id": "A",
+      "residue_number": 375,
+      "insertion_code": ""
+    },
+    "376": {
+      "chain_id": "A",
+      "residue_number": 376,
+      "insertion_code": ""
+    },
+    "377": {
+      "chain_id": "A",
+      "residue_number": 377,
+      "insertion_code": ""
+    }
+  },
+  "full_coordinate_to_local_1_based": {
+    "280": 1,
+    "281": 2,
+    "282": 3,
+    "283": 4,
+    "284": 5,
+    "285": 6,
+    "286": 7,
+    "287": 8,
+    "288": 9,
+    "289": 10,
+    "290": 11,
+    "291": 12,
+    "292": 13,
+    "293": 14,
+    "294": 15,
+    "295": 16,
+    "296": 17,
+    "297": 18,
+    "298": 19,
+    "299": 20,
+    "300": 21,
+    "301": 22,
+    "302": 23,
+    "303": 24,
+    "304": 25,
+    "305": 26,
+    "306": 27,
+    "307": 28,
+    "308": 29,
+    "309": 30,
+    "310": 31,
+    "311": 32,
+    "312": 33,
+    "313": 34,
+    "314": 35,
+    "315": 36,
+    "316": 37,
+    "317": 38,
+    "318": 39,
+    "319": 40,
+    "320": 41,
+    "321": 42,
+    "322": 43,
+    "323": 44,
+    "324": 45,
+    "325": 46,
+    "326": 47,
+    "327": 48,
+    "328": 49,
+    "329": 50,
+    "330": 51,
+    "331": 52,
+    "332": 53,
+    "333": 54,
+    "334": 55,
+    "335": 56,
+    "336": 57,
+    "337": 58,
+    "338": 59,
+    "339": 60,
+    "340": 61,
+    "341": 62,
+    "342": 63,
+    "343": 64,
+    "344": 65,
+    "345": 66,
+    "346": 67,
+    "347": 68,
+    "348": 69,
+    "349": 70,
+    "350": 71,
+    "351": 72,
+    "352": 73,
+    "353": 74,
+    "354": 75,
+    "355": 76,
+    "356": 77,
+    "357": 78,
+    "358": 79,
+    "359": 80,
+    "360": 81,
+    "361": 82,
+    "362": 83,
+    "363": 84,
+    "364": 85,
+    "365": 86,
+    "366": 87,
+    "367": 88,
+    "368": 89,
+    "369": 90,
+    "370": 91,
+    "371": 92,
+    "372": 93,
+    "373": 94,
+    "374": 95,
+    "375": 96,
+    "376": 97,
+    "377": 98
+  },
+  "selected_hotspots_by_epitope": {
+    "helix_surface_323_331": [],
+    "C_boundary_368_377": []
+  },
+  "proposed_hotspots_by_epitope_pending_human_review": {
+    "helix_surface_323_331": [
+      325,
+      329
+    ],
+    "C_boundary_368_377": [
+      368,
+      372,
+      375
+    ]
+  },
+  "hotspot_review_state": "proposed_not_selected",
+  "hotspot_evidence": {
+    "path": "input/structures/NEFL_P07196_AFDB_v6_280-377_evidence.json",
+    "sha256": "4354c6e089de95b6e343933321592eedec516d73b8dabbbb170c6e86a6c5231f"
+  },
+  "framework_coordinate_inputs": {
+    "rfantibody_hlt_pdbs": {
+      "template_7-H11-D3-2-C7": "",
+      "template_15-C12-H6": ""
+    },
+    "germinal_scfv_pdbs": {
+      "template_7-H11-D3-2-C7": "",
+      "template_15-C12-H6": ""
+    }
+  },
+  "candidate_provenance": {
+    "source_database": "AlphaFold Protein Structure Database",
+    "source_accession": "P07196",
+    "source_model_version": "v6",
+    "source_sha256": "37912aac5cefd85b177e754a7c55c10c0f50166baf7f30b012151492eae300b1",
+    "target_pdb_sha256": "80686267d6a93eda5829bab187406c14caf0365ba7bee21a4eb0d2ed082fc73b",
+    "scientific_status": "theoretical_prediction_not_experimentally_determined"
+  },
+  "review_contract": [
+    "The AlphaFold DB structure is a theoretical monomer prediction, not an experimentally determined structure.",
+    "PDB sequence and residue numbering were extracted from coordinates and independently checked against SEQRES.",
+    "Every selected hotspot must have an explicit full-coordinate to PDB-residue mapping and be present in ATOM records.",
+    "Proposed hotspots must be reviewed for solvent accessibility and local chemistry; geometry proxies are not SASA.",
+    "An entire epitope window must not be passed blindly as selected hotspots.",
+    "RFantibody HLT files must contain H/L chains and all six CDR REMARK labels.",
+    "Germinal templates must be independent single-chain VH-linker-VL scFv PDBs.",
+    "Schema v1 represents one single-chain monomer; oligomeric targets require a separate multichain campaign."
+  ],
+  "blocking_reasons": [
+    "Human structure and hotspot review has not been recorded.",
+    "selected_hotspots_by_epitope is intentionally empty.",
+    "Two distinct RFantibody HLT coordinate templates are still required.",
+    "Two distinct Germinal scFv coordinate templates are still required."
+  ]
+}

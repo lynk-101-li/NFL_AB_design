@@ -1,0 +1,38 @@
+{
+  "schema": "nfl_ab_design.runtime_attestation.v1",
+  "handoff_id": "<COPY_FROM_UNIFIED_HANDOFF_MANIFEST>",
+  "identity_sha256": "<COPY_FROM_UNIFIED_HANDOFF_MANIFEST>",
+  "handoff_manifest_sha256": "<SHA256_OF_UNIFIED_HANDOFF_MANIFEST_FILE>",
+  "engines": [
+    {
+      "engine": "RFantibody",
+      "revision": "<VERIFIED_GIT_REVISION>",
+      "execution_jobs_sha256": "<CANONICAL_EXECUTION_JOBS_SHA256>",
+      "checkpoint_sha256": {
+        "rfantibody_model_bundle": "<MEASURED_SHA256>"
+      },
+      "ready": true,
+      "overrides_manifest_ready_for_execution": true
+    },
+    {
+      "engine": "IgGM",
+      "revision": "<VERIFIED_GIT_REVISION>",
+      "execution_jobs_sha256": "<CANONICAL_EXECUTION_JOBS_SHA256>",
+      "checkpoint_sha256": {
+        "iggm_checkpoint_bundle": "<MEASURED_SHA256>"
+      },
+      "ready": true,
+      "overrides_manifest_ready_for_execution": true
+    },
+    {
+      "engine": "Germinal",
+      "revision": "<VERIFIED_GIT_REVISION>",
+      "execution_jobs_sha256": "<CANONICAL_EXECUTION_JOBS_SHA256>",
+      "checkpoint_sha256": {
+        "germinal_structure_backend_assets": "<MEASURED_SHA256>"
+      },
+      "ready": true,
+      "overrides_manifest_ready_for_execution": true
+    }
+  ]
+}

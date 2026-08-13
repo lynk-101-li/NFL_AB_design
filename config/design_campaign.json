@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "campaign_id": "nfl_dual_template_six_cdr_simulation",
+  "description": "Deterministic proxy campaign that redesigns all six CDRs from two framework-only antibody templates against two NfL epitopes.",
+  "seed": 20260812,
+  "simulation": {
+    "mode": "deterministic_proxy_simulation",
+    "designs_per_template_epitope": 1280,
+    "template_epitope_combinations": 4,
+    "planned_prospective_designs": 5120,
+    "real_model_execution": false
+  },
+  "templates": [
+    {
+      "template_id": "template_7-H11-D3-2-C7",
+      "source_antibody_id": "7-H11-D3-2-C7",
+      "source_fasta": "validation/experimentally_validated_antibodies.fasta",
+      "role": "framework_source_only",
+      "use_framework_residues": true,
+      "use_known_cdr_sequences": false,
+      "use_full_known_sequence_as_generation_feature": false
+    },
+    {
+      "template_id": "template_15-C12-H6",
+      "source_antibody_id": "15-C12-H6",
+      "source_fasta": "validation/experimentally_validated_antibodies.fasta",
+      "role": "framework_source_only",
+      "use_framework_residues": true,
+      "use_known_cdr_sequences": false,
+      "use_full_known_sequence_as_generation_feature": false
+    }
+  ],
+  "template_preprocessing": {
+    "generation_input": "framework_only_masked_cdr_representation",
+    "mask_source_cdrs_before_generation": true,
+    "allow_known_cdr_feature_leakage": false,
+    "allow_full_known_sequence_feature_leakage": false
+  },
+  "target_epitopes": [
+    {
+      "id": "helix_surface_323_331",
+      "antigen": "NEFL",
+      "start": 323,
+      "end": 331,
+      "coordinate_system": "UniProt_P07196_1_based_inclusive",
+      "sequence": "RGMNEALEK",
+      "role": "prospective_design_target"
+    },
+    {
+      "id": "C_boundary_368_377",
+      "antigen": "NEFL",
+      "start": 368,
+      "end": 377,
+      "coordinate_system": "UniProt_P07196_1_based_inclusive",
+      "sequence": "YLKEYQDLLN",
+      "role": "prospective_design_target"
+    }
+  ],
+  "design_regions": [
+    "H1",
+    "H2",
+    "H3",
+    "L1",
+    "L2",
+    "L3"
+  ],
+  "cdr_ranges": {
+    "coordinate_system": "1_based_inclusive_chain_positions",
+    "annotation_method": "ANARCI 2020.04.23 Chothia",
+    "annotation_evidence_path": "input/antibody_templates/chothia_numbering_evidence.json",
+    "by_template": {
+      "template_7-H11-D3-2-C7": {
+        "H1": {"chain": "VH", "start": 26, "end": 32},
+        "H2": {"chain": "VH", "start": 52, "end": 57},
+        "H3": {"chain": "VH", "start": 99, "end": 101},
+        "L1": {"chain": "VL", "start": 24, "end": 34},
+        "L2": {"chain": "VL", "start": 50, "end": 56},
+        "L3": {"chain": "VL", "start": 89, "end": 97}
+      },
+      "template_15-C12-H6": {
+        "H1": {"chain": "VH", "start": 26, "end": 33},
+        "H2": {"chain": "VH", "start": 53, "end": 57},
+        "H3": {"chain": "VH", "start": 99, "end": 109},
+        "L1": {"chain": "VL", "start": 24, "end": 34},
+        "L2": {"chain": "VL", "start": 50, "end": 56},
+        "L3": {"chain": "VL", "start": 89, "end": 97}
+      }
+    }
+  },
+  "stage_thresholds": {
+    "structure_min": 58.0,
+    "interface_min": 55.0,
+    "developability_min": 60.0,
+    "composite_min": 60.0,
+    "selection_count": 12
+  },
+  "final_selection_policy": {
+    "method": "balanced_template_epitope_then_global_score_fill",
+    "purpose": "Preserve both epitopes and both framework sources in the simulated experimental shortlist.",
+    "quota_when_all_four_strata_have_survivors": 3,
+    "global_rank_is_still_reported": true
+  },
+  "retrospective_controls": {
+    "enabled": true,
+    "source_fasta": "validation/experimentally_validated_antibodies.fasta",
+    "known_positive_ids": [
+      "7-H11-D3-2-C7",
+      "15-C12-H6"
+    ],
+    "status_label": "retrospective_positive_control",
+    "injection_stage": "after_prospective_candidate_ranking",
+    "ranking_scope": "separate_retrospective_demo",
+    "eligible_for_prospective_selection": false,
+    "blind_discovery_claim_allowed": false,
+    "notes": "Known full VH/VL sequences are introduced only after prospective design and ranking. Their Top-2 behavior is a retrospective positive-control demonstration, not a blind discovery result."
+  }
+}

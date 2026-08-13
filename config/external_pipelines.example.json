@@ -1,47 +1,74 @@
 {
-  "description": "Example adapters for external structure and docking tools. Keep jobs disabled until the corresponding local tool commands are verified.",
+  "schema": "nfl_ab_design.external_pipelines.v1",
+  "description": "Disabled adapter templates for real external generation and structure tools. Replace every <PLACEHOLDER>, verify the installed tool version and input schema, and enable only the adapter you intend to run. Nothing in this file proves that a real model was executed.",
   "pipelines": [
+    {
+      "name": "compile_real_generation_handoff",
+      "stage": "reviewed_real_model_job_compilation",
+      "enabled": false,
+      "optional": false,
+      "input_selector": "design_request_index",
+      "adapter_role": "unified_non_executing_RFantibody_IgGM_Germinal_handoff",
+      "command_template": "python3 {package_root}/scripts/prepare_real_model_jobs.py --request-dir {package_root}/outputs/exports/design_requests --target-manifest {package_root}/config/target_structure_manifest.json --profile smoke --job-scope canary --iggm-repo-dir <PATH_TO_PINNED_IGGM> --germinal-repo-dir <PATH_TO_PINNED_GERMINAL> --germinal-af-params-dir <PATH_TO_AF_MULTIMER_PARAMS>",
+      "notes": "Compiles and validates all three native plans but executes none. The reviewed target manifest must provide the antigen PDB, residue mappings, curated hotspots, two HLT PDBs, and two independent scFv PDBs. Smoke scope selects one deterministic canary job per engine."
+    },
+    {
+      "name": "tfold_candidate_structure_prediction",
+      "stage": "optional_candidate_structure_prediction_review",
+      "enabled": false,
+      "optional": true,
+      "input_selector": "candidate_fv_chains_fasta",
+      "adapter_role": "optional_prediction_and_cross_check_not_primary_generation",
+      "command_template": "<PATH_TO_TFOLD_PREDICTION_ADAPTER> --fasta {input} --antigen-pdb <PATH_TO_NEFL_ANTIGEN_PDB> --model-dir <PATH_TO_TFOLD_MODEL_DIR> --output-dir {output_dir}",
+      "notes": "Use tFold here only as an optional structure-prediction/cross-check adapter for selected prospective candidates; do not label proxy simulation values as tFold results."
+    },
     {
       "name": "igfold_fv_modeling",
       "stage": "antibody_fv_modeling",
       "enabled": false,
-      "input_selector": "validated_fv_chains_fasta",
-      "command_template": "igfold --fasta {input} --outdir {output_dir}"
+      "optional": true,
+      "input_selector": "candidate_fv_chains_fasta",
+      "command_template": "<PATH_TO_IGFOLD_EXECUTABLE> --fasta {input} --outdir {output_dir}"
     },
     {
       "name": "abodybuilder3_fv_modeling",
       "stage": "antibody_fv_modeling",
       "enabled": false,
-      "input_selector": "validated_fv_chains_fasta",
-      "command_template": "abodybuilder3 --fasta {input} --output {output_dir}"
+      "optional": true,
+      "input_selector": "candidate_fv_chains_fasta",
+      "command_template": "<PATH_TO_ABODYBUILDER3_EXECUTABLE> --fasta {input} --output {output_dir}"
     },
     {
       "name": "alphafold3_complex",
       "stage": "antibody_antigen_cofolding",
       "enabled": false,
+      "optional": true,
       "input_selector": "af3_json_files",
-      "command_template": "run_alphafold3 --json_path {input} --output_dir {output_dir}"
+      "command_template": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path {input} --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir {output_dir}"
     },
     {
       "name": "chai1_complex",
       "stage": "antibody_antigen_cofolding",
       "enabled": false,
+      "optional": true,
       "input_selector": "complex_fastas",
-      "command_template": "chai-lab fold {input} --output-dir {output_dir}"
+      "command_template": "<PATH_TO_CHAI1_EXECUTABLE> fold {input} --output-dir {output_dir}"
     },
     {
       "name": "boltz_complex",
       "stage": "antibody_antigen_cofolding",
       "enabled": false,
+      "optional": true,
       "input_selector": "complex_fastas",
-      "command_template": "boltz predict {input} --out_dir {output_dir}"
+      "command_template": "<PATH_TO_BOLTZ_EXECUTABLE> predict {input} --cache <PATH_TO_BOLTZ_CACHE> --out_dir {output_dir}"
     },
     {
       "name": "rosetta_interface_analysis",
       "stage": "post_prediction_interface_scoring",
       "enabled": false,
+      "optional": true,
       "input_selector": "sandwich_fasta",
-      "command_template": "rosetta_interface_analyzer --input {input} --outdir {output_dir}"
+      "command_template": "<PATH_TO_ROSETTA_INTERFACE_ANALYZER> --input {input} --database <PATH_TO_ROSETTA_DATABASE> --outdir {output_dir}"
     }
   ]
 }

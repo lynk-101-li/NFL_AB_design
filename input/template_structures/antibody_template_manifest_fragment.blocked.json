@@ -1,0 +1,23 @@
+{
+  "evidence_path": "input/template_structures/antibody_template_evidence.json",
+  "evidence_sha256": "1ccc3b0957d1c962a54c34e17be4a28a6f5e71fe622178d1de59b2385b751ad0",
+  "execution_state": "blocked_pending_human_review",
+  "framework_coordinate_inputs": {
+    "germinal_scfv_pdbs": {
+      "template_15-C12-H6": "input/template_structures/template_15-C12-H6.neutral_seed.scfv.pdb",
+      "template_7-H11-D3-2-C7": "input/template_structures/template_7-H11-D3-2-C7.neutral_seed.scfv.pdb"
+    },
+    "rfantibody_hlt_pdbs": {
+      "template_15-C12-H6": "input/template_structures/template_15-C12-H6.exact_chothia.hlt.pdb",
+      "template_7-H11-D3-2-C7": "input/template_structures/template_7-H11-D3-2-C7.exact_chothia.hlt.pdb"
+    }
+  },
+  "note": "Fragment only; do not treat as a formal target manifest.",
+  "real_model_handoff_authorized": false,
+  "review": {
+    "contracts_acknowledged": false,
+    "reviewed_at": "",
+    "reviewed_by": ""
+  },
+  "schema": "nfl_ab_design.antibody_template_manifest_fragment.v1"
+}

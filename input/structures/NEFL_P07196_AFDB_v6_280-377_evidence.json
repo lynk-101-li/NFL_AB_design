@@ -1,0 +1,1120 @@
+{
+  "schema": "nfl_ab_design.target_structure_evidence.v1",
+  "execution_state": "blocked_pending_human_review",
+  "scientific_status": "theoretical_prediction_not_experimentally_determined",
+  "source": {
+    "database": "AlphaFold Protein Structure Database",
+    "accession": "P07196",
+    "model_id": "AF-P07196-F1-model_v6",
+    "model_version": "v6",
+    "download_url": "https://alphafold.ebi.ac.uk/files/AF-P07196-F1-model_v6.pdb",
+    "source_pdb_path": "input/structures/AF-P07196-F1-model_v6.pdb",
+    "sha256": "37912aac5cefd85b177e754a7c55c10c0f50166baf7f30b012151492eae300b1",
+    "license_noted_in_source_pdb": "CC-BY-4.0",
+    "source_disclaimer": "AlphaFold DB coordinates are theoretical predictions and are not a substitute for experimentally determined structure evidence."
+  },
+  "extraction": {
+    "target_pdb_path": "input/structures/NEFL_P07196_AFDB_v6_280-377_chainA.pdb",
+    "target_pdb_sha256": "80686267d6a93eda5829bab187406c14caf0365ba7bee21a4eb0d2ed082fc73b",
+    "target_fasta_path": "input/structures/NEFL_P07196_AFDB_v6_280-377.fasta",
+    "target_fasta_sha256": "6bf2e5a449a94eddb7c2d59adeaf22454b1e058f057cd3c794d76f0bb5268ef9",
+    "source_chain": "A",
+    "full_coordinate_range_1_based_inclusive": [
+      280,
+      377
+    ],
+    "local_coordinate_range_1_based_inclusive": [
+      1,
+      98
+    ],
+    "residue_count": 98,
+    "full_residue_numbering_retained_in_pdb": true,
+    "antigen_sequence_in_pdb_order": "FKSRFTVLTESAAKNTDAVRAAKDEVSESRRLLKAKTLEIEACRGMNEALEKQLQELEDKQNADISAMQDTINKLENELRTTKSEMARYLKEYQDLLN"
+  },
+  "validation": {
+    "pinned_source_sha256_match": true,
+    "source_seqres_length": 543,
+    "source_atom_residue_count": 543,
+    "source_seqres_equals_atom_sequence": true,
+    "source_coordinates_contiguous_1_through_543": true,
+    "target_coordinates_contiguous_280_through_377": true,
+    "target_sequence_equals_campaign_contract": true,
+    "target_backbone_N_CA_C_O_complete_for_all_residues": true,
+    "source_canonical_heavy_atom_topology_complete_for_all_residues": true,
+    "target_canonical_heavy_atom_topology_complete_for_all_residues": true,
+    "epitope_sequences_match_campaign_contract": true
+  },
+  "coordinate_mappings": {
+    "coordinate_system": "UniProt_P07196_1_based_inclusive",
+    "full_coordinate_to_pdb": {
+      "280": {
+        "chain_id": "A",
+        "residue_number": 280,
+        "insertion_code": ""
+      },
+      "281": {
+        "chain_id": "A",
+        "residue_number": 281,
+        "insertion_code": ""
+      },
+      "282": {
+        "chain_id": "A",
+        "residue_number": 282,
+        "insertion_code": ""
+      },
+      "283": {
+        "chain_id": "A",
+        "residue_number": 283,
+        "insertion_code": ""
+      },
+      "284": {
+        "chain_id": "A",
+        "residue_number": 284,
+        "insertion_code": ""
+      },
+      "285": {
+        "chain_id": "A",
+        "residue_number": 285,
+        "insertion_code": ""
+      },
+      "286": {
+        "chain_id": "A",
+        "residue_number": 286,
+        "insertion_code": ""
+      },
+      "287": {
+        "chain_id": "A",
+        "residue_number": 287,
+        "insertion_code": ""
+      },
+      "288": {
+        "chain_id": "A",
+        "residue_number": 288,
+        "insertion_code": ""
+      },
+      "289": {
+        "chain_id": "A",
+        "residue_number": 289,
+        "insertion_code": ""
+      },
+      "290": {
+        "chain_id": "A",
+        "residue_number": 290,
+        "insertion_code": ""
+      },
+      "291": {
+        "chain_id": "A",
+        "residue_number": 291,
+        "insertion_code": ""
+      },
+      "292": {
+        "chain_id": "A",
+        "residue_number": 292,
+        "insertion_code": ""
+      },
+      "293": {
+        "chain_id": "A",
+        "residue_number": 293,
+        "insertion_code": ""
+      },
+      "294": {
+        "chain_id": "A",
+        "residue_number": 294,
+        "insertion_code": ""
+      },
+      "295": {
+        "chain_id": "A",
+        "residue_number": 295,
+        "insertion_code": ""
+      },
+      "296": {
+        "chain_id": "A",
+        "residue_number": 296,
+        "insertion_code": ""
+      },
+      "297": {
+        "chain_id": "A",
+        "residue_number": 297,
+        "insertion_code": ""
+      },
+      "298": {
+        "chain_id": "A",
+        "residue_number": 298,
+        "insertion_code": ""
+      },
+      "299": {
+        "chain_id": "A",
+        "residue_number": 299,
+        "insertion_code": ""
+      },
+      "300": {
+        "chain_id": "A",
+        "residue_number": 300,
+        "insertion_code": ""
+      },
+      "301": {
+        "chain_id": "A",
+        "residue_number": 301,
+        "insertion_code": ""
+      },
+      "302": {
+        "chain_id": "A",
+        "residue_number": 302,
+        "insertion_code": ""
+      },
+      "303": {
+        "chain_id": "A",
+        "residue_number": 303,
+        "insertion_code": ""
+      },
+      "304": {
+        "chain_id": "A",
+        "residue_number": 304,
+        "insertion_code": ""
+      },
+      "305": {
+        "chain_id": "A",
+        "residue_number": 305,
+        "insertion_code": ""
+      },
+      "306": {
+        "chain_id": "A",
+        "residue_number": 306,
+        "insertion_code": ""
+      },
+      "307": {
+        "chain_id": "A",
+        "residue_number": 307,
+        "insertion_code": ""
+      },
+      "308": {
+        "chain_id": "A",
+        "residue_number": 308,
+        "insertion_code": ""
+      },
+      "309": {
+        "chain_id": "A",
+        "residue_number": 309,
+        "insertion_code": ""
+      },
+      "310": {
+        "chain_id": "A",
+        "residue_number": 310,
+        "insertion_code": ""
+      },
+      "311": {
+        "chain_id": "A",
+        "residue_number": 311,
+        "insertion_code": ""
+      },
+      "312": {
+        "chain_id": "A",
+        "residue_number": 312,
+        "insertion_code": ""
+      },
+      "313": {
+        "chain_id": "A",
+        "residue_number": 313,
+        "insertion_code": ""
+      },
+      "314": {
+        "chain_id": "A",
+        "residue_number": 314,
+        "insertion_code": ""
+      },
+      "315": {
+        "chain_id": "A",
+        "residue_number": 315,
+        "insertion_code": ""
+      },
+      "316": {
+        "chain_id": "A",
+        "residue_number": 316,
+        "insertion_code": ""
+      },
+      "317": {
+        "chain_id": "A",
+        "residue_number": 317,
+        "insertion_code": ""
+      },
+      "318": {
+        "chain_id": "A",
+        "residue_number": 318,
+        "insertion_code": ""
+      },
+      "319": {
+        "chain_id": "A",
+        "residue_number": 319,
+        "insertion_code": ""
+      },
+      "320": {
+        "chain_id": "A",
+        "residue_number": 320,
+        "insertion_code": ""
+      },
+      "321": {
+        "chain_id": "A",
+        "residue_number": 321,
+        "insertion_code": ""
+      },
+      "322": {
+        "chain_id": "A",
+        "residue_number": 322,
+        "insertion_code": ""
+      },
+      "323": {
+        "chain_id": "A",
+        "residue_number": 323,
+        "insertion_code": ""
+      },
+      "324": {
+        "chain_id": "A",
+        "residue_number": 324,
+        "insertion_code": ""
+      },
+      "325": {
+        "chain_id": "A",
+        "residue_number": 325,
+        "insertion_code": ""
+      },
+      "326": {
+        "chain_id": "A",
+        "residue_number": 326,
+        "insertion_code": ""
+      },
+      "327": {
+        "chain_id": "A",
+        "residue_number": 327,
+        "insertion_code": ""
+      },
+      "328": {
+        "chain_id": "A",
+        "residue_number": 328,
+        "insertion_code": ""
+      },
+      "329": {
+        "chain_id": "A",
+        "residue_number": 329,
+        "insertion_code": ""
+      },
+      "330": {
+        "chain_id": "A",
+        "residue_number": 330,
+        "insertion_code": ""
+      },
+      "331": {
+        "chain_id": "A",
+        "residue_number": 331,
+        "insertion_code": ""
+      },
+      "332": {
+        "chain_id": "A",
+        "residue_number": 332,
+        "insertion_code": ""
+      },
+      "333": {
+        "chain_id": "A",
+        "residue_number": 333,
+        "insertion_code": ""
+      },
+      "334": {
+        "chain_id": "A",
+        "residue_number": 334,
+        "insertion_code": ""
+      },
+      "335": {
+        "chain_id": "A",
+        "residue_number": 335,
+        "insertion_code": ""
+      },
+      "336": {
+        "chain_id": "A",
+        "residue_number": 336,
+        "insertion_code": ""
+      },
+      "337": {
+        "chain_id": "A",
+        "residue_number": 337,
+        "insertion_code": ""
+      },
+      "338": {
+        "chain_id": "A",
+        "residue_number": 338,
+        "insertion_code": ""
+      },
+      "339": {
+        "chain_id": "A",
+        "residue_number": 339,
+        "insertion_code": ""
+      },
+      "340": {
+        "chain_id": "A",
+        "residue_number": 340,
+        "insertion_code": ""
+      },
+      "341": {
+        "chain_id": "A",
+        "residue_number": 341,
+        "insertion_code": ""
+      },
+      "342": {
+        "chain_id": "A",
+        "residue_number": 342,
+        "insertion_code": ""
+      },
+      "343": {
+        "chain_id": "A",
+        "residue_number": 343,
+        "insertion_code": ""
+      },
+      "344": {
+        "chain_id": "A",
+        "residue_number": 344,
+        "insertion_code": ""
+      },
+      "345": {
+        "chain_id": "A",
+        "residue_number": 345,
+        "insertion_code": ""
+      },
+      "346": {
+        "chain_id": "A",
+        "residue_number": 346,
+        "insertion_code": ""
+      },
+      "347": {
+        "chain_id": "A",
+        "residue_number": 347,
+        "insertion_code": ""
+      },
+      "348": {
+        "chain_id": "A",
+        "residue_number": 348,
+        "insertion_code": ""
+      },
+      "349": {
+        "chain_id": "A",
+        "residue_number": 349,
+        "insertion_code": ""
+      },
+      "350": {
+        "chain_id": "A",
+        "residue_number": 350,
+        "insertion_code": ""
+      },
+      "351": {
+        "chain_id": "A",
+        "residue_number": 351,
+        "insertion_code": ""
+      },
+      "352": {
+        "chain_id": "A",
+        "residue_number": 352,
+        "insertion_code": ""
+      },
+      "353": {
+        "chain_id": "A",
+        "residue_number": 353,
+        "insertion_code": ""
+      },
+      "354": {
+        "chain_id": "A",
+        "residue_number": 354,
+        "insertion_code": ""
+      },
+      "355": {
+        "chain_id": "A",
+        "residue_number": 355,
+        "insertion_code": ""
+      },
+      "356": {
+        "chain_id": "A",
+        "residue_number": 356,
+        "insertion_code": ""
+      },
+      "357": {
+        "chain_id": "A",
+        "residue_number": 357,
+        "insertion_code": ""
+      },
+      "358": {
+        "chain_id": "A",
+        "residue_number": 358,
+        "insertion_code": ""
+      },
+      "359": {
+        "chain_id": "A",
+        "residue_number": 359,
+        "insertion_code": ""
+      },
+      "360": {
+        "chain_id": "A",
+        "residue_number": 360,
+        "insertion_code": ""
+      },
+      "361": {
+        "chain_id": "A",
+        "residue_number": 361,
+        "insertion_code": ""
+      },
+      "362": {
+        "chain_id": "A",
+        "residue_number": 362,
+        "insertion_code": ""
+      },
+      "363": {
+        "chain_id": "A",
+        "residue_number": 363,
+        "insertion_code": ""
+      },
+      "364": {
+        "chain_id": "A",
+        "residue_number": 364,
+        "insertion_code": ""
+      },
+      "365": {
+        "chain_id": "A",
+        "residue_number": 365,
+        "insertion_code": ""
+      },
+      "366": {
+        "chain_id": "A",
+        "residue_number": 366,
+        "insertion_code": ""
+      },
+      "367": {
+        "chain_id": "A",
+        "residue_number": 367,
+        "insertion_code": ""
+      },
+      "368": {
+        "chain_id": "A",
+        "residue_number": 368,
+        "insertion_code": ""
+      },
+      "369": {
+        "chain_id": "A",
+        "residue_number": 369,
+        "insertion_code": ""
+      },
+      "370": {
+        "chain_id": "A",
+        "residue_number": 370,
+        "insertion_code": ""
+      },
+      "371": {
+        "chain_id": "A",
+        "residue_number": 371,
+        "insertion_code": ""
+      },
+      "372": {
+        "chain_id": "A",
+        "residue_number": 372,
+        "insertion_code": ""
+      },
+      "373": {
+        "chain_id": "A",
+        "residue_number": 373,
+        "insertion_code": ""
+      },
+      "374": {
+        "chain_id": "A",
+        "residue_number": 374,
+        "insertion_code": ""
+      },
+      "375": {
+        "chain_id": "A",
+        "residue_number": 375,
+        "insertion_code": ""
+      },
+      "376": {
+        "chain_id": "A",
+        "residue_number": 376,
+        "insertion_code": ""
+      },
+      "377": {
+        "chain_id": "A",
+        "residue_number": 377,
+        "insertion_code": ""
+      }
+    },
+    "full_coordinate_to_local_1_based": {
+      "280": 1,
+      "281": 2,
+      "282": 3,
+      "283": 4,
+      "284": 5,
+      "285": 6,
+      "286": 7,
+      "287": 8,
+      "288": 9,
+      "289": 10,
+      "290": 11,
+      "291": 12,
+      "292": 13,
+      "293": 14,
+      "294": 15,
+      "295": 16,
+      "296": 17,
+      "297": 18,
+      "298": 19,
+      "299": 20,
+      "300": 21,
+      "301": 22,
+      "302": 23,
+      "303": 24,
+      "304": 25,
+      "305": 26,
+      "306": 27,
+      "307": 28,
+      "308": 29,
+      "309": 30,
+      "310": 31,
+      "311": 32,
+      "312": 33,
+      "313": 34,
+      "314": 35,
+      "315": 36,
+      "316": 37,
+      "317": 38,
+      "318": 39,
+      "319": 40,
+      "320": 41,
+      "321": 42,
+      "322": 43,
+      "323": 44,
+      "324": 45,
+      "325": 46,
+      "326": 47,
+      "327": 48,
+      "328": 49,
+      "329": 50,
+      "330": 51,
+      "331": 52,
+      "332": 53,
+      "333": 54,
+      "334": 55,
+      "335": 56,
+      "336": 57,
+      "337": 58,
+      "338": 59,
+      "339": 60,
+      "340": 61,
+      "341": 62,
+      "342": 63,
+      "343": 64,
+      "344": 65,
+      "345": 66,
+      "346": 67,
+      "347": 68,
+      "348": 69,
+      "349": 70,
+      "350": 71,
+      "351": 72,
+      "352": 73,
+      "353": 74,
+      "354": 75,
+      "355": 76,
+      "356": 77,
+      "357": 78,
+      "358": 79,
+      "359": 80,
+      "360": 81,
+      "361": 82,
+      "362": 83,
+      "363": 84,
+      "364": 85,
+      "365": 86,
+      "366": 87,
+      "367": 88,
+      "368": 89,
+      "369": 90,
+      "370": 91,
+      "371": 92,
+      "372": 93,
+      "373": 94,
+      "374": 95,
+      "375": 96,
+      "376": 97,
+      "377": 98
+    }
+  },
+  "alphafold_plddt": {
+    "field_source": "PDB B-factor column",
+    "interpretation": "AlphaFold confidence, not experimental B-factor",
+    "target_statistics": {
+      "count": 98,
+      "mean": 95.15,
+      "median": 95.44,
+      "minimum": 87.88,
+      "maximum": 98.12,
+      "counts_by_confidence_band": {
+        "very_high_ge_90": 94,
+        "confident_70_to_lt_90": 4,
+        "low_50_to_lt_70": 0,
+        "very_low_lt_50": 0
+      }
+    },
+    "per_full_coordinate": {
+      "280": 94.06,
+      "281": 96.12,
+      "282": 95.06,
+      "283": 96.38,
+      "284": 95.75,
+      "285": 95.81,
+      "286": 96.06,
+      "287": 95.75,
+      "288": 95.62,
+      "289": 95.75,
+      "290": 95.12,
+      "291": 94.06,
+      "292": 95.25,
+      "293": 96.25,
+      "294": 94.38,
+      "295": 95.25,
+      "296": 95.5,
+      "297": 94.88,
+      "298": 95.38,
+      "299": 95.56,
+      "300": 95.5,
+      "301": 94.56,
+      "302": 96.69,
+      "303": 96.12,
+      "304": 95.25,
+      "305": 95.31,
+      "306": 95.31,
+      "307": 95.94,
+      "308": 93.06,
+      "309": 95.62,
+      "310": 93.88,
+      "311": 96.75,
+      "312": 94.38,
+      "313": 95.19,
+      "314": 93.88,
+      "315": 94.56,
+      "316": 94.69,
+      "317": 94.62,
+      "318": 94.25,
+      "319": 92.06,
+      "320": 94.88,
+      "321": 93.69,
+      "322": 89.19,
+      "323": 93.12,
+      "324": 91.19,
+      "325": 93.88,
+      "326": 87.88,
+      "327": 94.5,
+      "328": 92.25,
+      "329": 91.0,
+      "330": 93.69,
+      "331": 94.12,
+      "332": 92.62,
+      "333": 88.69,
+      "334": 93.81,
+      "335": 93.56,
+      "336": 91.62,
+      "337": 94.81,
+      "338": 93.88,
+      "339": 94.94,
+      "340": 89.69,
+      "341": 93.12,
+      "342": 95.19,
+      "343": 94.12,
+      "344": 94.5,
+      "345": 95.94,
+      "346": 96.06,
+      "347": 93.0,
+      "348": 96.44,
+      "349": 97.81,
+      "350": 97.5,
+      "351": 95.94,
+      "352": 97.81,
+      "353": 97.88,
+      "354": 97.19,
+      "355": 97.75,
+      "356": 97.69,
+      "357": 98.12,
+      "358": 96.62,
+      "359": 97.69,
+      "360": 97.5,
+      "361": 96.56,
+      "362": 97.44,
+      "363": 97.56,
+      "364": 98.0,
+      "365": 97.06,
+      "366": 96.69,
+      "367": 97.38,
+      "368": 96.75,
+      "369": 96.81,
+      "370": 97.12,
+      "371": 97.81,
+      "372": 97.31,
+      "373": 96.62,
+      "374": 96.25,
+      "375": 97.12,
+      "376": 96.31,
+      "377": 95.81
+    }
+  },
+  "exposure_proxy_definition": {
+    "scope": "all 543 residues of the full-length AlphaFold DB source model",
+    "ca_neighbor_proxy": "Count residues with CA within 10 A after excluding sequence-near positions |delta|<=2; fewer neighbors can suggest less geometric occlusion but do not establish solvent exposure.",
+    "sidechain_contact_proxy": "Use Cys SG or the farthest resolved side-chain heavy atom from CA; count nonlocal residues with any heavy atom within 6 A after excluding |delta|<=1. Fewer contacts can suggest exposure.",
+    "not_sasa": true,
+    "limitations": "These are deterministic geometry proxies, not solvent-accessible surface area, dynamics, epitope accessibility, or binding evidence."
+  },
+  "hotspot_proposals": [
+    {
+      "epitope_id": "helix_surface_323_331",
+      "full_coordinate_range_1_based_inclusive": [
+        323,
+        331
+      ],
+      "sequence": "RGMNEALEK",
+      "structure_basis": "AlphaFold DB P07196 v6 theoretical monomer prediction",
+      "proposal_basis": "Met325 and Leu329 form an i/i+4 pair on the same predicted solvent-accessible alpha-helical face; no cysteine contact is required.",
+      "proposed_hotspots_pending_human_review": [
+        325,
+        329
+      ],
+      "alphafold_plddt_statistics": {
+        "count": 9,
+        "mean": 92.4,
+        "median": 93.12,
+        "minimum": 87.88,
+        "maximum": 94.5,
+        "counts_by_confidence_band": {
+          "very_high_ge_90": 8,
+          "confident_70_to_lt_90": 1,
+          "low_50_to_lt_70": 0,
+          "very_low_lt_50": 0
+        }
+      },
+      "hotspot_evidence": [
+        {
+          "full_coordinate_1_based": 325,
+          "pdb_address": {
+            "chain_id": "A",
+            "residue_number": 325,
+            "insertion_code": ""
+          },
+          "local_coordinate_1_based": 46,
+          "residue_name_3_letter": "MET",
+          "amino_acid_1_letter": "M",
+          "atom_presence": {
+            "atom_names": [
+              "C",
+              "CA",
+              "CB",
+              "CE",
+              "CG",
+              "N",
+              "O",
+              "SD"
+            ],
+            "backbone_N_CA_C_O_complete": true,
+            "sidechain_probe_atom": "CE",
+            "sidechain_probe_present": true,
+            "cys_anchor_SG_present": null
+          },
+          "alphafold_plddt": 93.88,
+          "geometry": {
+            "ca_distance_to_epitope_ca_centroid_A": 3.981,
+            "sidechain_probe_nearest_nonlocal_heavy_atom_distance_A": 5.64
+          },
+          "exposure_proxies_full_length_model_context": {
+            "nonlocal_ca_neighbor_count_within_10A": 8,
+            "nonlocal_ca_neighbor_residues_within_10A": [
+              319,
+              320,
+              321,
+              322,
+              328,
+              329,
+              330,
+              331
+            ],
+            "sidechain_probe_contacting_residue_count_within_6A": 1,
+            "sidechain_probe_contacting_residues_within_6A": [
+              321
+            ]
+          },
+          "proposal_status": "proposed_pending_human_review"
+        },
+        {
+          "full_coordinate_1_based": 329,
+          "pdb_address": {
+            "chain_id": "A",
+            "residue_number": 329,
+            "insertion_code": ""
+          },
+          "local_coordinate_1_based": 50,
+          "residue_name_3_letter": "LEU",
+          "amino_acid_1_letter": "L",
+          "atom_presence": {
+            "atom_names": [
+              "C",
+              "CA",
+              "CB",
+              "CD1",
+              "CD2",
+              "CG",
+              "N",
+              "O"
+            ],
+            "backbone_N_CA_C_O_complete": true,
+            "sidechain_probe_atom": "CD1",
+            "sidechain_probe_present": true,
+            "cys_anchor_SG_present": null
+          },
+          "alphafold_plddt": 91.0,
+          "geometry": {
+            "ca_distance_to_epitope_ca_centroid_A": 4.018,
+            "sidechain_probe_nearest_nonlocal_heavy_atom_distance_A": 3.917
+          },
+          "exposure_proxies_full_length_model_context": {
+            "nonlocal_ca_neighbor_count_within_10A": 8,
+            "nonlocal_ca_neighbor_residues_within_10A": [
+              323,
+              324,
+              325,
+              326,
+              332,
+              333,
+              334,
+              335
+            ],
+            "sidechain_probe_contacting_residue_count_within_6A": 2,
+            "sidechain_probe_contacting_residues_within_6A": [
+              325,
+              326
+            ]
+          },
+          "proposal_status": "proposed_pending_human_review"
+        }
+      ],
+      "pairwise_proposed_hotspot_geometry": [
+        {
+          "residue_1": 325,
+          "residue_2": 329,
+          "ca_distance_A": 6.191,
+          "sidechain_probe_distance_A": 6.355
+        }
+      ]
+    },
+    {
+      "epitope_id": "C_boundary_368_377",
+      "full_coordinate_range_1_based_inclusive": [
+        368,
+        377
+      ],
+      "sequence": "YLKEYQDLLN",
+      "structure_basis": "AlphaFold DB P07196 v6 theoretical monomer prediction",
+      "proposal_basis": "Tyr368, Tyr372, and Leu375 provide separated side-chain anchors across the configured C-terminal boundary epitope.",
+      "proposed_hotspots_pending_human_review": [
+        368,
+        372,
+        375
+      ],
+      "alphafold_plddt_statistics": {
+        "count": 10,
+        "mean": 96.79,
+        "median": 96.78,
+        "minimum": 95.81,
+        "maximum": 97.81,
+        "counts_by_confidence_band": {
+          "very_high_ge_90": 10,
+          "confident_70_to_lt_90": 0,
+          "low_50_to_lt_70": 0,
+          "very_low_lt_50": 0
+        }
+      },
+      "hotspot_evidence": [
+        {
+          "full_coordinate_1_based": 368,
+          "pdb_address": {
+            "chain_id": "A",
+            "residue_number": 368,
+            "insertion_code": ""
+          },
+          "local_coordinate_1_based": 89,
+          "residue_name_3_letter": "TYR",
+          "amino_acid_1_letter": "Y",
+          "atom_presence": {
+            "atom_names": [
+              "C",
+              "CA",
+              "CB",
+              "CD1",
+              "CD2",
+              "CE1",
+              "CE2",
+              "CG",
+              "CZ",
+              "N",
+              "O",
+              "OH"
+            ],
+            "backbone_N_CA_C_O_complete": true,
+            "sidechain_probe_atom": "OH",
+            "sidechain_probe_present": true,
+            "cys_anchor_SG_present": null
+          },
+          "alphafold_plddt": 96.75,
+          "geometry": {
+            "ca_distance_to_epitope_ca_centroid_A": 7.016,
+            "sidechain_probe_nearest_nonlocal_heavy_atom_distance_A": 5.424
+          },
+          "exposure_proxies_full_length_model_context": {
+            "nonlocal_ca_neighbor_count_within_10A": 8,
+            "nonlocal_ca_neighbor_residues_within_10A": [
+              362,
+              363,
+              364,
+              365,
+              371,
+              372,
+              373,
+              374
+            ],
+            "sidechain_probe_contacting_residue_count_within_6A": 1,
+            "sidechain_probe_contacting_residues_within_6A": [
+              364
+            ]
+          },
+          "proposal_status": "proposed_pending_human_review"
+        },
+        {
+          "full_coordinate_1_based": 372,
+          "pdb_address": {
+            "chain_id": "A",
+            "residue_number": 372,
+            "insertion_code": ""
+          },
+          "local_coordinate_1_based": 93,
+          "residue_name_3_letter": "TYR",
+          "amino_acid_1_letter": "Y",
+          "atom_presence": {
+            "atom_names": [
+              "C",
+              "CA",
+              "CB",
+              "CD1",
+              "CD2",
+              "CE1",
+              "CE2",
+              "CG",
+              "CZ",
+              "N",
+              "O",
+              "OH"
+            ],
+            "backbone_N_CA_C_O_complete": true,
+            "sidechain_probe_atom": "OH",
+            "sidechain_probe_present": true,
+            "cys_anchor_SG_present": null
+          },
+          "alphafold_plddt": 97.31,
+          "geometry": {
+            "ca_distance_to_epitope_ca_centroid_A": 2.293,
+            "sidechain_probe_nearest_nonlocal_heavy_atom_distance_A": 5.714
+          },
+          "exposure_proxies_full_length_model_context": {
+            "nonlocal_ca_neighbor_count_within_10A": 8,
+            "nonlocal_ca_neighbor_residues_within_10A": [
+              366,
+              367,
+              368,
+              369,
+              375,
+              376,
+              377,
+              378
+            ],
+            "sidechain_probe_contacting_residue_count_within_6A": 1,
+            "sidechain_probe_contacting_residues_within_6A": [
+              376
+            ]
+          },
+          "proposal_status": "proposed_pending_human_review"
+        },
+        {
+          "full_coordinate_1_based": 375,
+          "pdb_address": {
+            "chain_id": "A",
+            "residue_number": 375,
+            "insertion_code": ""
+          },
+          "local_coordinate_1_based": 96,
+          "residue_name_3_letter": "LEU",
+          "amino_acid_1_letter": "L",
+          "atom_presence": {
+            "atom_names": [
+              "C",
+              "CA",
+              "CB",
+              "CD1",
+              "CD2",
+              "CG",
+              "N",
+              "O"
+            ],
+            "backbone_N_CA_C_O_complete": true,
+            "sidechain_probe_atom": "CD2",
+            "sidechain_probe_present": true,
+            "cys_anchor_SG_present": null
+          },
+          "alphafold_plddt": 97.12,
+          "geometry": {
+            "ca_distance_to_epitope_ca_centroid_A": 4.366,
+            "sidechain_probe_nearest_nonlocal_heavy_atom_distance_A": 5.02
+          },
+          "exposure_proxies_full_length_model_context": {
+            "nonlocal_ca_neighbor_count_within_10A": 8,
+            "nonlocal_ca_neighbor_residues_within_10A": [
+              369,
+              370,
+              371,
+              372,
+              378,
+              379,
+              380,
+              381
+            ],
+            "sidechain_probe_contacting_residue_count_within_6A": 2,
+            "sidechain_probe_contacting_residues_within_6A": [
+              371,
+              372
+            ]
+          },
+          "proposal_status": "proposed_pending_human_review"
+        }
+      ],
+      "pairwise_proposed_hotspot_geometry": [
+        {
+          "residue_1": 368,
+          "residue_2": 372,
+          "ca_distance_A": 6.024,
+          "sidechain_probe_distance_A": 14.983
+        },
+        {
+          "residue_1": 368,
+          "residue_2": 375,
+          "ca_distance_A": 10.3,
+          "sidechain_probe_distance_A": 12.66
+        },
+        {
+          "residue_1": 372,
+          "residue_2": 375,
+          "ca_distance_A": 5.021,
+          "sidechain_probe_distance_A": 7.267
+        }
+      ]
+    }
+  ],
+  "review_gate": {
+    "status": "human_review_required",
+    "required_action": "Inspect structure, confidence, local chemistry, exposure (preferably with an independent SASA calculation), and model limitations before copying any proposal into selected_hotspots_by_epitope.",
+    "whole_epitope_window_must_not_be_selected_as_hotspots": true
+  }
+}

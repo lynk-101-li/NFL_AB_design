@@ -1,0 +1,8 @@
+* text=auto eol=lf
+# PDB is fixed-column data; trailing spaces and exact bytes are significant to
+# the checked SHA-256 provenance, so Git must not normalize or whitespace-check it.
+*.pdb binary
+*.fasta text eol=lf
+*.csv text eol=lf
+*.json text eol=lf
+*.sh text eol=lf

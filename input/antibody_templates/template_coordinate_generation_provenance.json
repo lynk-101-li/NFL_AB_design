@@ -1,0 +1,105 @@
+{
+  "schema": "nfl_ab_design.template_coordinate_generation_provenance.v1",
+  "generated_at": "2026-08-13T02:01:52+08:00",
+  "execution_host": {
+    "environment_class": "Linux NVIDIA GPU server",
+    "gpu": "NVIDIA GeForce RTX 4090 48GB",
+    "operating_scope": "template-coordinate preparation only"
+  },
+  "claim_boundary": {
+    "rfantibody_candidate_generation_executed": false,
+    "iggm_candidate_generation_executed": false,
+    "germinal_candidate_generation_executed": false,
+    "known_positive_cdr_sequences_used_for_coordinate_generation": false,
+    "known_framework_residues_used": true,
+    "neutral_cdr_seed_coordinates_are_candidates": false,
+    "coordinate_status": "computed template inputs pending human review"
+  },
+  "neutral_sequence_input": {
+    "path": "input/antibody_templates/neutral_template_fv.fasta",
+    "sha256": "0a388899cd1fc722bdb639538bd7af7a7b8ce6a3b98c679c02d5a0af982af37f",
+    "cdr_definition": "ANARCI 2020.04.23 Chothia exact campaign ranges"
+  },
+  "paired_fv_prediction": {
+    "tool": "ImmuneBuilder ABodyBuilder2",
+    "package_version": "1.2",
+    "package_wheel_sha256": "fe6eeb70ab5331eeeefe5562fb7fb5aa3413d8802b573485ed81e64588da4ac1",
+    "numbering_scheme": "chothia",
+    "ensemble_model_ids": [1, 2, 3, 4],
+    "torch": "2.3.1+cu118",
+    "cuda_available": true,
+    "weight_sha256": {
+      "antibody_model_1": "ecefff604457a105fe405dcca44a76b046609ff2ac3c355329974659f6881e09",
+      "antibody_model_2": "91dd9f5ebca8cc68f292d3a40ccdbc8a86974e7cebc4853e19565ecb8a8d508b",
+      "antibody_model_3": "33085a728cfb1059d9e817b785a21f1dda74eff8f083a0c2a033ae88bdbdcd45",
+      "antibody_model_4": "e2d666a22b1f0a7219baec778e67f36e448ad0cd8eed8dae044af20eec163a04"
+    },
+    "templates": {
+      "template_7-H11-D3-2-C7": {
+        "reported_top_ranked_model_index_1_based": 2,
+        "ensemble_error_mean": 0.35856005549430847,
+        "ensemble_error_max": 1.7475168704986572,
+        "unrefined_pdb_sha256": "935419c27f5a8863eeac9d86a01396ade961b35a9a0498a887c12172d83b623c",
+        "refined_pdb_sha256": "a9ea41c51f60150c99f70d47e5f1e4b25b1bc3591a236faf23fcd4121f644291"
+      },
+      "template_15-C12-H6": {
+        "reported_top_ranked_model_index_1_based": 3,
+        "ensemble_error_mean": 0.3374117612838745,
+        "ensemble_error_max": 2.6785640716552734,
+        "unrefined_pdb_sha256": "f2eb7a6a1a5d098a97649eb9ba47250d6a9d50164eb11e30d66423c6eb10f115",
+        "refined_pdb_sha256": "96c64b65fc3decf2349469323e78eaba134ef27a15dab51b49244031eb1c04e4"
+      }
+    }
+  },
+  "coordinate_refinement": {
+    "tool": "ImmuneBuilder.refine with OpenMM and PDBFixer",
+    "openmm_version": "8.5.2",
+    "pdbfixer_package_version": "1.12",
+    "cpu_threads": 4,
+    "strained_sidechain_rebuild_check": false,
+    "reason": "ImmuneBuilder 1.2 passes an invalid OpenMM CPU platform-properties set in its strained-sidechain repair branch; the disabled branch is recorded explicitly, OpenMM refinement still returned success after its peptide, cis/trans, stereo and clash checks, and the repository preparation tool independently rechecks canonical heavy atoms, peptide geometry and severe clashes.",
+    "refinement_success": true
+  },
+  "rfantibody_hlt_normalization": {
+    "converter": "RFantibody scripts/util/chothia2HLT.py",
+    "converter_sha256": "c5219eda81ea88f254d8ccd2b0ed8a655a75313dc6af68391fd630b61f1c727d",
+    "whole_fab": true,
+    "broad_converter_labels_retained_as_evidence_only": true,
+    "exact_cdr_labels_are_rebuilt_by_repository_tool": true,
+    "official_broad_hlt_sha256": {
+      "template_7-H11-D3-2-C7": "09fa4106b67c669764c74368a6b49dc89619de3f17c18451a6fe722ec6d60545",
+      "template_15-C12-H6": "6019423cd7e08eb2e2936b5b5a65f245b8c11c9768c6bd8aa3daa677695f1830"
+    }
+  },
+  "germinal_scfv_geometry": {
+    "germinal_source_archive_pin": "1e1c1a5b79884ae45abae030c9df90d9423a990a",
+    "generic_scfv_original_sha256": "cbdb24aac3fe9b15b738816421fa02b422d341fde5ccd6ffb12a763763516a93",
+    "generic_scfv_refined_sha256": "5cf51d5b93d17654f9efd8dde7c488cfd6105964210cdcbe5eeee06511edf58d",
+    "observed_linker": "AGGGGSGGGGSGGGS",
+    "observed_linker_is_standard_GGGGS3": false,
+    "domain_graft_method": "framework-CA Kabsch alignment to the generic Germinal scFv followed by junction anchoring and OpenMM minimization",
+    "raw_domain_graft_sha256": {
+      "template_7-H11-D3-2-C7": "b973f777ade7d9b2571f477150305ced3dbcfe1644c0329eeb43ba781dbff80e",
+      "template_15-C12-H6": "007bd1ed36220b11279332daea579bb1ae67035718c98e39c4f492740d0c57a6"
+    },
+    "refined_scfv_sha256": {
+      "template_7-H11-D3-2-C7": "47f81500c6dd8260b856157ac70bd30561e75cbb78af14d1f84cbcd468cf61b2",
+      "template_15-C12-H6": "39aca91375bbcbab3547f64bd1f9a12894a6dd60972b219d9b367450d011a395"
+    }
+  },
+  "input_artifact_sha256": {
+    "paired_fv_pdbs": {
+      "template_7-H11-D3-2-C7": "a9ea41c51f60150c99f70d47e5f1e4b25b1bc3591a236faf23fcd4121f644291",
+      "template_15-C12-H6": "96c64b65fc3decf2349469323e78eaba134ef27a15dab51b49244031eb1c04e4"
+    },
+    "prepared_scfv_pdbs": {
+      "template_7-H11-D3-2-C7": "47f81500c6dd8260b856157ac70bd30561e75cbb78af14d1f84cbcd468cf61b2",
+      "template_15-C12-H6": "39aca91375bbcbab3547f64bd1f9a12894a6dd60972b219d9b367450d011a395"
+    },
+    "generic_scfv_pdb": "5cf51d5b93d17654f9efd8dde7c488cfd6105964210cdcbe5eeee06511edf58d",
+    "official_broad_hlt_pdbs": {
+      "template_7-H11-D3-2-C7": "09fa4106b67c669764c74368a6b49dc89619de3f17c18451a6fe722ec6d60545",
+      "template_15-C12-H6": "6019423cd7e08eb2e2936b5b5a65f245b8c11c9768c6bd8aa3daa677695f1830"
+    }
+  }
+}

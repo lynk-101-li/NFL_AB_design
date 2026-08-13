@@ -1,29 +1,29 @@
-epitope_id,start,end,length_aa,sequence,net_charge_pH7_proxy,hydrophobic_fraction,polar_fraction,aromatic_fraction,exposure_proxy,nfl_specificity_proxy,rod_stability_proxy,ptm_low_risk_proxy,anchor_score,epitope_priority_score,notes,epitope_rank
-Cys322_anchor_316_331,316,331,16,TLEIEACRGMNEALEK,-2.0,0.4375,0.1875,0.0,0.709,0.581,0.92,1.0,0.85,79.76,contains Cys322 disulfide-anchor region; acidic surface proxy favors basic antibody contacts,1
-C_boundary_368_377,368,377,10,YLKEYQDLLN,-1.0,0.5,0.4,0.2,0.775,0.59,0.92,1.0,0.75,79.58,near inferred C-terminal cathepsin boundary; hydrophobic/coiled-coil contact proxy,2
-Cys322_core_319_327,319,327,9,IEACRGMNE,-1.0,0.4444,0.2222,0.0,0.706,0.567,0.92,1.0,0.85,79.37,contains Cys322 disulfide-anchor region,3
-N_boundary_279_290,279,290,12,WFKSRFTVLTES,1.0,0.4167,0.3333,0.25,0.721,0.588,0.92,1.0,0.75,78.17,near inferred N-terminal cathepsin boundary,4
-N_boundary_280_291,280,291,12,FKSRFTVLTESA,1.0,0.4167,0.3333,0.1667,0.721,0.571,0.92,1.0,0.75,77.84,near inferred N-terminal cathepsin boundary,5
-sliding_320_331,320,331,12,EACRGMNEALEK,-1.0,0.4167,0.1667,0.0,0.721,0.596,0.92,1.0,0.7,77.34,contains Cys322 disulfide-anchor region; sliding-window candidate,6
-sliding_312_323,312,323,12,LKAKTLEIEACR,1.0,0.5,0.1667,0.0,0.711,0.596,0.92,1.0,0.7,77.09,contains Cys322 disulfide-anchor region; hydrophobic/coiled-coil contact proxy; sliding-window candidate,7
-sliding_364_375,364,375,12,EMARYLKEYQDL,-1.0,0.5,0.25,0.1667,0.757,0.629,0.92,1.0,0.6,76.9,near inferred C-terminal cathepsin boundary; hydrophobic/coiled-coil contact proxy; sliding-window candidate,8
-sliding_316_327,316,327,12,TLEIEACRGMNE,-2.0,0.4167,0.25,0.0,0.721,0.567,0.92,1.0,0.7,76.75,contains Cys322 disulfide-anchor region; acidic surface proxy favors basic antibody contacts; sliding-window candidate,9
-sliding_280_291,280,291,12,FKSRFTVLTESA,1.0,0.4167,0.3333,0.1667,0.721,0.571,0.92,1.0,0.6,74.84,near inferred N-terminal cathepsin boundary; sliding-window candidate,10
-sliding_352_363,352,363,12,NKLENELRTTKS,1.0,0.1667,0.4167,0.0,0.858,0.596,0.92,1.0,0.35,73.78,sliding-window candidate,11
-sliding_360_371,360,371,12,TTKSEMARYLKE,1.0,0.3333,0.3333,0.0833,0.812,0.613,0.92,1.0,0.35,72.96,near inferred C-terminal cathepsin boundary; sliding-window candidate,12
-C_boundary_369_380,369,380,12,LKEYQDLLNVKM,0.0,0.5,0.25,0.0833,0.711,0.583,0.92,1.0,0.5,72.84,near inferred C-terminal cathepsin boundary; hydrophobic/coiled-coil contact proxy,13
-sliding_284_295,284,295,12,FTVLTESAAKNT,0.0,0.4167,0.4167,0.0833,0.721,0.525,0.92,0.92,0.6,72.72,sliding-window candidate,14
-sliding_332_343,332,343,12,QLQELEDKQNAD,-3.0,0.25,0.3333,0.0,0.812,0.596,0.92,1.0,0.35,72.63,acidic surface proxy favors basic antibody contacts; sliding-window candidate,15
-sliding_348_359,348,359,12,QDTINKLENELR,-1.0,0.25,0.3333,0.0,0.812,0.596,0.92,1.0,0.35,72.63,sliding-window candidate,16
-sliding_356_367,356,367,12,NELRTTKSEMAR,1.0,0.25,0.3333,0.0,0.812,0.596,0.92,1.0,0.35,72.63,sliding-window candidate,17
-sliding_300_311,300,311,12,AAKDEVSESRRL,0.0,0.3333,0.1667,0.0,0.767,0.625,0.92,1.0,0.35,72.07,sliding-window candidate,18
-sliding_304_315,304,315,12,EVSESRRLLKAK,2.0,0.3333,0.1667,0.0,0.767,0.625,0.92,1.0,0.35,72.07,sliding-window candidate,19
-sliding_328_339,328,339,12,ALEKQLQELEDK,-2.0,0.3333,0.1667,0.0,0.767,0.625,0.92,1.0,0.35,72.07,acidic surface proxy favors basic antibody contacts; sliding-window candidate,20
-sliding_296_307,296,307,12,DAVRAAKDEVSE,-2.0,0.4167,0.0833,0.0,0.721,0.625,0.92,1.0,0.35,70.92,acidic surface proxy favors basic antibody contacts; sliding-window candidate,21
-sliding_308_319,308,319,12,SRRLLKAKTLEI,3.0,0.4167,0.1667,0.0,0.721,0.596,0.92,1.0,0.35,70.34,sliding-window candidate,22
-sliding_324_335,324,335,12,GMNEALEKQLQE,-2.0,0.3333,0.25,0.0,0.721,0.567,0.92,1.0,0.35,69.75,acidic surface proxy favors basic antibody contacts; sliding-window candidate,23
-sliding_336_347,336,347,12,LEDKQNADISAM,-2.0,0.4167,0.25,0.0,0.721,0.567,0.92,1.0,0.35,69.75,acidic surface proxy favors basic antibody contacts; sliding-window candidate,24
-sliding_288_299,288,299,12,TESAAKNTDAVR,0.0,0.3333,0.3333,0.0,0.767,0.567,0.92,0.92,0.35,69.7,sliding-window candidate,25
-sliding_344_355,344,355,12,ISAMQDTINKLE,-1.0,0.4167,0.3333,0.0,0.721,0.537,0.92,1.0,0.35,69.17,sliding-window candidate,26
-sliding_292_303,292,303,12,AKNTDAVRAAKD,1.0,0.4167,0.1667,0.0,0.721,0.588,0.92,0.92,0.35,68.97,sliding-window candidate,27
-sliding_340_351,340,351,12,QNADISAMQDTI,-2.0,0.4167,0.4167,0.0,0.721,0.508,0.92,1.0,0.35,68.59,acidic surface proxy favors basic antibody contacts; sliding-window candidate,28
+epitope_id,start,end,length_aa,sequence,net_charge_pH7_proxy,hydrophobic_fraction,polar_fraction,aromatic_fraction,exposure_proxy,nfl_specificity_proxy,rod_stability_proxy,ptm_low_risk_proxy,anchor_score,epitope_priority_score,notes,epitope_rank,configured_design_target
+C_boundary_368_377,368,377,10,YLKEYQDLLN,-1.0,0.5,0.4,0.2,0.775,0.59,0.92,1.0,0.75,79.58,near inferred C-terminal cathepsin boundary; hydrophobic/coiled-coil contact proxy,1,True
+N_boundary_279_290,279,290,12,WFKSRFTVLTES,1.0,0.4167,0.3333,0.25,0.721,0.588,0.92,1.0,0.75,78.17,near inferred N-terminal cathepsin boundary,2,False
+N_boundary_280_291,280,291,12,FKSRFTVLTESA,1.0,0.4167,0.3333,0.1667,0.721,0.571,0.92,1.0,0.75,77.84,near inferred N-terminal cathepsin boundary,3,False
+sliding_320_331,320,331,12,EACRGMNEALEK,-1.0,0.4167,0.1667,0.0,0.721,0.596,0.92,1.0,0.7,77.34,sliding-window candidate,4,False
+sliding_312_323,312,323,12,LKAKTLEIEACR,1.0,0.5,0.1667,0.0,0.711,0.596,0.92,1.0,0.7,77.09,hydrophobic/coiled-coil contact proxy; sliding-window candidate,5,False
+sliding_364_375,364,375,12,EMARYLKEYQDL,-1.0,0.5,0.25,0.1667,0.757,0.629,0.92,1.0,0.6,76.9,near inferred C-terminal cathepsin boundary; hydrophobic/coiled-coil contact proxy; sliding-window candidate,6,False
+sliding_316_327,316,327,12,TLEIEACRGMNE,-2.0,0.4167,0.25,0.0,0.721,0.567,0.92,1.0,0.7,76.75,acidic surface proxy favors basic antibody contacts; sliding-window candidate,7,False
+Cys322_core_319_327,319,327,9,IEACRGMNE,-1.0,0.4444,0.2222,0.0,0.706,0.567,0.92,1.0,0.7,76.37,,8,False
+sliding_280_291,280,291,12,FKSRFTVLTESA,1.0,0.4167,0.3333,0.1667,0.721,0.571,0.92,1.0,0.6,74.84,near inferred N-terminal cathepsin boundary; sliding-window candidate,9,False
+sliding_352_363,352,363,12,NKLENELRTTKS,1.0,0.1667,0.4167,0.0,0.858,0.596,0.92,1.0,0.35,73.78,sliding-window candidate,10,False
+helix_surface_323_331,323,331,9,RGMNEALEK,0.0,0.3333,0.1111,0.0,0.706,0.606,0.92,1.0,0.5,73.15,structure-reviewed monomer alpha-helical surface,11,True
+sliding_360_371,360,371,12,TTKSEMARYLKE,1.0,0.3333,0.3333,0.0833,0.812,0.613,0.92,1.0,0.35,72.96,near inferred C-terminal cathepsin boundary; sliding-window candidate,12,False
+C_boundary_369_380,369,380,12,LKEYQDLLNVKM,0.0,0.5,0.25,0.0833,0.711,0.583,0.92,1.0,0.5,72.84,near inferred C-terminal cathepsin boundary; hydrophobic/coiled-coil contact proxy,13,False
+sliding_284_295,284,295,12,FTVLTESAAKNT,0.0,0.4167,0.4167,0.0833,0.721,0.525,0.92,0.92,0.6,72.72,sliding-window candidate,14,False
+sliding_332_343,332,343,12,QLQELEDKQNAD,-3.0,0.25,0.3333,0.0,0.812,0.596,0.92,1.0,0.35,72.63,acidic surface proxy favors basic antibody contacts; sliding-window candidate,15,False
+sliding_348_359,348,359,12,QDTINKLENELR,-1.0,0.25,0.3333,0.0,0.812,0.596,0.92,1.0,0.35,72.63,sliding-window candidate,16,False
+sliding_356_367,356,367,12,NELRTTKSEMAR,1.0,0.25,0.3333,0.0,0.812,0.596,0.92,1.0,0.35,72.63,sliding-window candidate,17,False
+sliding_300_311,300,311,12,AAKDEVSESRRL,0.0,0.3333,0.1667,0.0,0.767,0.625,0.92,1.0,0.35,72.07,sliding-window candidate,18,False
+sliding_304_315,304,315,12,EVSESRRLLKAK,2.0,0.3333,0.1667,0.0,0.767,0.625,0.92,1.0,0.35,72.07,sliding-window candidate,19,False
+sliding_328_339,328,339,12,ALEKQLQELEDK,-2.0,0.3333,0.1667,0.0,0.767,0.625,0.92,1.0,0.35,72.07,acidic surface proxy favors basic antibody contacts; sliding-window candidate,20,False
+sliding_296_307,296,307,12,DAVRAAKDEVSE,-2.0,0.4167,0.0833,0.0,0.721,0.625,0.92,1.0,0.35,70.92,acidic surface proxy favors basic antibody contacts; sliding-window candidate,21,False
+sliding_308_319,308,319,12,SRRLLKAKTLEI,3.0,0.4167,0.1667,0.0,0.721,0.596,0.92,1.0,0.35,70.34,sliding-window candidate,22,False
+sliding_324_335,324,335,12,GMNEALEKQLQE,-2.0,0.3333,0.25,0.0,0.721,0.567,0.92,1.0,0.35,69.75,acidic surface proxy favors basic antibody contacts; sliding-window candidate,23,False
+sliding_336_347,336,347,12,LEDKQNADISAM,-2.0,0.4167,0.25,0.0,0.721,0.567,0.92,1.0,0.35,69.75,acidic surface proxy favors basic antibody contacts; sliding-window candidate,24,False
+sliding_288_299,288,299,12,TESAAKNTDAVR,0.0,0.3333,0.3333,0.0,0.767,0.567,0.92,0.92,0.35,69.7,sliding-window candidate,25,False
+sliding_344_355,344,355,12,ISAMQDTINKLE,-1.0,0.4167,0.3333,0.0,0.721,0.537,0.92,1.0,0.35,69.17,sliding-window candidate,26,False
+sliding_292_303,292,303,12,AKNTDAVRAAKD,1.0,0.4167,0.1667,0.0,0.721,0.588,0.92,0.92,0.35,68.97,sliding-window candidate,27,False
+sliding_340_351,340,351,12,QNADISAMQDTI,-2.0,0.4167,0.4167,0.0,0.721,0.508,0.92,1.0,0.35,68.59,acidic surface proxy favors basic antibody contacts; sliding-window candidate,28,False

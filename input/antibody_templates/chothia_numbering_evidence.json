@@ -1,0 +1,138 @@
+{
+  "schema": "nfl_ab_design.chothia_numbering_evidence.v1",
+  "annotation_method": "ANARCI 2020.04.23 Chothia",
+  "tool": {
+    "name": "ANARCI",
+    "version": "2020.04.23",
+    "numbering_scheme": "Chothia"
+  },
+  "input": {
+    "path": "validation/experimentally_validated_antibodies.fasta",
+    "sha256": "3cff567d0e508786934b2e294c500dc1cbed249aba32b7b73a274f0250f79833"
+  },
+  "raw_annotation_artifacts": [
+    {
+      "logical_name": "nfl_H.csv",
+      "chain_types": ["H"],
+      "sha256": "ac196c75c9a54fcb22fbdc7a1a7065182e8c0b8ffefeec9876f5afb9c11a8301"
+    },
+    {
+      "logical_name": "nfl_KL.csv",
+      "chain_types": ["K", "L"],
+      "sha256": "f658144ce39a560db18464f75ae628434fea811780b1fc1638ba19c5d0f7cffc"
+    }
+  ],
+  "coordinate_contract": {
+    "raw_coordinates": "1_based_inclusive_positions_in_input_chain_sequence",
+    "chothia_labels": "ANARCI output labels; insertion suffixes are preserved as strings",
+    "campaign_rule": "Mask and redesign exactly the contiguous raw ranges recorded below. Chothia gaps do not cause adjacent framework residues to be masked."
+  },
+  "templates": {
+    "template_7-H11-D3-2-C7": {
+      "source_antibody_id": "7-H11-D3-2-C7",
+      "paired_source_sequence_sha256": "e6c6fedbd537cebf3e32da14f0c175d3f8549fff3249bae088381e0fd7b33476",
+      "chains": {
+        "VH": {
+          "sequence_sha256": "ee5d8335eaa8ad84a39ec118186a36f1f383ba9e61ded9b4df60944b76015ca7",
+          "cdrs": {
+            "H1": {
+              "raw_start_1_based": 26,
+              "raw_end_1_based_inclusive": 32,
+              "raw_sequence": "GFNIKDS",
+              "chothia_labels": ["26", "27", "28", "29", "30", "31", "32"]
+            },
+            "H2": {
+              "raw_start_1_based": 52,
+              "raw_end_1_based_inclusive": 57,
+              "raw_sequence": "DPKNDK",
+              "chothia_labels": ["52", "52A", "53", "54", "55", "56"]
+            },
+            "H3": {
+              "raw_start_1_based": 99,
+              "raw_end_1_based_inclusive": 101,
+              "raw_sequence": "KDY",
+              "chothia_definition_span": "95-102",
+              "chothia_labels": ["95", "101", "102"],
+              "gap_labels": ["96", "97", "98", "99", "100"]
+            }
+          }
+        },
+        "VL": {
+          "sequence_sha256": "f70836fa663abe4c54d2b1338888edaf436c6d52a16e23b4778b50a375edc835",
+          "cdrs": {
+            "L1": {
+              "raw_start_1_based": 24,
+              "raw_end_1_based_inclusive": 34,
+              "raw_sequence": "LASQTIGTWLA",
+              "chothia_labels": ["24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34"]
+            },
+            "L2": {
+              "raw_start_1_based": 50,
+              "raw_end_1_based_inclusive": 56,
+              "raw_sequence": "AATSLAD",
+              "chothia_labels": ["50", "51", "52", "53", "54", "55", "56"]
+            },
+            "L3": {
+              "raw_start_1_based": 89,
+              "raw_end_1_based_inclusive": 97,
+              "raw_sequence": "LQLYSTPLT",
+              "chothia_labels": ["89", "90", "91", "92", "93", "94", "95", "96", "97"]
+            }
+          }
+        }
+      }
+    },
+    "template_15-C12-H6": {
+      "source_antibody_id": "15-C12-H6",
+      "paired_source_sequence_sha256": "f54c75e9da2ad406b02f0c9fad303a20bfa3139b10ac6439e12fcef2b6d68ae9",
+      "chains": {
+        "VH": {
+          "sequence_sha256": "7d4a18e447199030d3c72b474939138dcd7802c657cb17c12a7337eb4c79ffcf",
+          "cdrs": {
+            "H1": {
+              "raw_start_1_based": 26,
+              "raw_end_1_based_inclusive": 33,
+              "raw_sequence": "GYSITSDY",
+              "chothia_labels": ["26", "27", "28", "29", "30", "31", "31A", "32"]
+            },
+            "H2": {
+              "raw_start_1_based": 53,
+              "raw_end_1_based_inclusive": 57,
+              "raw_sequence": "SYSGN",
+              "chothia_labels": ["52", "53", "54", "55", "56"]
+            },
+            "H3": {
+              "raw_start_1_based": 99,
+              "raw_end_1_based_inclusive": 109,
+              "raw_sequence": "SLLRLRDWFPY",
+              "chothia_labels": ["95", "96", "97", "98", "99", "100", "100A", "100B", "100C", "101", "102"]
+            }
+          }
+        },
+        "VL": {
+          "sequence_sha256": "b1469e03174f62eb29a7e0fc6f419dc6ddda0b734af90c59e2c0038f54f61369",
+          "cdrs": {
+            "L1": {
+              "raw_start_1_based": 24,
+              "raw_end_1_based_inclusive": 34,
+              "raw_sequence": "RASQSIGTSIH",
+              "chothia_labels": ["24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34"]
+            },
+            "L2": {
+              "raw_start_1_based": 50,
+              "raw_end_1_based_inclusive": 56,
+              "raw_sequence": "FASESIS",
+              "chothia_labels": ["50", "51", "52", "53", "54", "55", "56"]
+            },
+            "L3": {
+              "raw_start_1_based": 89,
+              "raw_end_1_based_inclusive": 97,
+              "raw_sequence": "QQTNTWPYT",
+              "chothia_labels": ["89", "90", "91", "92", "93", "94", "95", "96", "97"]
+            }
+          }
+        }
+      }
+    }
+  }
+}

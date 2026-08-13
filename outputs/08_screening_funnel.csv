@@ -1,0 +1,6 @@
+stage_order,stage,metric,threshold,input_count,pass_count,removed_count,data_status
+1,structure_quality,backbone_confidence_score,58.0,5120,4162,958,simulated
+2,antigen_interface,interface_confidence_score,55.0,4162,2147,2015,simulated
+3,sequence_developability,developability_score,60.0,2147,1864,283,simulated
+4,multi_objective_composite,composite_score,60.0,1864,1341,523,simulated
+5,final_export_shortlist,balanced_template_epitope_then_composite_rank,quota_plus_fill_12,1341,12,1329,simulated

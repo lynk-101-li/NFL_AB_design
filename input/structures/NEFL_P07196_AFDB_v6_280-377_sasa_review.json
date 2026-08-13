@@ -1,0 +1,265 @@
+{
+  "schema": "nfl_ab_design.target_structure_sasa_review.v1",
+  "analysis_state": "computational_proposal_pending_human_review",
+  "scientific_status": "theoretical_prediction_not_experimentally_validated",
+  "non_experimental_validation_statement": "This review is a deterministic calculation on an AlphaFold DB theoretical monomer. It is not experimental epitope, accessibility, oligomer-state, or antibody-binding validation.",
+  "inputs": {
+    "full_length_context": {
+      "path": "input/structures/AF-P07196-F1-model_v6.pdb",
+      "sha256": "37912aac5cefd85b177e754a7c55c10c0f50166baf7f30b012151492eae300b1",
+      "chain": "A",
+      "residue_range_1_based_inclusive": [
+        1,
+        543
+      ]
+    },
+    "cropped_design_target": {
+      "path": "input/structures/NEFL_P07196_AFDB_v6_280-377_chainA.pdb",
+      "sha256": "80686267d6a93eda5829bab187406c14caf0365ba7bee21a4eb0d2ed082fc73b",
+      "chain": "A",
+      "residue_range_1_based_inclusive": [
+        280,
+        377
+      ]
+    }
+  },
+  "method": {
+    "software": "BioPython",
+    "version": "1.87",
+    "sasa_algorithm": "Bio.PDB.ShrakeRupley",
+    "probe_radius_A": 1.4,
+    "sphere_points_per_atom": 960,
+    "absolute_sasa_unit": "A^2",
+    "relative_sasa_definition": "residue absolute SASA divided by the residue-specific Wilke maximum accessibility",
+    "relative_sasa_reference": "Bio.PDB.DSSP.residue_max_acc['Wilke']",
+    "plddt_source": "AlphaFold DB PDB B-factor column",
+    "backbone_angles": "Bio.PDB.PPBuilder phi/psi on the full-length chain",
+    "main_value_context": "All reported primary SASA values were calculated in the complete 543-residue structure. The crop was analyzed only to quantify artificial C-terminal boundary exposure."
+  },
+  "review_conclusion": {
+    "current_proposals_supported": true,
+    "replacement_recommended": false,
+    "rationale": "Both sets combine solvent-accessible side chains with compact alpha-helical surface patches. The first set uses the Met325/Leu329 i/i+4 pair and deliberately excludes Cys322 from the epitope window and contact constraints. The second set avoids residues 376 and 377, whose apparent exposure is most inflated by the artificial crop boundary.",
+    "human_review_still_required": true
+  },
+  "epitope_reviews": [
+    {
+      "epitope_id": "helix_surface_323_331",
+      "full_coordinate_range_1_based_inclusive": [
+        323,
+        331
+      ],
+      "sequence": "RGMNEALEK",
+      "recommended_hotspots_pending_human_review": [
+        325,
+        329
+      ],
+      "recommended_hotspot_metrics_full_length_context": [
+        {
+          "residue_number": 325,
+          "residue_name": "MET",
+          "absolute_sasa_A2": 116.67,
+          "relative_sasa_wilke": 0.521,
+          "sidechain_absolute_sasa_A2": 113.39,
+          "plddt": 93.88
+        },
+        {
+          "residue_number": 329,
+          "residue_name": "LEU",
+          "absolute_sasa_A2": 94.31,
+          "relative_sasa_wilke": 0.469,
+          "sidechain_absolute_sasa_A2": 87.30,
+          "plddt": 91.00
+        }
+      ],
+      "continuous_alpha_helix_evidence": {
+        "residue_count": 9,
+        "phi_range_degrees": [
+          -70.2,
+          -59.4
+        ],
+        "psi_range_degrees": [
+          -47.8,
+          -35.0
+        ],
+        "recommended_hotspot_maximum_CA_pair_distance_A": 6.191,
+        "recommended_hotspot_same_face_radial_arc_degrees": 34.1,
+        "interpretation": "The full window has alpha-helical phi/psi values, and the Met325/Leu329 i/i+4 pair occupies a compact radial face without requiring a cysteine contact."
+      },
+      "curated_alternatives_pending_human_review": [
+        {
+          "residue_number": 323,
+          "residue_name": "ARG",
+          "absolute_sasa_A2": 150.42,
+          "relative_sasa_wilke": 0.549,
+          "plddt": 93.12,
+          "reason_not_default": "Highly exposed charged alternative, but adding it broadens the constrained surface beyond the compact Met325/Leu329 pair."
+        },
+        {
+          "residue_number": 330,
+          "residue_name": "GLU",
+          "absolute_sasa_A2": 121.86,
+          "relative_sasa_wilke": 0.546,
+          "plddt": 93.69,
+          "reason_not_default": "Exposed charged alternative on another radial direction; useful only if human review intentionally expands or shifts the target face."
+        }
+      ]
+    },
+    {
+      "epitope_id": "C_boundary_368_377",
+      "full_coordinate_range_1_based_inclusive": [
+        368,
+        377
+      ],
+      "sequence": "YLKEYQDLLN",
+      "recommended_hotspots_pending_human_review": [
+        368,
+        372,
+        375
+      ],
+      "recommended_hotspot_metrics_full_length_context": [
+        {
+          "residue_number": 368,
+          "residue_name": "TYR",
+          "absolute_sasa_A2": 132.71,
+          "relative_sasa_wilke": 0.505,
+          "sidechain_absolute_sasa_A2": 124.99,
+          "plddt": 96.75
+        },
+        {
+          "residue_number": 372,
+          "residue_name": "TYR",
+          "absolute_sasa_A2": 152.34,
+          "relative_sasa_wilke": 0.579,
+          "sidechain_absolute_sasa_A2": 147.90,
+          "plddt": 97.31
+        },
+        {
+          "residue_number": 375,
+          "residue_name": "LEU",
+          "absolute_sasa_A2": 113.25,
+          "relative_sasa_wilke": 0.563,
+          "sidechain_absolute_sasa_A2": 108.69,
+          "plddt": 97.12
+        }
+      ],
+      "continuous_alpha_helix_evidence": {
+        "residue_count": 10,
+        "phi_range_degrees": [
+          -65.5,
+          -61.3
+        ],
+        "psi_range_degrees": [
+          -47.7,
+          -37.3
+        ],
+        "recommended_hotspot_maximum_CA_pair_distance_A": 10.300,
+        "recommended_hotspot_same_face_radial_arc_degrees": 62.3,
+        "interpretation": "The full window has alpha-helical phi/psi values, and Tyr368, Tyr372, and Leu375 occupy a compact radial face of that helix."
+      },
+      "curated_alternatives_pending_human_review": [
+        {
+          "residue_number": 370,
+          "residue_name": "LYS",
+          "absolute_sasa_A2": 136.48,
+          "relative_sasa_wilke": 0.578,
+          "plddt": 97.12,
+          "reason_not_default": "Exposed charged alternative on a different helical radial direction; adding it would expand the default constrained face."
+        }
+      ]
+    }
+  ],
+  "crop_boundary_comparison": {
+    "purpose": "Quantify solvent exposure inflation caused by terminating the cropped input at residue 377.",
+    "values": [
+      {
+        "residue_number": 368,
+        "residue_name": "TYR",
+        "full_absolute_sasa_A2": 132.71,
+        "full_relative_sasa_wilke": 0.505,
+        "crop_absolute_sasa_A2": 132.71,
+        "crop_relative_sasa_wilke": 0.505
+      },
+      {
+        "residue_number": 369,
+        "residue_name": "LEU",
+        "full_absolute_sasa_A2": 117.82,
+        "full_relative_sasa_wilke": 0.586,
+        "crop_absolute_sasa_A2": 117.82,
+        "crop_relative_sasa_wilke": 0.586
+      },
+      {
+        "residue_number": 370,
+        "residue_name": "LYS",
+        "full_absolute_sasa_A2": 136.48,
+        "full_relative_sasa_wilke": 0.578,
+        "crop_absolute_sasa_A2": 136.48,
+        "crop_relative_sasa_wilke": 0.578
+      },
+      {
+        "residue_number": 371,
+        "residue_name": "GLU",
+        "full_absolute_sasa_A2": 86.01,
+        "full_relative_sasa_wilke": 0.386,
+        "crop_absolute_sasa_A2": 86.01,
+        "crop_relative_sasa_wilke": 0.386
+      },
+      {
+        "residue_number": 372,
+        "residue_name": "TYR",
+        "full_absolute_sasa_A2": 152.34,
+        "full_relative_sasa_wilke": 0.579,
+        "crop_absolute_sasa_A2": 152.34,
+        "crop_relative_sasa_wilke": 0.579
+      },
+      {
+        "residue_number": 373,
+        "residue_name": "GLN",
+        "full_absolute_sasa_A2": 87.90,
+        "full_relative_sasa_wilke": 0.391,
+        "crop_absolute_sasa_A2": 87.90,
+        "crop_relative_sasa_wilke": 0.391
+      },
+      {
+        "residue_number": 374,
+        "residue_name": "ASP",
+        "full_absolute_sasa_A2": 76.78,
+        "full_relative_sasa_wilke": 0.398,
+        "crop_absolute_sasa_A2": 91.63,
+        "crop_relative_sasa_wilke": 0.475
+      },
+      {
+        "residue_number": 375,
+        "residue_name": "LEU",
+        "full_absolute_sasa_A2": 113.25,
+        "full_relative_sasa_wilke": 0.563,
+        "crop_absolute_sasa_A2": 142.84,
+        "crop_relative_sasa_wilke": 0.711
+      },
+      {
+        "residue_number": 376,
+        "residue_name": "LEU",
+        "full_absolute_sasa_A2": 72.59,
+        "full_relative_sasa_wilke": 0.361,
+        "crop_absolute_sasa_A2": 122.51,
+        "crop_relative_sasa_wilke": 0.610
+      },
+      {
+        "residue_number": 377,
+        "residue_name": "ASN",
+        "full_absolute_sasa_A2": 75.60,
+        "full_relative_sasa_wilke": 0.388,
+        "crop_absolute_sasa_A2": 138.38,
+        "crop_relative_sasa_wilke": 0.710
+      }
+    ],
+    "risk_assessment": "The crop begins to inflate SASA at residue 374 and strongly inflates residues 375-377. Leu375 remains accessible in the full-length context, whereas residues 376 and 377 should not be selected from crop-only exposure values.",
+    "recommended_mitigation": "Use full-length-context accessibility for review and provide native residues after 377 as a structural buffer for docking/design when supported, or otherwise prevent the model from exploiting the artificial C-terminal face."
+  },
+  "model_context_limitations": [
+    "AlphaFold DB coordinates are a theoretical monomer prediction, not an experimentally determined structure.",
+    "A single static structure does not represent conformational dynamics or solvent-dependent accessibility.",
+    "The monomer does not evaluate masking or interface burial in physiological oligomers, dimers, or neurofilament assemblies.",
+    "Calculated exposure and same-face geometry support human review but do not validate an antibody epitope or binding mode."
+  ]
+}

@@ -12,3 +12,8 @@ dist/
 venv/
 tmp/
 temp/
+real_runs/handoffs/
+real_runs/results/
+real_runs/final/
+runtime_attestation.json
+config/target_structure_manifest.json
