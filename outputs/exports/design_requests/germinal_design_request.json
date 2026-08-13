@@ -164,11 +164,12 @@
   },
   "important_note": "Only framework residues and CDR masks are exported. Known CDR amino-acid identities are not included in this generation request. Translate this normalized request to the checked-out model version.",
   "run_metadata": {
-    "run_id": "nfl_design_20260813T1218304024370800",
-    "generated_at": "2026-08-13T12:18:30.402437+08:00",
-    "nfl_ab_design_version": "0.2.2",
+    "run_id": "nfl_design_20260813T1821587876520800",
+    "generated_at": "2026-08-13T18:21:58.787652+08:00",
+    "nfl_ab_design_version": "0.3.0",
     "design_campaign_sha256": "932f45194685a888f33fe932f8dbec0d252860f1ea7fea6e9a289e8a4db8ff09",
-    "workflow_source_sha256": "ff8e3f74b9da8a02b620efe0d7ef5d08f4586efbeff2c7147e40763205b52431",
+    "model_components_sha256": "e9c2f27bcb3cc7fab7405a8197d5096852396937264f32239c87867d1bcd6074",
+    "workflow_source_sha256": "a90d0b0e3aff089d6347b47964d3499ae660eba27757f334ea43434311a8c999",
     "design_pipeline_source_sha256": "16cf851a402bb3ddeb193e3230c44bef76c02ffd0b226a663068352696d55029"
   },
   "engine": "Germinal",

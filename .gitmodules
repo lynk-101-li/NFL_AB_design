@@ -1,0 +1,27 @@
+[submodule "third_party/RFantibody"]
+	path = third_party/RFantibody
+	url = https://github.com/RosettaCommons/RFantibody.git
+[submodule "third_party/IgGM"]
+	path = third_party/IgGM
+	url = https://github.com/TencentAI4S/IgGM.git
+[submodule "third_party/germinal"]
+	path = third_party/germinal
+	url = https://github.com/SantiagoMille/germinal.git
+[submodule "third_party/tfold"]
+	path = third_party/tfold
+	url = https://github.com/TencentAI4S/tfold.git
+[submodule "third_party/IgFold"]
+	path = third_party/IgFold
+	url = https://github.com/Graylab/IgFold.git
+[submodule "third_party/ImmuneBuilder"]
+	path = third_party/ImmuneBuilder
+	url = https://github.com/oxpig/ImmuneBuilder.git
+[submodule "third_party/alphafold3"]
+	path = third_party/alphafold3
+	url = https://github.com/google-deepmind/alphafold3.git
+[submodule "third_party/chai-lab"]
+	path = third_party/chai-lab
+	url = https://github.com/chaidiscovery/chai-lab.git
+[submodule "third_party/boltz"]
+	path = third_party/boltz
+	url = https://github.com/jwohlwend/boltz.git

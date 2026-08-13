@@ -1,21 +1,31 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-mode="${1:-all}"
-case "$mode" in
-  all|rfantibody|iggm|germinal) ;;
-  *) printf 'Usage: %s {all|rfantibody|iggm|germinal}\n' "$0" >&2; exit 64 ;;
-esac
+mode="${1:-help}"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+conda_exe="${NFL_CONDA_EXE:-$(command -v conda || true)}"
 
-apps_root="${NFL_APPS_ROOT:-/root/apps}"
-conda_exe="${NFL_CONDA_EXE:-}"
-if [[ -z "$conda_exe" ]]; then
-  conda_exe="$(command -v conda || true)"
-fi
+usage() {
+  cat <<'EOF'
+Usage: bash deploy/autodl/bootstrap_models.sh MODE
 
-rf_revision="8fe311415754e0276d1a39c87c57e69c88927a2d"
-iggm_revision="06abc563b3fc8c7ea020543add16b69b6f8a1c8d"
-germinal_revision="1e1c1a5b79884ae45abae030c9df90d9423a990a"
+MODE:
+  sources        initialize and verify all pinned source submodules
+  design-open    install RFantibody and IgGM
+  structure-open install ImmuneBuilder, Chai-1 and Boltz-2
+  rfantibody | iggm | germinal | tfold | igfold
+  immunebuilder | alphafold3 | chai1 | boltz2
+
+Restricted components require an explicit acknowledgement environment variable:
+  germinal:   NFL_ACK_PYROSETTA_AND_DEPENDENCY_TERMS=1
+  tfold:      NFL_ACK_TFOLD_NONCOMMERCIAL_TERMS=1
+  igfold:     NFL_ACK_IGFOLD_ACADEMIC_TERMS=1
+  alphafold3: NFL_ACK_AF3_MODEL_TERMS=1
+
+An acknowledgement records that the student reviewed upstream terms. It does
+not grant a license. Model weights, databases and PyRosetta are never committed.
+EOF
+}
 
 require_command() {
   command -v "$1" >/dev/null 2>&1 || {
@@ -24,76 +34,74 @@ require_command() {
   }
 }
 
-clone_pinned() {
-  local url="$1" destination="$2" revision="$3"
-  if [[ -e "$destination" && ! -d "$destination/.git" ]]; then
-    printf 'ERROR: existing path is not a git checkout: %s\n' "$destination" >&2
-    exit 2
-  fi
-  if [[ ! -d "$destination/.git" ]]; then
-    git clone "$url" "$destination"
-  fi
-  git -C "$destination" fetch --tags origin
-  git -C "$destination" checkout --detach "$revision"
-  [[ "$(git -C "$destination" rev-parse HEAD)" == "$revision" ]] || {
-    printf 'ERROR: revision verification failed: %s\n' "$destination" >&2
-    exit 2
+require_conda() {
+  [[ -n "$conda_exe" ]] || { printf 'ERROR: conda not found\n' >&2; exit 2; }
+}
+
+require_ack() {
+  local variable="$1" component="$2"
+  [[ "${!variable:-}" == 1 ]] || {
+    printf 'ERROR: review upstream terms for %s, then set %s=1 for this command.\n' "$component" "$variable" >&2
+    exit 3
   }
 }
 
-install_rfantibody() {
-  local destination="$apps_root/RFantibody"
+ensure_sources() {
   require_command git
+  git -C "$repo_root" submodule sync --recursive
+  git -C "$repo_root" submodule update --init --recursive
+  python3 "$repo_root/scripts/verify_model_components.py"
+}
+
+create_env() {
+  local name="$1" python_version="$2"
+  require_conda
+  if "$conda_exe" env list | awk '{print $1}' | grep -Fxq "$name"; then
+    printf 'INFO: environment %s already exists; refusing to mutate it automatically.\n' "$name"
+    return 1
+  fi
+  "$conda_exe" create -y -n "$name" "python=$python_version" pip
+}
+
+install_rfantibody() {
+  ensure_sources
   require_command uv
-  clone_pinned https://github.com/RosettaCommons/RFantibody.git "$destination" "$rf_revision"
   (
-    cd "$destination"
+    cd "$repo_root/third_party/RFantibody"
     bash include/download_weights.sh
     uv sync --frozen
     uv run rfdiffusion --help >/dev/null
     uv run proteinmpnn --help >/dev/null
     uv run rf2 --help >/dev/null
   )
-  printf 'READY source_and_cli\tRFantibody\t%s\n' "$rf_revision"
+  printf 'READY source_cli_weights\trfantibody\n'
 }
 
 install_iggm() {
-  local destination="$apps_root/IgGM"
-  require_command git
-  [[ -n "$conda_exe" ]] || { printf 'ERROR: conda not found\n' >&2; exit 2; }
-  clone_pinned https://github.com/TencentAI4S/IgGM.git "$destination" "$iggm_revision"
-  if "$conda_exe" env list | awk '{print $1}' | grep -Fxq iggm; then
-    printf 'INFO: conda environment iggm already exists; refusing to mutate it automatically.\n'
-  else
-    "$conda_exe" env create -n iggm -f "$destination/environment.yaml"
-    "$conda_exe" run -n iggm python -m pip install \
-      pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv \
-      -f https://data.pyg.org/whl/torch-2.0.1+cu117.html
+  ensure_sources
+  require_conda
+  if create_env iggm 3.10; then
+    "$conda_exe" env update -n iggm -f "$repo_root/third_party/IgGM/environment.yaml"
   fi
-  "$conda_exe" run -n iggm python "$destination/design.py" --help >/dev/null
-  printf 'READY source_and_cli\tIgGM\t%s\n' "$iggm_revision"
-  printf 'NOTICE: IgGM checkpoints may download on first model run; record their SHA-256 before attestation.\n'
+  "$conda_exe" run -n iggm python "$repo_root/third_party/IgGM/design.py" --help >/dev/null
+  printf 'PARTIAL source_cli\tiggm\tcheckpoints download on first model run\n'
 }
 
 install_germinal() {
-  local destination="$apps_root/germinal"
-  require_command git
-  [[ -n "$conda_exe" ]] || { printf 'ERROR: conda not found\n' >&2; exit 2; }
-  clone_pinned https://github.com/SantiagoMille/germinal.git "$destination" "$germinal_revision"
-  if "$conda_exe" env list | awk '{print $1}' | grep -Fxq germinal; then
-    printf 'INFO: conda environment germinal already exists; refusing to mutate it automatically.\n'
-  else
-    "$conda_exe" create -y -n germinal python=3.10 pip
+  require_ack NFL_ACK_PYROSETTA_AND_DEPENDENCY_TERMS Germinal
+  ensure_sources
+  require_conda
+  if create_env germinal 3.10; then
     "$conda_exe" run -n germinal python -m pip install uv
     "$conda_exe" run -n germinal uv pip install \
       pandas matplotlib numpy biopython scipy seaborn tqdm ffmpeg py3dmol \
       chex dm-haiku dm-tree joblib ml-collections immutabledict optax cvxopt \
       mdtraj colabfold ipsae
-    "$conda_exe" run -n germinal uv pip install -e "$destination/colabdesign"
+    "$conda_exe" run -n germinal uv pip install -e "$repo_root/third_party/germinal/colabdesign"
     "$conda_exe" run -n germinal uv pip install \
       iglm 'torchvision==0.21.*' 'chai-lab==0.6.1' 'torch==2.6.*' \
       'torchaudio==2.6.*' 'torchtyping==0.1.5' 'torch_geometric==2.6.*'
-    "$conda_exe" run -n germinal uv pip install -e "$destination"
+    "$conda_exe" run -n germinal uv pip install -e "$repo_root/third_party/germinal"
     "$conda_exe" run -n germinal uv pip install \
       'jax==0.5.3' 'dm-haiku==0.0.13' hydra-core omegaconf
     "$conda_exe" run -n germinal uv pip install \
@@ -102,12 +110,83 @@ install_germinal() {
     "$conda_exe" run -n germinal uv pip install ablang2 --no-deps
     "$conda_exe" run -n germinal uv pip install rotary_embedding_torch --no-deps
   fi
-  printf 'PARTIAL open_dependencies_only\tGerminal\t%s\n' "$germinal_revision"
-  printf 'ACTION REQUIRED: obtain PyRosetta under its license and place AlphaFold-Multimer parameters in a reviewed directory.\n'
-  printf 'ACTION REQUIRED: run conda run -n germinal python %s/validate_install.py after restricted assets are installed.\n' "$destination"
+  printf 'PARTIAL source_environment\tgerminal\n'
+  printf 'ACTION REQUIRED: legally obtain PyRosetta and required AlphaFold-Multimer parameters, then run validate_install.py.\n'
 }
 
-mkdir -p "$apps_root"
-if [[ "$mode" == all || "$mode" == rfantibody ]]; then install_rfantibody; fi
-if [[ "$mode" == all || "$mode" == iggm ]]; then install_iggm; fi
-if [[ "$mode" == all || "$mode" == germinal ]]; then install_germinal; fi
+install_tfold() {
+  require_ack NFL_ACK_TFOLD_NONCOMMERCIAL_TERMS tFold
+  ensure_sources
+  require_conda
+  if create_env tfold 3.10; then
+    "$conda_exe" env update -n tfold -f "$repo_root/third_party/tfold/environment.yaml"
+  fi
+  printf 'PARTIAL source_environment\ttfold\tweights not attested\n'
+}
+
+install_igfold() {
+  require_ack NFL_ACK_IGFOLD_ACADEMIC_TERMS IgFold
+  ensure_sources
+  require_conda
+  if create_env igfold 3.10; then
+    "$conda_exe" run -n igfold python -m pip install -e "$repo_root/third_party/IgFold"
+  fi
+  "$conda_exe" run -n igfold python -c 'import igfold' >/dev/null
+  printf 'PARTIAL source_environment\tigfold\tmodel assets not attested\n'
+}
+
+install_immunebuilder() {
+  ensure_sources
+  require_conda
+  if create_env immunebuilder 3.10; then
+    "$conda_exe" run -n immunebuilder python -m pip install -e "$repo_root/third_party/ImmuneBuilder"
+  fi
+  "$conda_exe" run -n immunebuilder python -c 'from ImmuneBuilder import ABodyBuilder2' >/dev/null
+  printf 'PARTIAL source_environment\timmunebuilder\tmodel assets download on first run\n'
+}
+
+install_alphafold3() {
+  require_ack NFL_ACK_AF3_MODEL_TERMS "AlphaFold 3"
+  ensure_sources
+  require_command docker
+  printf 'SOURCE VERIFIED\talphafold3\n'
+  printf 'ACTION REQUIRED: follow third_party/alphafold3/docs/installation.md to build the official container.\n'
+  printf 'ACTION REQUIRED: obtain parameters and databases under their separate terms; keep them outside Git.\n'
+}
+
+install_chai1() {
+  ensure_sources
+  require_conda
+  if create_env chai1 3.10; then
+    "$conda_exe" run -n chai1 python -m pip install -e "$repo_root/third_party/chai-lab"
+  fi
+  "$conda_exe" run -n chai1 chai-lab --help >/dev/null
+  printf 'PARTIAL source_cli\tchai1\tweights download on first run\n'
+}
+
+install_boltz2() {
+  ensure_sources
+  require_conda
+  if create_env boltz2 3.10; then
+    "$conda_exe" run -n boltz2 python -m pip install -e "$repo_root/third_party/boltz"
+  fi
+  "$conda_exe" run -n boltz2 boltz --help >/dev/null
+  printf 'PARTIAL source_cli\tboltz2\tweights download on first run\n'
+}
+
+case "$mode" in
+  help|-h|--help) usage ;;
+  sources) ensure_sources ;;
+  design-open) install_rfantibody; install_iggm ;;
+  structure-open) install_immunebuilder; install_chai1; install_boltz2 ;;
+  rfantibody) install_rfantibody ;;
+  iggm) install_iggm ;;
+  germinal) install_germinal ;;
+  tfold) install_tfold ;;
+  igfold) install_igfold ;;
+  immunebuilder) install_immunebuilder ;;
+  alphafold3) install_alphafold3 ;;
+  chai1) install_chai1 ;;
+  boltz2) install_boltz2 ;;
+  *) usage >&2; exit 64 ;;
+esac

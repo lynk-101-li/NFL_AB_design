@@ -15,7 +15,7 @@
   -> 外部真实模型交接
 ```
 
-> **当前证据状态：模拟，不是真实模型结果。** 仓库使用确定性 proxy 生成和 proxy 打分来演示设计漏斗。本仓库运行未执行 RFantibody、IgGM、Germinal、tFold、IgFold、ABodyBuilder3、AlphaFold 3、Chai-1、Boltz 或 Rosetta，也没有产生这些工具的预测结果。两株已知实验阳性抗体如果在回顾表中位居 Top 2，只能解释为 **retrospective positive-control demonstration**，不是盲法发现。
+> **当前证据状态：模拟，不是真实模型结果。** 仓库使用确定性 proxy 生成和 proxy 打分来演示设计漏斗。仓库已把 RFantibody、IgGM、Germinal、tFold、IgFold、ImmuneBuilder/ABodyBuilder2、AlphaFold 3、Chai-1 和 Boltz-2 的官方源码固定为 submodule，但当前运行未执行这些模型，也没有产生其预测结果。两株已知实验阳性抗体如果在回顾表中位居 Top 2，只能解释为 **retrospective positive-control demonstration**，不是盲法发现。
 
 完整的模拟实验体系、各阶段输入输出、对照和进入真实模型前的门禁见 `docs/simulated_experimental_system.md`。
 
@@ -163,8 +163,8 @@ nfl-ab-design
 - RFantibody 六 CDR 生成 adapter；
 - IgGM 六 CDR 生成 adapter；
 - Germinal 表位条件 scFv 生成 adapter（独立单链轨道，不等同于 native paired Fv）；
-- 可选 tFold 候选结构预测/复核 adapter，不作为默认主生成器；
-- IgFold、ABodyBuilder3、AlphaFold 3、Chai-1、Boltz 和 Rosetta 后续 adapter。
+- tFold、IgFold、ImmuneBuilder/ABodyBuilder2 用于抗体结构预测与交叉复核；
+- AlphaFold 3、Chai-1、Boltz-2 用于抗体—抗原复合物交叉预测。
 
 配置中的 `<PATH_TO_...>` 是故意保留的明确占位符。不得在未替换占位符、未核对安装版本 schema、未提供 NfL antigen PDB 和模型 checkpoints 时启用任务。
 
@@ -184,7 +184,15 @@ nfl-ab-design
 - `src/nfl_ab_design/adapters/iggm.py`：要求 target PDB 链序列和 full→local 1-based 映射，输出 IgGM 所需的 H/L/A 三链 FASTA 与四组 job；
 - `src/nfl_ab_design/adapters/germinal.py`：要求 target PDB 和两份 VH-linker-VL scFv PDB，输出 Germinal target YAML 与四组 Hydra job，并明确记录其单链几何限制。
 
-`config/real_model_backends.json` 固定已核验的上游 commit、环境与运行策略；`config/target_structure_manifest.example.json` 是补齐真实 PDB、坐标映射和热点的入口。学生服务器从零部署见 `deploy/autodl/README.md` 和 `docs/real_model_installation.md`。
+`config/model_components.json` 固定九个模型的 submodule、commit、许可证边界和环境；`config/real_model_backends.json` 保留三种生成器的执行合同。学生服务器从零部署、权重放置和逐模型运行命令见 `deploy/autodl/README.md` 和 `docs/real_model_installation.md`。
+
+克隆时应初始化 submodule：
+
+```bash
+git clone --recurse-submodules https://github.com/lynk-101-li/NFL_AB_design.git
+cd NFL_AB_design
+python3 scripts/verify_model_components.py
+```
 
 补齐并人工复核 target manifest 后，将 `execution_state` 设为 `reviewed_ready_for_handoff`，填写带时区的 reviewer/timestamp 并确认 review contract，再用统一编译器生成三个模型的作业交接：
 
