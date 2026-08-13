@@ -15,7 +15,18 @@ These coordinates are theoretical predictions and are not experimental structure
 
 ## External model repositories and assets
 
-RFantibody, IgGM, Germinal, ImmuneBuilder, PyRosetta, AlphaFold parameters, Chai, ColabDesign and their model weights are third-party works governed by their own licenses and terms. This repository does not redistribute RFantibody, IgGM, Germinal, PyRosetta or AlphaFold parameter bundles.
+The directories under `third_party/` are Git submodules pinned to upstream commits; they are not relicensed by this project. The machine-readable inventory is `config/model_components.json`.
+
+- RFantibody and IgGM: MIT code licenses.
+- Germinal: Apache-2.0 repository code; PyRosetta and optional predictors have separate terms.
+- tFold: PolyForm Noncommercial 1.0.0 at the pinned revision.
+- IgFold: JHU Academic Software License at the pinned revision.
+- ImmuneBuilder: BSD-3-Clause code license.
+- AlphaFold 3: Apache-2.0 code; model parameters, outputs and databases have separate terms.
+- Chai-1: Apache-2.0 at the pinned revision.
+- Boltz-2: MIT at the pinned revision.
+
+This repository does not redistribute model checkpoints, AlphaFold databases or parameters, PyRosetta, or other restricted assets.
 
 Students must review the upstream terms before downloading or executing them. In particular, PyRosetta requires a separate Rosetta license and must not be redistributed through this repository.
 

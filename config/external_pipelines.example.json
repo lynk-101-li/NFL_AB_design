@@ -9,7 +9,7 @@
       "optional": false,
       "input_selector": "design_request_index",
       "adapter_role": "unified_non_executing_RFantibody_IgGM_Germinal_handoff",
-      "command_template": "python3 {package_root}/scripts/prepare_real_model_jobs.py --request-dir {package_root}/outputs/exports/design_requests --target-manifest {package_root}/config/target_structure_manifest.json --profile smoke --job-scope canary --iggm-repo-dir <PATH_TO_PINNED_IGGM> --germinal-repo-dir <PATH_TO_PINNED_GERMINAL> --germinal-af-params-dir <PATH_TO_AF_MULTIMER_PARAMS>",
+      "command_template": "python3 {package_root}/scripts/prepare_real_model_jobs.py --request-dir {package_root}/outputs/exports/design_requests --target-manifest {package_root}/config/target_structure_manifest.json --profile smoke --job-scope canary --iggm-repo-dir {package_root}/third_party/IgGM --germinal-repo-dir {package_root}/third_party/germinal --germinal-af-params-dir <PATH_TO_AF_MULTIMER_PARAMS>",
       "notes": "Compiles and validates all three native plans but executes none. The reviewed target manifest must provide the antigen PDB, residue mappings, curated hotspots, two HLT PDBs, and two independent scFv PDBs. Smoke scope selects one deterministic canary job per engine."
     },
     {
@@ -19,7 +19,7 @@
       "optional": true,
       "input_selector": "candidate_fv_chains_fasta",
       "adapter_role": "optional_prediction_and_cross_check_not_primary_generation",
-      "command_template": "<PATH_TO_TFOLD_PREDICTION_ADAPTER> --fasta {input} --antigen-pdb <PATH_TO_NEFL_ANTIGEN_PDB> --model-dir <PATH_TO_TFOLD_MODEL_DIR> --output-dir {output_dir}",
+      "command_template": "conda run -n tfold python {package_root}/third_party/tfold/projects/tfold_ab/predict.py --fasta {input} --output {output_dir}",
       "notes": "Use tFold here only as an optional structure-prediction/cross-check adapter for selected prospective candidates; do not label proxy simulation values as tFold results."
     },
     {
@@ -28,15 +28,16 @@
       "enabled": false,
       "optional": true,
       "input_selector": "candidate_fv_chains_fasta",
-      "command_template": "<PATH_TO_IGFOLD_EXECUTABLE> --fasta {input} --outdir {output_dir}"
+      "command_template": "python3 -c <USE_THE_REVIEWED_IGFOLD_PYTHON_SNIPPET_IN_docs/real_model_installation.md>",
+      "notes": "IgFold has academic/non-commercial terms; this disabled row is documentation, not license acceptance or execution proof."
     },
     {
-      "name": "abodybuilder3_fv_modeling",
+      "name": "immunebuilder_abodybuilder2_fv_modeling",
       "stage": "antibody_fv_modeling",
       "enabled": false,
       "optional": true,
       "input_selector": "candidate_fv_chains_fasta",
-      "command_template": "<PATH_TO_ABODYBUILDER3_EXECUTABLE> --fasta {input} --output {output_dir}"
+      "command_template": "python3 -c <USE_THE_REVIEWED_ABODYBUILDER2_PYTHON_SNIPPET_IN_docs/real_model_installation.md>"
     },
     {
       "name": "alphafold3_complex",
@@ -44,7 +45,7 @@
       "enabled": false,
       "optional": true,
       "input_selector": "af3_json_files",
-      "command_template": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path {input} --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir {output_dir}"
+      "command_template": "python {package_root}/third_party/alphafold3/run_alphafold.py --json_path {input} --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir {output_dir}"
     },
     {
       "name": "chai1_complex",
@@ -52,7 +53,7 @@
       "enabled": false,
       "optional": true,
       "input_selector": "complex_fastas",
-      "command_template": "<PATH_TO_CHAI1_EXECUTABLE> fold {input} --output-dir {output_dir}"
+      "command_template": "conda run -n chai1 chai-lab fold {input} {output_dir}"
     },
     {
       "name": "boltz_complex",
@@ -60,7 +61,8 @@
       "enabled": false,
       "optional": true,
       "input_selector": "complex_fastas",
-      "command_template": "<PATH_TO_BOLTZ_EXECUTABLE> predict {input} --cache <PATH_TO_BOLTZ_CACHE> --out_dir {output_dir}"
+      "command_template": "conda run -n boltz2 boltz predict <BOLTZ_YAML_DERIVED_FROM_{input}> --use_msa_server --out_dir {output_dir}",
+      "notes": "Boltz requires its YAML schema; never pass the exported multi-chain FASTA directly as if it were YAML."
     },
     {
       "name": "rosetta_interface_analysis",

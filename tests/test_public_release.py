@@ -19,17 +19,34 @@ class PublicReleaseContractTest(unittest.TestCase):
             )
             self.assertEqual(completed.returncode, 0, completed.stderr)
 
-    def test_bootstrap_revisions_match_backend_manifest(self) -> None:
+    def test_model_registry_matches_submodule_gitlinks(self) -> None:
         config = json.loads(
-            (PROJECT_ROOT / "config/real_model_backends.json").read_text(encoding="utf-8")
+            (PROJECT_ROOT / "config/model_components.json").read_text(encoding="utf-8")
         )
         script = (PROJECT_ROOT / "deploy/autodl/bootstrap_models.sh").read_text(
             encoding="utf-8"
         )
-        for backend in config["backends"]:
-            with self.subTest(backend=backend["name"]):
-                self.assertIn(backend["repository"], script)
-                self.assertIn(backend["revision"], script)
+        gitmodules = (PROJECT_ROOT / ".gitmodules").read_text(encoding="utf-8")
+        self.assertEqual(config["schema"], "nfl_ab_design.model_components.v1")
+        self.assertEqual(len(config["components"]), 9)
+        self.assertEqual(
+            {item["category"] for item in config["components"]},
+            {"antibody_design", "structure_prediction"},
+        )
+        for component in config["components"]:
+            with self.subTest(component=component["id"]):
+                self.assertIn(component["submodule_path"], gitmodules)
+                self.assertIn(component["repository"], gitmodules)
+                staged = subprocess.run(
+                    ["git", "ls-files", "--stage", component["submodule_path"]],
+                    cwd=PROJECT_ROOT,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout.split()
+                self.assertEqual(staged[0], "160000")
+                self.assertEqual(staged[1], component["revision"])
+                self.assertIn(component["id"], script)
 
     def test_public_text_has_no_private_machine_or_assistant_trace(self) -> None:
         forbidden = re.compile(

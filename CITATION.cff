@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this repository, please cite it as below."
 title: "NFL_AB_design: an epitope-conditioned NfL antibody de novo design workflow"
-version: "0.2.2"
+version: "0.3.0"
 date-released: "2026-08-13"
 license: "MIT"
 authors:
@@ -13,4 +13,4 @@ keywords:
   - antigen truncation inference
   - sandwich assay
   - computational workflow
-abstract: "A self-contained computational workflow for NfL antigen-truncation inference, dual-framework six-CDR de novo design simulation, prospective candidate ranking, retrospective positive-control assessment, sandwich-pair prioritization, and RFantibody, IgGM, and Germinal handoff."
+abstract: "A self-contained computational workflow for NfL antigen-truncation inference, dual-framework six-CDR de novo design simulation, prospective candidate ranking, retrospective positive-control assessment, sandwich-pair prioritization, and pinned handoffs for antibody design and structure-prediction models."

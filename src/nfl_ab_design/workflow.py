@@ -8,7 +8,7 @@ dependencies.
 
 The scoring is a deterministic proxy. It is meant to organize the work, create
 auditable intermediate tables, and export input templates for external structure
-tools such as IgFold/ABodyBuilder3, AlphaFold3, Chai-1, Boltz, and Rosetta.
+tools such as IgFold/ImmuneBuilder ABodyBuilder2, AlphaFold 3, Chai-1, Boltz-2, and Rosetta.
 """
 
 from __future__ import annotations
@@ -48,6 +48,7 @@ ANTIBODY_TEMPLATE_FASTA_PATH = PACKAGE_ROOT / "input" / "antibody_templates" / "
 CONFIG_DIR = PACKAGE_ROOT / "config"
 EXTERNAL_PIPELINE_CONFIG_PATH = CONFIG_DIR / "external_pipelines.example.json"
 DESIGN_CAMPAIGN_CONFIG_PATH = CONFIG_DIR / "design_campaign.json"
+MODEL_COMPONENTS_CONFIG_PATH = CONFIG_DIR / "model_components.json"
 OUTPUT_DIR = PACKAGE_ROOT / "outputs"
 EXPORT_DIR = OUTPUT_DIR / "exports"
 REAL_RUNS_DIR = PACKAGE_ROOT / "real_runs"
@@ -2209,8 +2210,8 @@ def export_structure_inputs(
         "recommended_tool_order": [
             "RFantibody as the primary native paired-Fv structure-conditioned generator and IgGM as a paired-Fv template-conditioned generator",
             "Germinal as an independent scFv-only design track whose candidates require paired-Fv rebuilding and revalidation",
-            "IgFold or ABodyBuilder3 for Fv/Fab sanity checks",
-            "AF3, Chai-1, or Boltz co-folding for antibody-antigen complexes",
+            "IgFold or ImmuneBuilder ABodyBuilder2 for Fv/Fab sanity checks",
+            "AF3, Chai-1, or Boltz-2 co-folding for antibody-antigen complexes",
             "Rosetta relax/interface analyzer for post-prediction interface metrics",
             "Pair-aware trimer prediction for sandwich compatibility",
         ],
@@ -2484,8 +2485,8 @@ Top 10 候选：
 
 当前流程中的以下指标是代理指标，建议由外部结构或实验结果替换：
 
-- Fv/Fab 模型质量：应替换为 IgFold/ABodyBuilder3 的模型质量、CDR loop 收敛性和 VH/VL packing 结果。
-- 复合物可信度：应替换为 AF3/Chai-1/Boltz 的 ipTM、pTM、interface PAE、interface pLDDT、pDockQ/DockQ。
+- Fv/Fab 模型质量：应替换为 IgFold/ImmuneBuilder ABodyBuilder2 的模型质量、CDR loop 收敛性和 VH/VL packing 结果。
+- 复合物可信度：应替换为 AF3/Chai-1/Boltz-2 的 ipTM、pTM、interface PAE、interface pLDDT、pDockQ/DockQ。
 - 界面物理量：应替换为 buried surface area、Rosetta interface ΔG、shape complementarity、氢键/盐桥和 buried unsatisfied polar atoms。
 - sandwich 空间兼容性：应替换为 Fab1:NfL:Fab2 三元复合物结构的实际 clash、Fab-Fab 最小距离和标记端可及性。
 
@@ -2701,11 +2702,15 @@ def run_workflow(
         if design_config_path is not None and design_config_path.is_file()
         else sha256_json(design_config)
     )
+    if not MODEL_COMPONENTS_CONFIG_PATH.is_file():
+        raise FileNotFoundError(f"Missing model component registry: {MODEL_COMPONENTS_CONFIG_PATH}")
+    model_components_sha256 = sha256_file(MODEL_COMPONENTS_CONFIG_PATH)
     run_metadata = {
         "run_id": run_id,
         "generated_at": run_timestamp,
         "nfl_ab_design_version": PACKAGE_VERSION,
         "design_campaign_sha256": design_config_sha256,
+        "model_components_sha256": model_components_sha256,
         "workflow_source_sha256": sha256_file(SCRIPT_PATH),
         "design_pipeline_source_sha256": sha256_file(SCRIPT_PATH.with_name("design_pipeline.py")),
     }
@@ -2807,6 +2812,8 @@ def run_workflow(
         "design_campaign_config_path": relative_to_package(design_config_path) if design_config_path else "",
         "design_campaign_config": design_config,
         "design_campaign_config_sha256": design_config_sha256,
+        "model_components_config_path": relative_to_package(MODEL_COMPONENTS_CONFIG_PATH),
+        "model_components_config_sha256": model_components_sha256,
         "validation_antibody_fasta_path": relative_to_package(ANTIBODY_FASTA_PATH),
         "validation_sequence_usage": "framework_only_during_generation;full_sequence_only_after_prospective_ranking",
         "nfl_sequence_length": len(full_sequence),

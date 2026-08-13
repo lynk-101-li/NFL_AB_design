@@ -9,7 +9,7 @@
 当前仓库运行：
 
 - 没有实际运行 RFantibody、IgGM 或 Germinal；
-- 没有实际运行 tFold、AlphaFold 3、Chai-1、Boltz 或 Rosetta；
+- 没有实际运行 tFold、IgFold、ImmuneBuilder/ABodyBuilder2、AlphaFold 3、Chai-1、Boltz-2 或 Rosetta；
 - 没有产生真实的 pLDDT、PAE、ipTM、DockQ 或能量；
 - 没有用实验证明新候选一定结合 NfL。
 
@@ -179,7 +179,7 @@ config/external_pipelines.example.json
 - RFantibody 六 CDR 生成 adapter；
 - IgGM 六 CDR 生成 adapter；
 - Germinal 表位条件 scFv 生成 adapter；它把 VH 和 VL 用 linker 连成一条链，不能冒充原生配对 Fv 几何；
-- 可选 tFold 结构预测/复核 adapter；
+- 可选 tFold、IgFold、ImmuneBuilder/ABodyBuilder2、AlphaFold 3、Chai-1 和 Boltz-2 结构预测/复核；
 - 其他可选建模、复合物预测和界面分析 adapter。
 
 命令中的 `<PATH_TO_...>` 是占位符，必须按实际安装修改。还需要 NfL antigen PDB、模型 checkpoint/database、对应版本的 adapter 和可用硬件。

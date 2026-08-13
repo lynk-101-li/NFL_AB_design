@@ -1,0 +1,132 @@
+{
+  "schema": "nfl_ab_design.model_components.v1",
+  "version": "0.3.0",
+  "checked_at": "2026-08-13",
+  "policy": {
+    "source_delivery": "git_submodule_pinned_to_exact_commit",
+    "environment_isolation": "one_environment_per_model_family",
+    "weights_and_databases_in_git": false,
+    "license_acceptance_is_never_automatic": true,
+    "real_outputs_must_include_runtime_and_checkpoint_hashes": true,
+    "simulation_must_never_be_relabeled_as_model_output": true
+  },
+  "components": [
+    {
+      "id": "rfantibody",
+      "category": "antibody_design",
+      "display_name": "RFantibody",
+      "submodule_path": "third_party/RFantibody",
+      "repository": "https://github.com/RosettaCommons/RFantibody.git",
+      "revision": "8fe311415754e0276d1a39c87c57e69c88927a2d",
+      "code_license": "MIT",
+      "license_gate": "none_for_code; inspect downloaded checkpoint terms",
+      "environment": "rfantibody",
+      "role": "structure-conditioned paired-Fv backbone and sequence design",
+      "asset_policy": "download upstream checkpoints outside Git and record SHA-256"
+    },
+    {
+      "id": "iggm",
+      "category": "antibody_design",
+      "display_name": "IgGM",
+      "submodule_path": "third_party/IgGM",
+      "repository": "https://github.com/TencentAI4S/IgGM.git",
+      "revision": "06abc563b3fc8c7ea020543add16b69b6f8a1c8d",
+      "code_license": "MIT",
+      "license_gate": "none_for_code; inspect downloaded checkpoint terms",
+      "environment": "iggm",
+      "role": "masked paired-VH/VL sequence and structure design",
+      "asset_policy": "store checkpoints outside Git and record SHA-256"
+    },
+    {
+      "id": "germinal",
+      "category": "antibody_design",
+      "display_name": "Germinal",
+      "submodule_path": "third_party/germinal",
+      "repository": "https://github.com/SantiagoMille/germinal.git",
+      "revision": "1e1c1a5b79884ae45abae030c9df90d9423a990a",
+      "code_license": "Apache-2.0",
+      "license_gate": "PyRosetta and optional predictors have separate terms",
+      "environment": "germinal",
+      "role": "independent epitope-conditioned single-chain scFv design",
+      "asset_policy": "do not redistribute PyRosetta or AlphaFold parameters"
+    },
+    {
+      "id": "tfold",
+      "category": "structure_prediction",
+      "display_name": "tFold",
+      "submodule_path": "third_party/tfold",
+      "repository": "https://github.com/TencentAI4S/tfold.git",
+      "revision": "7de0a752edf6f2e71a7fc953710f49ae9dea2dee",
+      "code_license": "PolyForm-Noncommercial-1.0.0",
+      "license_gate": "explicit_noncommercial_terms_review_required",
+      "environment": "tfold",
+      "role": "antibody and antibody-antigen structure prediction/cross-check",
+      "asset_policy": "weights remain outside Git and follow upstream terms"
+    },
+    {
+      "id": "igfold",
+      "category": "structure_prediction",
+      "display_name": "IgFold",
+      "submodule_path": "third_party/IgFold",
+      "repository": "https://github.com/Graylab/IgFold.git",
+      "revision": "83df802793ec7b9e51578cd1b632b2f0fafe2f31",
+      "code_license": "JHU Academic Software License",
+      "license_gate": "academic_noncommercial_terms_review_required",
+      "environment": "igfold",
+      "role": "paired-Fv structure sanity check",
+      "asset_policy": "model assets remain outside Git and follow upstream terms"
+    },
+    {
+      "id": "immunebuilder",
+      "category": "structure_prediction",
+      "display_name": "ImmuneBuilder ABodyBuilder2",
+      "submodule_path": "third_party/ImmuneBuilder",
+      "repository": "https://github.com/oxpig/ImmuneBuilder.git",
+      "revision": "0df4e2ad82a1aa60f37ea9dae335d1198159ef78",
+      "code_license": "BSD-3-Clause",
+      "license_gate": "inspect model asset terms before use",
+      "environment": "immunebuilder",
+      "role": "paired-Fv structure sanity check and template preparation",
+      "asset_policy": "cache weights outside Git and record SHA-256"
+    },
+    {
+      "id": "alphafold3",
+      "category": "structure_prediction",
+      "display_name": "AlphaFold 3",
+      "submodule_path": "third_party/alphafold3",
+      "repository": "https://github.com/google-deepmind/alphafold3.git",
+      "revision": "29596b97021cfc941b1993249969c4f268efdbab",
+      "code_license": "Apache-2.0",
+      "license_gate": "model_parameters_and_outputs_have_separate_terms",
+      "environment": "alphafold3_container",
+      "role": "antibody-antigen complex co-folding cross-check",
+      "asset_policy": "never commit or redistribute model parameters or databases"
+    },
+    {
+      "id": "chai1",
+      "category": "structure_prediction",
+      "display_name": "Chai-1",
+      "submodule_path": "third_party/chai-lab",
+      "repository": "https://github.com/chaidiscovery/chai-lab.git",
+      "revision": "66c38d1fe5c6756a89ff8596b1dea87d305ec06f",
+      "code_license": "Apache-2.0",
+      "license_gate": "inspect current upstream code and weight terms",
+      "environment": "chai1",
+      "role": "antibody-antigen complex co-folding cross-check",
+      "asset_policy": "cache weights outside Git and record SHA-256"
+    },
+    {
+      "id": "boltz2",
+      "category": "structure_prediction",
+      "display_name": "Boltz-2",
+      "submodule_path": "third_party/boltz",
+      "repository": "https://github.com/jwohlwend/boltz.git",
+      "revision": "b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc",
+      "code_license": "MIT",
+      "license_gate": "inspect current upstream code and weight terms",
+      "environment": "boltz2",
+      "role": "antibody-antigen complex co-folding cross-check",
+      "asset_policy": "cache weights outside Git and record SHA-256"
+    }
+  ]
+}

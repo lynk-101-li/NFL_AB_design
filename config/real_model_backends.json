@@ -14,6 +14,7 @@
       "name": "RFantibody",
       "role": "primary_structure_conditioned_paired_Fv_generator",
       "repository": "https://github.com/RosettaCommons/RFantibody",
+      "submodule_path": "third_party/RFantibody",
       "revision": "8fe311415754e0276d1a39c87c57e69c88927a2d",
       "upstream_version": "1.0.0",
       "license": "MIT",
@@ -33,6 +34,7 @@
       "name": "IgGM",
       "role": "paired_VH_VL_masked_template_generator",
       "repository": "https://github.com/TencentAI4S/IgGM",
+      "submodule_path": "third_party/IgGM",
       "revision": "06abc563b3fc8c7ea020543add16b69b6f8a1c8d",
       "license": "MIT",
       "environment_name": "iggm",
@@ -51,6 +53,7 @@
       "name": "Germinal",
       "role": "parallel_epitope_conditioned_scFv_generator",
       "repository": "https://github.com/SantiagoMille/germinal",
+      "submodule_path": "third_party/germinal",
       "revision": "1e1c1a5b79884ae45abae030c9df90d9423a990a",
       "upstream_last_user_validated_revision": "2c0a13b",
       "license": "Apache-2.0 for repository code; PyRosetta and optional model dependencies have separate terms",
@@ -76,7 +79,7 @@
     "formal_results_root": "/root/autodl-fs/topics/nfl-antibody-design/runs",
     "scratch_root": "/root/autodl-tmp/nfl-antibody-design",
     "shared_model_root": "/root/autodl-fs/shared/models",
-    "apps_root": "/root/apps",
+    "source_root": "/root/workspace/NFL_AB_design/third_party",
     "workspace_root": "/root/workspace/NFL_AB_design",
     "student_install_state": "not_assumed; every server must pass its own preflight and runtime verification"
   }
