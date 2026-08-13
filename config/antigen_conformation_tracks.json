@@ -1,7 +1,10 @@
 {
   "schema": "nfl_ab_design.antigen_conformation_scope.v1",
   "scientific_background_not_used_as_design_constraint": {
-    "observation": "A roughly 22 kDa band under non-reducing conditions has an unresolved oligomeric-state hypothesis.",
+    "observation": "The NfL-related fragment migrates at roughly 25-35 kDa under non-reducing conditions and roughly 6-12 kDa after DTT reduction.",
+    "preferred_biochemical_model": "Two Cys322-Cys322 disulfide-linked dimers associate as an antiparallel, staggered tetramer through a coiled-coil interface involving a hydrophobic core, electrostatic interactions, and geometric/conformational complementarity.",
+    "alternative_not_excluded": "A disulfide-linked NfL dimer plus an unknown binding partner can also explain the apparent mass shift.",
+    "evidence_boundary": "The DTT response supports an important disulfide contribution but does not alone establish tetramer stoichiometry or a purely hydrophobic dimer-dimer interface.",
     "design_consequence": "None in this campaign: the antibody design target is a single-chain monomer surface and no cysteine contact is requested."
   },
   "active_tracks": [
@@ -20,7 +23,7 @@
     "state": "out_of_scope_not_planned_not_built_not_executed",
     "conformation": "any antigen oligomer, including covalently linked states",
     "reason": "The campaign owner selected a monomer-only design scope.",
-    "scientific_limitation": "Monomer-only results cannot establish the molecular origin of the approximately 22 kDa non-reducing band or predict epitope geometry in an oligomer."
+    "scientific_limitation": "Monomer-only results cannot distinguish the preferred two-disulfide-dimer tetramer from a dimer-plus-partner model, establish oligomer stoichiometry, or predict epitope geometry in the observed non-reducing complex."
   },
   "ranking_rule": "All generated candidates and scores belong to the single-chain monomer track only; no dimer comparison or cross-conformation ranking is performed."
 }

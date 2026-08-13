@@ -2,13 +2,15 @@
 
 ## Objective
 
-Infer NfL rod/coil-2B antigen fragments compatible with a non-reducing 22 kDa band interpreted as a Cys322-linked disulfide homodimer.
+Infer NfL rod/coil-2B antigen fragments compatible with a roughly 6-12 kDa reducing band and a roughly 25-35 kDa non-reducing complex.
 
 ## Constraints
 
 - Protein sequence: canonical human NEFL/NfL, 543 aa.
 - Cys322 is the only cysteine in canonical human NfL.
-- A 22 kDa disulfide-linked dimer implies an approximately 11 kDa monomeric fragment.
+- The preferred biochemical model is an antiparallel, staggered tetramer made from two Cys322-Cys322 disulfide-linked dimers.
+- A disulfide-linked dimer plus an unknown binding partner remains an alternative explanation.
+- DTT supports a disulfide contribution but does not alone establish stoichiometry or a purely hydrophobic interface.
 - Candidate monomer fragments must include Cys322.
 - Boundary support is estimated from cathepsin-like cleavage preferences.
 
@@ -20,7 +22,7 @@ Cysteine cathepsin-like scoring emphasizes hydrophobic/aromatic P2 preference, b
 
 - Total peptide bonds scored: 542
 - Medium/high cleavage candidates: 87
-- 22 kDa/Cys322-compatible fragment candidates: 571
+- reducing-band/Cys322-compatible fragment candidates: 1339
 
 ## Top Cleavage Sites
 
@@ -41,18 +43,18 @@ Cysteine cathepsin-like scoring emphasizes hydrophobic/aromatic P2 preference, b
 
 ## Top Fragment Candidates
 
-|fragment|length_aa|monomer_avg_mass_kDa|disulfide_homodimer_avg_mass_kDa|N_terminal_cut|C_terminal_cut|combined_boundary_score|mass_error_from_22kDa|
-|---|---|---|---|---|---|---|---|
-|280-375|96|11.041|22.081|W279\|F280|L375\|L376|10.2|0.081|
-|282-377|96|10.993|21.984|K281\|S282|N377\|V378|8.4|0.016|
-|281-376|96|11.007|22.013|F280\|K281|L376\|N377|7.3|0.013|
-|280-374|95|10.928|21.854|W279\|F280|D374\|L375|8.7|0.146|
-|280-376|97|11.154|22.307|W279\|F280|L376\|N377|8.9|0.307|
-|281-375|95|10.894|21.786|F280\|K281|L375\|L376|8.6|0.214|
-|282-376|95|10.879|21.756|K281\|S282|L376\|N377|8.6|0.244|
-|282-375|94|10.766|21.53|K281\|S282|L375\|L376|9.9|0.47|
-|272-367|96|10.991|21.98|K271\|N272|R367\|Y368|8.9|0.02|
-|298-392|95|11.017|22.031|A297\|V298|L392\|L393|8.6|0.031|
+|fragment|length_aa|monomer_avg_mass_kDa|disulfide_homodimer_avg_mass_kDa|two_dimer_tetramer_avg_mass_kDa|N_terminal_cut|C_terminal_cut|combined_boundary_score|reducing_band_mass_fit_score|
+|---|---|---|---|---|---|---|---|---|
+|280-375|96|11.041|22.081|44.161|W279\|F280|L375\|L376|10.2|100.0|
+|282-377|96|10.993|21.984|43.969|K281\|S282|N377\|V378|8.4|100.0|
+|281-376|96|11.007|22.013|44.025|F280\|K281|L376\|N377|7.3|100.0|
+|282-375|94|10.766|21.53|43.06|K281\|S282|L375\|L376|9.9|100.0|
+|280-376|97|11.154|22.307|44.614|W279\|F280|L376\|N377|8.9|100.0|
+|280-368|89|10.151|20.301|40.601|W279\|F280|Y368\|L369|10.2|100.0|
+|280-377|98|11.269|22.535|45.07|W279\|F280|N377\|V378|8.7|100.0|
+|280-374|95|10.928|21.854|43.709|W279\|F280|D374\|L375|8.7|100.0|
+|280-370|91|10.393|20.783|41.567|W279\|F280|K370\|E371|9.3|100.0|
+|281-375|95|10.894|21.786|43.573|F280\|K281|L375\|L376|8.6|100.0|
 
 ## Interpretation
 

@@ -5,14 +5,17 @@
     "sequence_source": "resources/antigen_inference/nfl_cathepsin_annotated_for_snapgene.gp"
   },
   "experimental_observation": {
-    "non_reducing_band_kDa": 22.0,
-    "interpretation": "disulfide-linked homodimer",
-    "expected_monomer_kDa": 11.0
+    "non_reducing_band_kDa_range": [25.0, 35.0],
+    "reducing_band_kDa_range": [6.0, 12.0],
+    "approximate_apparent_mass_change": "about_fourfold",
+    "preferred_interpretation": "antiparallel_tetramer_of_two_Cys322_disulfide_dimers",
+    "alternative_not_excluded": "disulfide_dimer_plus_unknown_binding_partner",
+    "evidence_boundary": "DTT supports an essential disulfide contribution but does not by itself prove tetramer stoichiometry or the chemistry of the noncovalent dimer-dimer interface."
   },
   "fragment_constraints": {
     "required_cysteine_position": 322,
-    "monomer_mass_min_kDa": 10.0,
-    "monomer_mass_max_kDa": 12.6,
+    "monomer_mass_min_kDa": 6.0,
+    "monomer_mass_max_kDa": 12.0,
     "preferred_region_start": 280,
     "preferred_region_end": 377,
     "core_candidate_fragments": ["280-375", "281-376", "282-377"]

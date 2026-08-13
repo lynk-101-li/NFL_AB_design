@@ -10,14 +10,14 @@ Open in SnapGene with File -> Open. In Map/Sequence view, show Features. The fil
 
 - UniProt domains, including coil 2B at aa 281-396
 - Cys322 as the disulfide anchor candidate
-- top 22 kDa disulfide homodimer fragment candidates
+- top Cys322-containing fragment candidates for the reduction-sensitive oligomer hypothesis
 - medium/high cathepsin-like cleavage candidates around coil 2B
 
 Companion CSV files:
 
 - `nfl_all_peptide_bonds_cathepsin_scores.csv`: all 542 peptide bonds with substrate-specificity-based cathepsin-like scores
 - `nfl_medium_high_cathepsin_candidate_sites.csv`: filtered medium/high candidate cuts
-- `nfl_22kda_disulfide_dimer_fragment_candidates.csv`: candidate Cys322-containing monomers whose disulfide homodimer is around 22 kDa
+- `nfl_reduction_sensitive_fragment_candidates.csv`: Cys322-containing monomer candidates compatible with the 6-12 kDa reducing band; the non-reducing band is not treated as an exact dimer-mass constraint
 
 Most likely starting hypotheses from the scoring table:
 

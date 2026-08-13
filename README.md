@@ -21,9 +21,11 @@
 
 ## Project Background
 
-NfL（NEFL）是神经丝轻链蛋白，常用于神经损伤相关检测研究。本课题的上游观察是一个约 22 kDa 的非还原条带。工作假设将其解释为二硫键连接的同源二聚体，因此每个单体片段约为 11 kDa。人 NfL 全长序列仅有一个 canonical cysteine，即 Cys322；若上述假设成立，相关片段必须包含 Cys322。
+NfL（NEFL）是神经丝轻链蛋白，常用于神经损伤相关检测研究。本课题的上游观察是：NfL 相关片段在非还原条件下约为 25–35 kDa，DTT 还原后约为 6–12 kDa。约四倍的表观质量变化优先支持四聚体解释，但仍不能排除“二硫键二聚体＋未知结合伙伴”。
 
-这条推理将抗原空间收缩到 rod/coil-2B 附近。结合片段质量、cathepsin-like 边界支持和结构区域，工作抗原集中在 NfL aa 280–377，主要片段包括 `280-375`、`281-376` 和 `282-377`。详细推理见 `docs/nfl_truncation_inference_rationale.md`。
+人 NfL 通常每条链只有一个关键半胱氨酸 Cys322。当前优先生化模型写作 `4M → (M–S–S–M)₂`：两个 Cys322–Cys322 二硫键分别形成两个二聚体，两个二聚体再以反平行、错位方式通过卷曲螺旋界面结合成四聚体。这里的非共价界面不能简化成“疏水作用”，而应包括卷曲螺旋疏水核心、静电作用以及几何/构象互补。DTT 响应说明二硫键对复合物稳定性重要，但不能单独证明四聚体化学计量，也不能证明二聚体间界面纯粹由疏水作用形成。
+
+还原后 6–12 kDa 的范围、Cys322 位置、cathepsin-like 边界支持和结构区域共同将抗原空间收缩到 rod/coil-2B 附近。工作抗原集中在 NfL aa 280–377，主要片段包括 `280-375`、`281-376` 和 `282-377`。非还原 SDS-PAGE 的表观迁移不再作为精确二聚体理论质量约束。详细推理见 `docs/nfl_truncation_inference_rationale.md`。
 
 流程保留 `280-375` 作为生化截断排序第一名，但结构/生成 handoff 使用 `280-377` 建模上下文，以完整覆盖配置中的 368–377 表位；二者在 manifest 中分别记录，不能混称同一个实验片段。
 
@@ -131,7 +133,7 @@ NFL_AB_design/
 
 ## Installation and Run
 
-本包的本地 proxy workflow 没有必需的第三方 Python 依赖，推荐 Python 3.10 或更高版本。
+本包的本地 proxy workflow 需要 Python 3.10 或更高版本及 NumPy；editable install 会自动安装声明的依赖。
 
 ```bash
 python3 scripts/run_nfl_ab_design.py
@@ -219,7 +221,8 @@ python3 -m unittest discover -s tests
 - 抗体-抗原 co-folding/docking 的 PAE、ipTM/pTM、DockQ/pDockQ、埋藏表面积和 clash metrics；
 - 亲和力、特异性、交叉反应和可开发性实验；
 - sandwich capture/detection 实验；
-- 对 22/11 kDa 条带的 LC-MS/MS、neo-termini、Cys322-containing peptide 和 Cys322–Cys322 disulfide evidence。
+- 对非还原 25–35 kDa 与 DTT 后 6–12 kDa 条带的 LC-MS/MS、neo-termini、Cys322-containing peptide 和 Cys322–Cys322 disulfide evidence；
+- C322S、还原/非还原 SDS-PAGE、SEC-MALS 或原生质谱对“四聚体”与“二聚体＋未知伙伴”模型的判别。
 
 在完成这些验证之前，结果应表述为 **simulated computational prioritization**，而不是已证明的物理结合或盲法抗体发现。
 

@@ -38,8 +38,8 @@ ANTIGEN_DIR = RESOURCE_DIR / "antigen_inference"
 
 STORY_PATH = PROJECT_CONTEXT_DIR / "storyline.txt"
 RESEARCH_PLAN_PATH = PROJECT_CONTEXT_DIR / "research_plan.txt"
-ANTIGEN_REPORT_PATH = ANTIGEN_DIR / "NFL_22kDa_disulfide_dimer_cathepsin_truncation.md"
-FRAGMENT_CANDIDATES_PATH = ANTIGEN_DIR / "nfl_22kda_disulfide_dimer_fragment_candidates.csv"
+ANTIGEN_REPORT_PATH = ANTIGEN_DIR / "NFL_reduction_sensitive_oligomer_cathepsin_truncation.md"
+FRAGMENT_CANDIDATES_PATH = ANTIGEN_DIR / "nfl_reduction_sensitive_fragment_candidates.csv"
 CLEAVAGE_SITES_PATH = ANTIGEN_DIR / "nfl_medium_high_cathepsin_candidate_sites.csv"
 GENPEPT_PATH = ANTIGEN_DIR / "nfl_cathepsin_annotated_for_snapgene.gp"
 ANTIBODY_FASTA_PATH = PACKAGE_ROOT / "validation" / "experimentally_validated_antibodies.fasta"
@@ -279,11 +279,16 @@ def read_csv_dicts(path: Path) -> list[dict[str, str]]:
 
 def load_truncation_constraints(path: Path) -> dict[str, Any]:
     default = {
-        "experimental_observation": {"non_reducing_band_kDa": 22.0},
+        "experimental_observation": {
+            "non_reducing_band_kDa_range": [25.0, 35.0],
+            "reducing_band_kDa_range": [6.0, 12.0],
+            "preferred_interpretation": "antiparallel_tetramer_of_two_Cys322_disulfide_dimers",
+            "alternative_not_excluded": "disulfide_dimer_plus_unknown_binding_partner",
+        },
         "fragment_constraints": {
             "required_cysteine_position": CYS322_POSITION,
-            "monomer_mass_min_kDa": 10.0,
-            "monomer_mass_max_kDa": 12.6,
+            "monomer_mass_min_kDa": 6.0,
+            "monomer_mass_max_kDa": 12.0,
             "preferred_region_start": 280,
             "preferred_region_end": 377,
             "core_candidate_fragments": ["280-375", "281-376", "282-377"],
@@ -595,12 +600,17 @@ def infer_truncation_fragments(
     fragment_constraints = constraints.get("fragment_constraints", {})
     observation = constraints.get("experimental_observation", {})
     required_cys = int(fragment_constraints.get("required_cysteine_position", CYS322_POSITION))
-    monomer_min = float(fragment_constraints.get("monomer_mass_min_kDa", 10.0))
-    monomer_max = float(fragment_constraints.get("monomer_mass_max_kDa", 12.6))
+    monomer_min = float(fragment_constraints.get("monomer_mass_min_kDa", 6.0))
+    monomer_max = float(fragment_constraints.get("monomer_mass_max_kDa", 12.0))
     preferred_start = int(fragment_constraints.get("preferred_region_start", 280))
     preferred_end = int(fragment_constraints.get("preferred_region_end", 377))
     core_fragments = set(fragment_constraints.get("core_candidate_fragments", ["280-375", "281-376", "282-377"]))
-    target_dimer_mass = float(observation.get("non_reducing_band_kDa", 22.0))
+    reducing_band_range = observation.get("reducing_band_kDa_range", [monomer_min, monomer_max])
+    if not isinstance(reducing_band_range, list) or len(reducing_band_range) != 2:
+        raise ValueError("experimental_observation.reducing_band_kDa_range must contain two values")
+    reducing_min, reducing_max = (float(value) for value in reducing_band_range)
+    if reducing_min >= reducing_max:
+        raise ValueError("reducing_band_kDa_range must be strictly increasing")
     boundary_sites = [
         row
         for row in cleavage_rows
@@ -622,6 +632,7 @@ def infer_truncation_fragments(
             length = len(fragment_sequence)
             monomer_mass = peptide_mass_kda(fragment_sequence)
             dimer_mass = 2 * monomer_mass - 0.002
+            tetramer_mass = 4 * monomer_mass - 0.004
             if not monomer_min <= monomer_mass <= monomer_max:
                 continue
             if required_cys < start or required_cys > end:
@@ -630,11 +641,14 @@ def infer_truncation_fragments(
             n_score = float(n_site["best_cathepsin_like_score"])
             c_score = float(c_site["best_cathepsin_like_score"])
             combined_score = round(n_score + c_score, 1)
-            mass_error = abs(dimer_mass - target_dimer_mass)
             fragment_label = f"{start}-{end}"
             core_bonus = 1.0 if fragment_label in core_fragments else 0.0
             preferred_region_bonus = 1.0 if preferred_start <= start <= required_cys <= end <= preferred_end else 0.0
-            mass_score = clamp(1.0 - mass_error / (target_dimer_mass * 0.10))
+            if reducing_min <= monomer_mass <= reducing_max:
+                mass_score = 1.0
+            else:
+                distance = min(abs(monomer_mass - reducing_min), abs(monomer_mass - reducing_max))
+                mass_score = clamp(1.0 - distance / (reducing_max - reducing_min))
             boundary_score = clamp(combined_score / 10.2)
             length_score = clamp(1.0 - abs(length - 97) / 32.0)
             truncation_score = 100.0 * (
@@ -650,6 +664,8 @@ def infer_truncation_fragments(
                     "length_aa": length,
                     "monomer_avg_mass_kDa": round(monomer_mass, 3),
                     "disulfide_homodimer_avg_mass_kDa": round(dimer_mass, 3),
+                    "two_dimer_tetramer_avg_mass_kDa": round(tetramer_mass, 3),
+                    "reducing_band_6_12kDa_compatible": reducing_min <= monomer_mass <= reducing_max,
                     "sequence": fragment_sequence,
                     "N_terminal_cut": n_site["bond"],
                     "N_context": n_site["context_P4_to_P4prime"],
@@ -664,7 +680,7 @@ def infer_truncation_fragments(
                     "C_catD_E_score": c_site["cathepsin_D_E_like_score"],
                     "C_notes": format_boundary_notes(c_site),
                     "combined_boundary_score": combined_score,
-                    "mass_error_from_22kDa": round(mass_error, 3),
+                    "reducing_band_mass_fit_score": round(mass_score * 100, 2),
                     "truncation_candidate_score": round(truncation_score, 2),
                     "contains_C322": "yes",
                 }
@@ -673,7 +689,7 @@ def infer_truncation_fragments(
     candidates.sort(
         key=lambda row: (
             -float(row["truncation_candidate_score"]),
-            float(row["mass_error_from_22kDa"]),
+            -float(row["reducing_band_mass_fit_score"]),
             abs(int(row["length_aa"]) - 97),
             row["fragment"],
         )
@@ -704,13 +720,15 @@ def write_truncation_report(
 
 ## Objective
 
-Infer NfL rod/coil-2B antigen fragments compatible with a non-reducing 22 kDa band interpreted as a Cys322-linked disulfide homodimer.
+Infer NfL rod/coil-2B antigen fragments compatible with a roughly 6-12 kDa reducing band and a roughly 25-35 kDa non-reducing complex.
 
 ## Constraints
 
 - Protein sequence: canonical human NEFL/NfL, 543 aa.
 - Cys322 is the only cysteine in canonical human NfL.
-- A 22 kDa disulfide-linked dimer implies an approximately 11 kDa monomeric fragment.
+- The preferred biochemical model is an antiparallel, staggered tetramer made from two Cys322-Cys322 disulfide-linked dimers.
+- A disulfide-linked dimer plus an unknown binding partner remains an alternative explanation.
+- DTT supports a disulfide contribution but does not alone establish stoichiometry or a purely hydrophobic interface.
 - Candidate monomer fragments must include Cys322.
 - Boundary support is estimated from cathepsin-like cleavage preferences.
 
@@ -722,7 +740,7 @@ Cysteine cathepsin-like scoring emphasizes hydrophobic/aromatic P2 preference, b
 
 - Total peptide bonds scored: {len(cleavage_rows)}
 - Medium/high cleavage candidates: {len(medium_high_sites)}
-- 22 kDa/Cys322-compatible fragment candidates: {len(fragment_rows)}
+- reducing-band/Cys322-compatible fragment candidates: {len(fragment_rows)}
 
 ## Top Cleavage Sites
 
@@ -730,7 +748,7 @@ Cysteine cathepsin-like scoring emphasizes hydrophobic/aromatic P2 preference, b
 
 ## Top Fragment Candidates
 
-{markdown_table(top_fragments, ['fragment', 'length_aa', 'monomer_avg_mass_kDa', 'disulfide_homodimer_avg_mass_kDa', 'N_terminal_cut', 'C_terminal_cut', 'combined_boundary_score', 'mass_error_from_22kDa'])}
+{markdown_table(top_fragments, ['fragment', 'length_aa', 'monomer_avg_mass_kDa', 'disulfide_homodimer_avg_mass_kDa', 'two_dimer_tetramer_avg_mass_kDa', 'N_terminal_cut', 'C_terminal_cut', 'combined_boundary_score', 'reducing_band_mass_fit_score'])}
 
 ## Interpretation
 
@@ -752,18 +770,17 @@ def infer_antigen_truncation(
 def prioritize_antigen_fragments(rows: list[dict[str, str]], constraints: dict[str, Any]) -> list[dict[str, Any]]:
     max_boundary = max(float(row["combined_boundary_score"]) for row in rows)
     fragment_constraints = constraints.get("fragment_constraints", {})
-    observation = constraints.get("experimental_observation", {})
     report_core = set(fragment_constraints.get("core_candidate_fragments", ["280-375", "281-376", "282-377"]))
-    target_dimer_mass = float(observation.get("non_reducing_band_kDa", 22.0))
     prioritized: list[dict[str, Any]] = []
 
     for row in rows:
         fragment = row["fragment"]
         length = int(row["length_aa"])
         dimer_mass = float(row["disulfide_homodimer_avg_mass_kDa"])
+        tetramer_mass = float(row["two_dimer_tetramer_avg_mass_kDa"])
         boundary = float(row["combined_boundary_score"])
         contains_c322 = 1.0 if row["contains_C322"].lower() == "yes" else 0.0
-        mass_score = clamp(1.0 - abs(dimer_mass - target_dimer_mass) / (target_dimer_mass * 0.10))
+        mass_score = float(row["reducing_band_mass_fit_score"]) / 100.0
         boundary_score = boundary / max_boundary
         length_score = clamp(1.0 - abs(length - 97) / 32.0)
         report_bonus = 1.0 if fragment in report_core else 0.0
@@ -781,7 +798,8 @@ def prioritize_antigen_fragments(rows: list[dict[str, str]], constraints: dict[s
                 "sequence": row["sequence"],
                 "monomer_avg_mass_kDa": float(row["monomer_avg_mass_kDa"]),
                 "disulfide_homodimer_avg_mass_kDa": dimer_mass,
-                "mass_closeness_to_22kDa_score": round(mass_score * 100, 2),
+                "two_dimer_tetramer_avg_mass_kDa": tetramer_mass,
+                "reducing_band_mass_fit_score": round(mass_score * 100, 2),
                 "combined_boundary_score": boundary,
                 "contains_C322": row["contains_C322"],
                 "N_terminal_cut": row["N_terminal_cut"],
@@ -2402,11 +2420,11 @@ def _write_legacy_workflow_report(
 - 抗原推断目录：`{relative_to_package(ANTIGEN_DIR)}`
 - 已验证抗体 FASTA：`{relative_to_package(ANTIBODY_FASTA_PATH)}`
 
-本流程先执行 NfL 抗原截断推断，再进入表位、抗体和 sandwich pair 计算。当前工作假设是 NfL rod/coil-2B 的 aa 280-377 附近片段包含 Cys322，并形成二硫键同源二聚体。
+本流程先执行 NfL 抗原截断推断，再进入表位、抗体和 sandwich pair 计算。上游观察为非还原约 25-35 kDa、DTT 后约 6-12 kDa。优先生化模型是两个 Cys322-Cys322 二硫键二聚体通过反平行、错位的卷曲螺旋界面组成四聚体；二聚体加未知结合伙伴仍不能排除。
 
 ## 2. 计算模块
 
-1. 抗原截断推断：对 NfL 全长逐肽键进行 cathepsin-like 打分，并按 Cys322 + 22 kDa 二硫键二聚体约束枚举片段。
+1. 抗原截断推断：对 NfL 全长逐肽键进行 cathepsin-like 打分，并按还原后 6-12 kDa 单链质量范围、Cys322 和 rod/coil-2B 边界支持枚举片段；非还原条带不再被当作精确二聚体理论质量约束。
 2. 抗原结构可靠性分层：用 rod/coil-2B 区域和截断推断结果定义 NfL aa 280-377 的优先抗原上下文。
 3. NfL 特异性表位图谱：在候选片段内生成边界/Cys322/滑窗表位，并用暴露度、带电性、rod 稳定性和 PTM 风险代理指标打分。
 4. 抗体序列建模准备：解析 VH/VL，做启发式 CDR 注释和 developability 体检。
@@ -2418,14 +2436,14 @@ def _write_legacy_workflow_report(
 
 - 全长 NfL 肽键打分数：`{len(cleavage_rows)}`。
 - 中高优先级 cathepsin-like 切点数：`{len(medium_high_sites)}`。
-- 满足 Cys322 + 22 kDa 二硫键二聚体约束的候选片段数：`{len(inferred_fragments)}`。
+- 满足还原条带质量范围、Cys322 和边界约束的候选片段数：`{len(inferred_fragments)}`。
 - 详细报告：`00_antigen_truncation_report.md`。
 
-{markdown_table(inferred_fragments, ['fragment', 'length_aa', 'monomer_avg_mass_kDa', 'disulfide_homodimer_avg_mass_kDa', 'N_terminal_cut', 'C_terminal_cut', 'combined_boundary_score', 'mass_error_from_22kDa'], limit=8)}
+{markdown_table(inferred_fragments, ['fragment', 'length_aa', 'monomer_avg_mass_kDa', 'disulfide_homodimer_avg_mass_kDa', 'two_dimer_tetramer_avg_mass_kDa', 'N_terminal_cut', 'C_terminal_cut', 'combined_boundary_score', 'reducing_band_mass_fit_score'], limit=8)}
 
 ## 4. 抗原片段优先级
 
-{markdown_table(prioritized_fragments, ['antigen_rank', 'fragment', 'length_aa', 'disulfide_homodimer_avg_mass_kDa', 'combined_boundary_score', 'N_terminal_cut', 'C_terminal_cut', 'antigen_confidence_score'], limit=8)}
+{markdown_table(prioritized_fragments, ['antigen_rank', 'fragment', 'length_aa', 'monomer_avg_mass_kDa', 'disulfide_homodimer_avg_mass_kDa', 'two_dimer_tetramer_avg_mass_kDa', 'combined_boundary_score', 'N_terminal_cut', 'C_terminal_cut', 'antigen_confidence_score'], limit=8)}
 
 ## 5. 候选表位窗口
 
@@ -2590,6 +2608,8 @@ def write_workflow_report(
 - 抗原推断资源：`{relative_to_package(ANTIGEN_DIR)}`
 - 设计 campaign：`{relative_to_package(DESIGN_CAMPAIGN_CONFIG_PATH)}`
 - 回顾性阳性对照：`{relative_to_package(ANTIBODY_FASTA_PATH)}`
+
+上游生化观察为非还原约 25–35 kDa、DTT 后约 6–12 kDa。优先模型是两个 Cys322–Cys322 二硫键二聚体通过包含疏水核心、静电作用和几何/构象互补的反平行卷曲螺旋界面形成四聚体；“二聚体＋未知结合伙伴”仍未排除。DTT 证明二硫键参与稳定，但不能单独证明四聚体化学计量或界面组成。
 
 工作抗原采用 NfL rod/coil-2B 的 aa280–377 单链单体上下文；设计热点不包含 Cys322，也不要求抗体接触半胱氨酸。两株已知抗体只在生成轨道中提供两个不同的配对 VH/VL framework；H1/H2/H3/L1/L2/L3 全部遮罩并重新设计。已知 CDR 氨基酸和完整已知 VH/VL 不作为 prospective generation feature。
 
@@ -2827,6 +2847,7 @@ def run_workflow(
         "output_dir": OUTPUT_DIR,
         "primary_fragment": primary_fragment,
         "modeling_fragment": modeling_fragment,
+        "inferred_fragments": inferred_fragments,
         "ranking_rows": prospective_rows,
         "ranking_rows_scope": "prospective_simulation",
         "prospective_ranking_rows": design_result["prospective_ranking_rows"],

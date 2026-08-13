@@ -1,8 +1,8 @@
 LOCUS       NEFL_CATH_ANNOTATED       543 aa    linear   PRI 04-JUN-2026
-DEFINITION  Human NEFL/NfL P07196 annotated with cathepsin-like cleavage candidates for the 22 kDa disulfide dimer hypothesis.
+DEFINITION  Human NEFL/NfL P07196 annotated with cathepsin-like cleavage candidates for the reduction-sensitive oligomer hypothesis.
 ACCESSION   P07196
 VERSION     P07196.3
-KEYWORDS    NfL; NEFL; cathepsin; Cys322; coil 2B; disulfide dimer.
+KEYWORDS    NfL; NEFL; cathepsin; Cys322; coil 2B; disulfide tetramer.
 SOURCE      Homo sapiens
   ORGANISM  Homo sapiens
             Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Mammalia; Primates; Hominidae; Homo.
@@ -30,35 +30,29 @@ FEATURES             Location/Qualifiers
                      /note="Cys322; only cysteine in canonical human NfL; disulfide
                      anchor candidate"
      Bond           322
-                     /note="putative interchain disulfide via Cys322 in 22 kDa
-                     homodimer"
+                     /note="putative interchain disulfide via Cys322 within each
+                     dimer of the preferred two-dimer tetramer model"
      Region         280..375
-                     /note="22kDa dimer candidate fragment 280-375; monomer 11.041
+                     /note="reducing-band candidate fragment 280-375; monomer 11.041
                      kDa; dimer 22.081 kDa; N cut W279|F280; C cut L375|L376"
      Region         280..376
-                     /note="22kDa dimer candidate fragment 280-376; monomer 11.155
+                     /note="reducing-band candidate fragment 280-376; monomer 11.155
                      kDa; dimer 22.307 kDa; N cut W279|F280; C cut L376|N377"
      Region         281..376
-                     /note="22kDa dimer candidate fragment 281-376; monomer 11.007
+                     /note="reducing-band candidate fragment 281-376; monomer 11.007
                      kDa; dimer 22.013 kDa; N cut F280|K281; C cut L376|N377"
      Region         282..376
-                     /note="22kDa dimer candidate fragment 282-376; monomer 10.879
+                     /note="reducing-band candidate fragment 282-376; monomer 10.879
                      kDa; dimer 21.756 kDa; N cut K281|S282; C cut L376|N377"
      Region         282..377
-                     /note="22kDa dimer candidate fragment 282-377; monomer 10.993
+                     /note="reducing-band candidate fragment 282-377; monomer 10.993
                      kDa; dimer 21.985 kDa; N cut K281|S282; C cut N377|V378"
      Region         282..375
-                     /note="22kDa dimer candidate fragment 282-375; monomer 10.766
+                     /note="reducing-band candidate fragment 282-375; monomer 10.766
                      kDa; dimer 21.53 kDa; N cut K281|S282; C cut L375|L376"
-     Region         282..390
-                     /note="22kDa dimer candidate fragment 282-390; monomer 12.468
-                     kDa; dimer 24.934 kDa; N cut K281|S282; C cut R390|K391"
      Region         286..375
-                     /note="22kDa dimer candidate fragment 286-375; monomer 10.275
+                     /note="reducing-band candidate fragment 286-375; monomer 10.275
                      kDa; dimer 20.547 kDa; N cut T285|V286; C cut L375|L376"
-     Region         286..392
-                     /note="22kDa dimer candidate fragment 286-392; monomer 12.218
-                     kDa; dimer 24.434 kDa; N cut T285|V286; C cut L392|L393"
      Site           279
                      /note="cathepsin-like cut after W279|F280; AEEW|FKSR; priority
                      medium; cys-cat score 0.7; CatD/E score 5.1"

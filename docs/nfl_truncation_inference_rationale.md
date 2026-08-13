@@ -4,21 +4,23 @@ This document records the reasoning chain behind the NfL truncation module in `N
 
 ## 1. Why truncation inference is needed
 
-The antibody design workflow does not start from an arbitrary full-length NfL antigen. The project begins with an experimentally observed NfL-related band near 22 kDa under non-reducing conditions. Because the band was interpreted as a disulfide-linked dimer, the relevant antigenic species is likely not full-length NfL but a smaller NfL fragment that forms a dimer.
+The antibody design workflow does not start from an arbitrary full-length NfL antigen. The project begins with an NfL-related species migrating at roughly 25-35 kDa under non-reducing conditions and roughly 6-12 kDa after DTT reduction. The preferred working model is an antiparallel tetramer assembled from two Cys322-Cys322 disulfide-linked dimers. A disulfide-linked NfL dimer plus an unknown binding partner remains a viable alternative.
 
 This matters for antibody design. If the diagnostic assay detects a disease- or sample-processing-associated NfL fragment, then antibodies should be evaluated against the fragment region that is actually present and reproducible, not against poorly constrained full-length protein regions.
 
 ## 2. Biological premise
 
-Canonical human NfL/NEFL has a single cysteine residue at Cys322. A disulfide-linked homodimer must therefore contain Cys322 in each monomeric fragment.
+Canonical human NfL/NEFL has a single cysteine residue at Cys322. Each proposed disulfide-linked NfL dimer must therefore contain Cys322 in both monomeric fragments.
 
 The reasoning is:
 
-1. Non-reducing band: approximately 22 kDa.
-2. If this is a disulfide-linked homodimer, each monomer is approximately 11 kDa.
-3. A disulfide-linked NfL monomer fragment must include the only canonical cysteine, Cys322.
-4. Cys322 lies in the rod/coil-2B region.
-5. Candidate antigen fragments should therefore cluster around the NfL rod/coil-2B region rather than the disordered head or tail.
+1. Non-reducing migration: approximately 25-35 kDa.
+2. Migration after DTT: approximately 6-12 kDa.
+3. The roughly fourfold shift supports, but does not prove, a tetrameric species.
+4. The preferred model is `4M -> (M-S-S-M)2`: two disulfide-linked dimers associate in an antiparallel, staggered arrangement.
+5. The dimer-dimer interface may combine a coiled-coil hydrophobic core, electrostatic interactions, and geometric/conformational complementarity.
+6. A disulfide-linked dimer plus an unknown binding partner is not excluded.
+7. A disulfide-linked NfL monomer fragment must include Cys322, which lies in rod/coil-2B.
 
 ## 3. Why cathepsin-like cleavage is considered
 
@@ -58,7 +60,7 @@ A retained fragment must:
 
 - include Cys322;
 - have monomer mass between the configured lower and upper limits;
-- have a predicted disulfide-linked homodimer mass close to the observed 22 kDa band;
+- have a theoretical monomer mass compatible with the broad 6-12 kDa reducing band;
 - have boundary support at both ends;
 - be compatible with the preferred NfL rod/coil-2B antigen region.
 
@@ -72,7 +74,7 @@ input/antigen_truncation/truncation_constraints.json
 
 The highest-priority region is supported by three independent constraints:
 
-1. Mass: fragments around aa 280-377 produce an approximately 11 kDa monomer and approximately 22 kDa disulfide-linked homodimer.
+1. Mass: fragments around aa 280-377 produce an approximately 11 kDa monomer, compatible with the broad reducing-band range. Non-reducing SDS-PAGE migration is not treated as an exact theoretical oligomer-mass measurement.
 2. Chemistry: all retained core fragments contain Cys322, the only cysteine that can explain a Cys322-Cys322 homodimer.
 3. Boundary plausibility: boundaries around W279/F280, F280/K281, K281/S282, L375/L376, L376/N377 and N377/V378 have cathepsin-like support.
 
@@ -99,10 +101,15 @@ This prevents the antibody analysis from drifting into regions that are less rel
 
 The truncation module is a computational inference layer. It should be validated by experiments such as:
 
-- LC-MS/MS of non-reducing 22 kDa and reducing 11 kDa bands;
+- LC-MS/MS of the non-reducing 25-35 kDa and reducing 6-12 kDa bands;
 - no-enzyme or semi-tryptic searches for neo-termini;
 - detection of Cys322-containing peptides;
 - disulfide-linked Cys322-Cys322 peptide evidence;
+- C322S comparison under reducing and non-reducing SDS-PAGE;
+- SEC-MALS or native mass spectrometry to distinguish tetramer stoichiometry from a dimer-plus-partner complex;
+- cross-linking mass spectrometry if the noncovalent dimer-dimer interface remains ambiguous.
+
+DTT establishes that disulfide chemistry contributes to complex stability, but DTT alone cannot prove tetramer stoichiometry or show that the dimer-dimer interface is purely hydrophobic.
 - in vitro cathepsin digestion with inhibitor controls;
 - immediate alkylation controls to rule out artificial oxidation.
 

@@ -1,6 +1,6 @@
 # NfL 抗体从头设计与回顾性对照演示报告
 
-运行时间：`2026-08-13T09:35:56.605698+08:00`
+运行时间：`2026-08-13T12:18:30.402437+08:00`
 
 > **证据边界：** 本次生成、结构/界面、可开发性和 sandwich 数值均为确定性 `simulated proxy`。
 > RFantibody、IgGM、Germinal、tFold 及后续结构工具均未在本次运行中执行。
@@ -12,6 +12,8 @@
 - 设计 campaign：`config/design_campaign.json`
 - 回顾性阳性对照：`validation/experimentally_validated_antibodies.fasta`
 
+上游生化观察为非还原约 25–35 kDa、DTT 后约 6–12 kDa。优先模型是两个 Cys322–Cys322 二硫键二聚体通过包含疏水核心、静电作用和几何/构象互补的反平行卷曲螺旋界面形成四聚体；“二聚体＋未知结合伙伴”仍未排除。DTT 证明二硫键参与稳定，但不能单独证明四聚体化学计量或界面组成。
+
 工作抗原采用 NfL rod/coil-2B 的 aa280–377 单链单体上下文；设计热点不包含 Cys322，也不要求抗体接触半胱氨酸。两株已知抗体只在生成轨道中提供两个不同的配对 VH/VL framework；H1/H2/H3/L1/L2/L3 全部遮罩并重新设计。已知 CDR 氨基酸和完整已知 VH/VL 不作为 prospective generation feature。
 
 CDR 坐标由 `ANARCI 2020.04.23 Chothia` 编号后映射到链内 1-based inclusive raw 坐标；模拟生成和真实模型请求共用同一组精确遮罩。编号 labels、工具版本与输入哈希见 `input/antibody_templates/chothia_numbering_evidence.json`。
@@ -20,7 +22,7 @@ CDR 坐标由 `ANARCI 2020.04.23 Chothia` 编号后映射到链内 1-based inclu
 
 - 全长 NfL 肽键 proxy：`542`
 - 中高优先级 cathepsin-like 切点：`87`
-- 约束内候选截断片段：`571`
+- 约束内候选截断片段：`1339`
 - 生化截断排序第一名：`NEFL 280-375`
 - 覆盖全部配置表位的建模上下文：`NEFL 280-377`
 

@@ -28,7 +28,7 @@ Sandwich assay 可以想成两只手同时抓住一个目标：
 
 ## 3. 为什么先分析 NfL 片段
 
-上游实验观察到约 22 kDa 的 NfL 相关非还原条带。工作假设认为，它可能是两个约 11 kDa 的相同片段用二硫键连在一起。
+上游实验观察到 NfL 相关片段在非还原条件下约为 25–35 kDa，DTT 后约为 6–12 kDa。当前优先假设是四条链组成复合物：Cys322 分别连接成两个二硫键二聚体，两个二聚体再通过卷曲螺旋的疏水核心、静电作用和形状互补形成反平行四聚体。二聚体＋未知结合伙伴仍不能排除。
 
 NfL 全长序列中只有一个 canonical cysteine：`Cys322`。所以，如果二硫键二聚体假设正确，相关片段就必须包含 Cys322。
 
@@ -36,7 +36,8 @@ NfL 全长序列中只有一个 canonical cysteine：`Cys322`。所以，如果�
 
 - 包含 Cys322；
 - 单体质量接近 11 kDa；
-- 二聚体质量接近 22 kDa；
+- 单链理论质量与 DTT 后约 6–12 kDa 的宽范围相容；
+- 非还原/还原表观质量变化支持高阶复合物，但不被当作精确理论质量约束；
 - 两端有 cathepsin-like 切割支持；
 - 位于 NfL rod/coil-2B 附近。
 
@@ -150,7 +151,7 @@ outputs/workflow_report.md
 
 | 文件 | 要回答的问题 |
 |---|---|
-| `00_antigen_truncation_report.md` | 为什么重点考虑包含 Cys322 的约 11 kDa 片段？ |
+| `00_antigen_truncation_report.md` | 为什么重点考虑 DTT 后 6–12 kDa 范围内且包含 Cys322 的片段？ |
 | `01_antigen_fragment_prioritization.csv` | 哪些 NfL 片段更符合工作假设？ |
 | `02_epitope_windows.csv` | 哪些局部表位更值得设计？ |
 | `03_template_frameworks.csv` | 六 CDR 是否都已遮罩，两模板来自何处？ |
@@ -218,7 +219,7 @@ python3 -m unittest discover -s tests
 ## 11. 一节课可以怎么讲
 
 1. NfL 和 sandwich assay 是什么。
-2. 22 kDa、11 kDa 和 Cys322 如何形成抗原片段假设。
+2. 非还原 25–35 kDa、DTT 后 6–12 kDa 和 Cys322 如何形成“四聚体优先、二聚体＋伙伴未排除”的抗原假设。
 3. framework 和 CDR 分别做什么。
 4. 为什么生成时必须遮罩已知的六 CDR。
 5. 运行代码，看 5120 个模拟候选如何通过漏斗。
