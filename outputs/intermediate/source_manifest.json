@@ -1,12 +1,12 @@
 {
   "schema": "nfl_ab_design.run_manifest.v2",
-  "run_id": "nfl_design_20260813T0549249078480800",
-  "generated_at": "2026-08-13T05:49:24.907848+08:00",
-  "nfl_ab_design_version": "0.2.0",
+  "run_id": "nfl_design_20260813T0935566056980800",
+  "generated_at": "2026-08-13T09:35:56.605698+08:00",
+  "nfl_ab_design_version": "0.2.1",
   "design_campaign_sha256": "932f45194685a888f33fe932f8dbec0d252860f1ea7fea6e9a289e8a4db8ff09",
   "workflow_source_sha256": "8aa4550ce5a5ffa625c40cd7beb982288ea423312ec50c62eea93a3db6a9abaf",
   "design_pipeline_source_sha256": "16cf851a402bb3ddeb193e3230c44bef76c02ffd0b226a663068352696d55029",
-  "run_timestamp": "2026-08-13T05:49:24.907848+08:00",
+  "run_timestamp": "2026-08-13T09:35:56.605698+08:00",
   "run_mode": "deterministic_proxy_simulation_with_retrospective_positive_controls",
   "real_model_execution": false,
   "story_path": "resources/project_context/storyline.txt",
@@ -198,6 +198,6 @@
   "story_characters": 1284,
   "research_plan_characters": 1928,
   "antigen_report_characters": 5080,
-  "design_request_index_sha256": "230df4f3174a74a68ab0c66d5026a4587456165705461e6e8c4d6b7f4181671c",
-  "external_tool_manifest_sha256": "cae2bc20f89ebbe65a87fe1fce05bbbbeb65717bd0ab1fb8c7bde81d8222f01e"
+  "design_request_index_sha256": "f77499ca6983b1e98dced13802a666798189d91ee214ab6554d5f9a521b46180",
+  "external_tool_manifest_sha256": "d4f38aab11623c73d9d9c745f889cf7142825beb135274043d8b46a2b74a55ea"
 }

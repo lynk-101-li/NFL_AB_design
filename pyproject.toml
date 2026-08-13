@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nfl-ab-design"
-version = "0.2.0"
+version = "0.2.1"
 description = "Reproducible epitope-conditioned NfL antibody de novo design campaign and real-model handoff."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -12,7 +12,9 @@ license = {file = "LICENSE"}
 authors = [
   {name = "NFL antibody design project"}
 ]
-dependencies = []
+dependencies = [
+  "numpy>=1.24",
+]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",

@@ -1,9 +1,9 @@
 {
   "schema": "nfl_ab_design.external_tool_manifest.v2",
   "run_metadata": {
-    "run_id": "nfl_design_20260813T0549249078480800",
-    "generated_at": "2026-08-13T05:49:24.907848+08:00",
-    "nfl_ab_design_version": "0.2.0",
+    "run_id": "nfl_design_20260813T0935566056980800",
+    "generated_at": "2026-08-13T09:35:56.605698+08:00",
+    "nfl_ab_design_version": "0.2.1",
     "design_campaign_sha256": "932f45194685a888f33fe932f8dbec0d252860f1ea7fea6e9a289e8a4db8ff09",
     "workflow_source_sha256": "8aa4550ce5a5ffa625c40cd7beb982288ea423312ec50c62eea93a3db6a9abaf",
     "design_pipeline_source_sha256": "16cf851a402bb3ddeb193e3230c44bef76c02ffd0b226a663068352696d55029"
@@ -111,11 +111,11 @@
       "outputs/exports/design_requests/germinal_design_request.json"
     ],
     "design_request_index": "outputs/exports/design_requests/design_request_index.json",
-    "design_request_index_sha256": "230df4f3174a74a68ab0c66d5026a4587456165705461e6e8c4d6b7f4181671c",
+    "design_request_index_sha256": "f77499ca6983b1e98dced13802a666798189d91ee214ab6554d5f9a521b46180",
     "design_request_sha256_by_engine": {
-      "RFantibody": "5459cd7a41555a32f1c00eb10244a620407ba5f42c000f2dcfebcc825f7ec568",
-      "IgGM": "990253477d1bf4529a39d2c9e60a7781241bf548a78dfcad47eca14a0ac14d1f",
-      "Germinal": "5a6446094345b9ef45513e267d2b8f55f6b687fbed2eea587961ae9232cbf04d"
+      "RFantibody": "832c881df25d30b61fc004e839104620dc5bf0a43fec1701074316e5ca7a308a",
+      "IgGM": "189e47cb31b119d3fdf2c426dbe0eec44b63dbca3bc25dd107766175abbf610d",
+      "Germinal": "3e802de5da0df1246f6422f08b3ab7e55be1c81fbb301b95965c253c1f43ba89"
     },
     "design_adapter_execution_state": "not_run"
   },
@@ -127,424 +127,424 @@
     "enabled_job_count": 0,
     "jobs": [
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "reviewed_real_model_job_compilation",
         "tool": "compile_real_generation_handoff",
         "enabled": "no",
         "input_selector": "design_request_index",
         "input_path": "outputs/exports/design_requests/design_request_index.json",
-        "output_dir": "real_runs/handoffs/nfl_design_20260813T0549249078480800",
+        "output_dir": "real_runs/handoffs/nfl_design_20260813T0935566056980800",
         "command": "python3 ./scripts/prepare_real_model_jobs.py --request-dir ./outputs/exports/design_requests --target-manifest ./config/target_structure_manifest.json --profile smoke --job-scope canary --iggm-repo-dir <PATH_TO_PINNED_IGGM> --germinal-repo-dir <PATH_TO_PINNED_GERMINAL> --germinal-af-params-dir <PATH_TO_AF_MULTIMER_PARAMS>"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "optional_candidate_structure_prediction_review",
         "tool": "tfold_candidate_structure_prediction",
         "enabled": "no",
         "input_selector": "candidate_fv_chains_fasta",
         "input_path": "outputs/exports/fasta/selected_candidate_fv_chains.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/tfold_candidate_structure_prediction/selected_candidate_fv_chains",
-        "command": "<PATH_TO_TFOLD_PREDICTION_ADAPTER> --fasta outputs/exports/fasta/selected_candidate_fv_chains.fasta --antigen-pdb <PATH_TO_NEFL_ANTIGEN_PDB> --model-dir <PATH_TO_TFOLD_MODEL_DIR> --output-dir real_runs/results/nfl_design_20260813T0549249078480800/tfold_candidate_structure_prediction/selected_candidate_fv_chains"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/tfold_candidate_structure_prediction/selected_candidate_fv_chains",
+        "command": "<PATH_TO_TFOLD_PREDICTION_ADAPTER> --fasta outputs/exports/fasta/selected_candidate_fv_chains.fasta --antigen-pdb <PATH_TO_NEFL_ANTIGEN_PDB> --model-dir <PATH_TO_TFOLD_MODEL_DIR> --output-dir real_runs/results/nfl_design_20260813T0935566056980800/tfold_candidate_structure_prediction/selected_candidate_fv_chains"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_fv_modeling",
         "tool": "igfold_fv_modeling",
         "enabled": "no",
         "input_selector": "candidate_fv_chains_fasta",
         "input_path": "outputs/exports/fasta/selected_candidate_fv_chains.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/igfold_fv_modeling/selected_candidate_fv_chains",
-        "command": "<PATH_TO_IGFOLD_EXECUTABLE> --fasta outputs/exports/fasta/selected_candidate_fv_chains.fasta --outdir real_runs/results/nfl_design_20260813T0549249078480800/igfold_fv_modeling/selected_candidate_fv_chains"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/igfold_fv_modeling/selected_candidate_fv_chains",
+        "command": "<PATH_TO_IGFOLD_EXECUTABLE> --fasta outputs/exports/fasta/selected_candidate_fv_chains.fasta --outdir real_runs/results/nfl_design_20260813T0935566056980800/igfold_fv_modeling/selected_candidate_fv_chains"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_fv_modeling",
         "tool": "abodybuilder3_fv_modeling",
         "enabled": "no",
         "input_selector": "candidate_fv_chains_fasta",
         "input_path": "outputs/exports/fasta/selected_candidate_fv_chains.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/abodybuilder3_fv_modeling/selected_candidate_fv_chains",
-        "command": "<PATH_TO_ABODYBUILDER3_EXECUTABLE> --fasta outputs/exports/fasta/selected_candidate_fv_chains.fasta --output real_runs/results/nfl_design_20260813T0549249078480800/abodybuilder3_fv_modeling/selected_candidate_fv_chains"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/abodybuilder3_fv_modeling/selected_candidate_fv_chains",
+        "command": "<PATH_TO_ABODYBUILDER3_EXECUTABLE> --fasta outputs/exports/fasta/selected_candidate_fv_chains.fasta --output real_runs/results/nfl_design_20260813T0935566056980800/abodybuilder3_fv_modeling/selected_candidate_fv_chains"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "alphafold3_complex",
         "enabled": "no",
         "input_selector": "af3_json_files",
         "input_path": "outputs/exports/af3_json/af3_complex_DN-e6e8d7351d0d_NEFL_280-377.json",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-e6e8d7351d0d_NEFL_280-377",
-        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-e6e8d7351d0d_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-e6e8d7351d0d_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-e6e8d7351d0d_NEFL_280-377",
+        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-e6e8d7351d0d_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-e6e8d7351d0d_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "alphafold3_complex",
         "enabled": "no",
         "input_selector": "af3_json_files",
         "input_path": "outputs/exports/af3_json/af3_complex_DN-8df6f8cc4294_NEFL_280-377.json",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-8df6f8cc4294_NEFL_280-377",
-        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-8df6f8cc4294_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-8df6f8cc4294_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-8df6f8cc4294_NEFL_280-377",
+        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-8df6f8cc4294_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-8df6f8cc4294_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "alphafold3_complex",
         "enabled": "no",
         "input_selector": "af3_json_files",
         "input_path": "outputs/exports/af3_json/af3_complex_DN-77576c381425_NEFL_280-377.json",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-77576c381425_NEFL_280-377",
-        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-77576c381425_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-77576c381425_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-77576c381425_NEFL_280-377",
+        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-77576c381425_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-77576c381425_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "alphafold3_complex",
         "enabled": "no",
         "input_selector": "af3_json_files",
         "input_path": "outputs/exports/af3_json/af3_complex_DN-a9cf24db579e_NEFL_280-377.json",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-a9cf24db579e_NEFL_280-377",
-        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-a9cf24db579e_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-a9cf24db579e_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-a9cf24db579e_NEFL_280-377",
+        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-a9cf24db579e_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-a9cf24db579e_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "alphafold3_complex",
         "enabled": "no",
         "input_selector": "af3_json_files",
         "input_path": "outputs/exports/af3_json/af3_complex_DN-c0d75e927e22_NEFL_280-377.json",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-c0d75e927e22_NEFL_280-377",
-        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-c0d75e927e22_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-c0d75e927e22_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-c0d75e927e22_NEFL_280-377",
+        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-c0d75e927e22_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-c0d75e927e22_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "alphafold3_complex",
         "enabled": "no",
         "input_selector": "af3_json_files",
         "input_path": "outputs/exports/af3_json/af3_complex_DN-2ea27b071345_NEFL_280-377.json",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-2ea27b071345_NEFL_280-377",
-        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-2ea27b071345_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-2ea27b071345_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-2ea27b071345_NEFL_280-377",
+        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-2ea27b071345_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-2ea27b071345_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "alphafold3_complex",
         "enabled": "no",
         "input_selector": "af3_json_files",
         "input_path": "outputs/exports/af3_json/af3_complex_DN-db51a6170580_NEFL_280-377.json",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-db51a6170580_NEFL_280-377",
-        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-db51a6170580_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-db51a6170580_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-db51a6170580_NEFL_280-377",
+        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-db51a6170580_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-db51a6170580_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "alphafold3_complex",
         "enabled": "no",
         "input_selector": "af3_json_files",
         "input_path": "outputs/exports/af3_json/af3_complex_DN-870775f54c72_NEFL_280-377.json",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-870775f54c72_NEFL_280-377",
-        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-870775f54c72_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-870775f54c72_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-870775f54c72_NEFL_280-377",
+        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-870775f54c72_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-870775f54c72_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "alphafold3_complex",
         "enabled": "no",
         "input_selector": "af3_json_files",
         "input_path": "outputs/exports/af3_json/af3_complex_DN-98a428e115e9_NEFL_280-377.json",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-98a428e115e9_NEFL_280-377",
-        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-98a428e115e9_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-98a428e115e9_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-98a428e115e9_NEFL_280-377",
+        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-98a428e115e9_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-98a428e115e9_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "alphafold3_complex",
         "enabled": "no",
         "input_selector": "af3_json_files",
         "input_path": "outputs/exports/af3_json/af3_complex_DN-6d8910dd2d15_NEFL_280-377.json",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-6d8910dd2d15_NEFL_280-377",
-        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-6d8910dd2d15_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-6d8910dd2d15_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-6d8910dd2d15_NEFL_280-377",
+        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-6d8910dd2d15_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-6d8910dd2d15_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "alphafold3_complex",
         "enabled": "no",
         "input_selector": "af3_json_files",
         "input_path": "outputs/exports/af3_json/af3_complex_DN-a78bf47c4ea2_NEFL_280-377.json",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-a78bf47c4ea2_NEFL_280-377",
-        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-a78bf47c4ea2_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-a78bf47c4ea2_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-a78bf47c4ea2_NEFL_280-377",
+        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-a78bf47c4ea2_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-a78bf47c4ea2_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "alphafold3_complex",
         "enabled": "no",
         "input_selector": "af3_json_files",
         "input_path": "outputs/exports/af3_json/af3_complex_DN-9c287784eedf_NEFL_280-377.json",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-9c287784eedf_NEFL_280-377",
-        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-9c287784eedf_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_complex_DN-9c287784eedf_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-9c287784eedf_NEFL_280-377",
+        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_complex_DN-9c287784eedf_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_complex_DN-9c287784eedf_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "alphafold3_complex",
         "enabled": "no",
         "input_selector": "af3_json_files",
         "input_path": "outputs/exports/af3_json/af3_sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377.json",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377",
-        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0549249078480800/alphafold3_complex/af3_sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377",
+        "command": "<PATH_TO_ALPHAFOLD3_RUNNER> --json_path outputs/exports/af3_json/af3_sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377.json --model_dir <PATH_TO_AF3_MODEL_DIR> --db_dir <PATH_TO_AF3_DATABASE_DIR> --output_dir real_runs/results/nfl_design_20260813T0935566056980800/alphafold3_complex/af3_sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "chai1_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-e6e8d7351d0d_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-e6e8d7351d0d_NEFL_280-377",
-        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-e6e8d7351d0d_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-e6e8d7351d0d_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-e6e8d7351d0d_NEFL_280-377",
+        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-e6e8d7351d0d_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-e6e8d7351d0d_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "chai1_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-8df6f8cc4294_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-8df6f8cc4294_NEFL_280-377",
-        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-8df6f8cc4294_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-8df6f8cc4294_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-8df6f8cc4294_NEFL_280-377",
+        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-8df6f8cc4294_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-8df6f8cc4294_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "chai1_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-77576c381425_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-77576c381425_NEFL_280-377",
-        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-77576c381425_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-77576c381425_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-77576c381425_NEFL_280-377",
+        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-77576c381425_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-77576c381425_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "chai1_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-a9cf24db579e_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-a9cf24db579e_NEFL_280-377",
-        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-a9cf24db579e_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-a9cf24db579e_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-a9cf24db579e_NEFL_280-377",
+        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-a9cf24db579e_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-a9cf24db579e_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "chai1_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-c0d75e927e22_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-c0d75e927e22_NEFL_280-377",
-        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-c0d75e927e22_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-c0d75e927e22_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-c0d75e927e22_NEFL_280-377",
+        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-c0d75e927e22_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-c0d75e927e22_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "chai1_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-2ea27b071345_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-2ea27b071345_NEFL_280-377",
-        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-2ea27b071345_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-2ea27b071345_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-2ea27b071345_NEFL_280-377",
+        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-2ea27b071345_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-2ea27b071345_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "chai1_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-db51a6170580_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-db51a6170580_NEFL_280-377",
-        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-db51a6170580_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-db51a6170580_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-db51a6170580_NEFL_280-377",
+        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-db51a6170580_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-db51a6170580_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "chai1_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-870775f54c72_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-870775f54c72_NEFL_280-377",
-        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-870775f54c72_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-870775f54c72_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-870775f54c72_NEFL_280-377",
+        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-870775f54c72_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-870775f54c72_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "chai1_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-98a428e115e9_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-98a428e115e9_NEFL_280-377",
-        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-98a428e115e9_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-98a428e115e9_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-98a428e115e9_NEFL_280-377",
+        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-98a428e115e9_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-98a428e115e9_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "chai1_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-6d8910dd2d15_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-6d8910dd2d15_NEFL_280-377",
-        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-6d8910dd2d15_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-6d8910dd2d15_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-6d8910dd2d15_NEFL_280-377",
+        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-6d8910dd2d15_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-6d8910dd2d15_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "chai1_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-a78bf47c4ea2_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-a78bf47c4ea2_NEFL_280-377",
-        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-a78bf47c4ea2_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-a78bf47c4ea2_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-a78bf47c4ea2_NEFL_280-377",
+        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-a78bf47c4ea2_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-a78bf47c4ea2_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "chai1_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-9c287784eedf_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-9c287784eedf_NEFL_280-377",
-        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-9c287784eedf_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0549249078480800/chai1_complex/complex_DN-9c287784eedf_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-9c287784eedf_NEFL_280-377",
+        "command": "<PATH_TO_CHAI1_EXECUTABLE> fold outputs/exports/fasta/complex_DN-9c287784eedf_NEFL_280-377.fasta --output-dir real_runs/results/nfl_design_20260813T0935566056980800/chai1_complex/complex_DN-9c287784eedf_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "boltz_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-e6e8d7351d0d_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-e6e8d7351d0d_NEFL_280-377",
-        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-e6e8d7351d0d_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-e6e8d7351d0d_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-e6e8d7351d0d_NEFL_280-377",
+        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-e6e8d7351d0d_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-e6e8d7351d0d_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "boltz_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-8df6f8cc4294_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-8df6f8cc4294_NEFL_280-377",
-        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-8df6f8cc4294_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-8df6f8cc4294_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-8df6f8cc4294_NEFL_280-377",
+        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-8df6f8cc4294_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-8df6f8cc4294_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "boltz_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-77576c381425_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-77576c381425_NEFL_280-377",
-        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-77576c381425_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-77576c381425_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-77576c381425_NEFL_280-377",
+        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-77576c381425_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-77576c381425_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "boltz_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-a9cf24db579e_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-a9cf24db579e_NEFL_280-377",
-        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-a9cf24db579e_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-a9cf24db579e_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-a9cf24db579e_NEFL_280-377",
+        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-a9cf24db579e_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-a9cf24db579e_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "boltz_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-c0d75e927e22_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-c0d75e927e22_NEFL_280-377",
-        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-c0d75e927e22_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-c0d75e927e22_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-c0d75e927e22_NEFL_280-377",
+        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-c0d75e927e22_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-c0d75e927e22_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "boltz_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-2ea27b071345_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-2ea27b071345_NEFL_280-377",
-        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-2ea27b071345_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-2ea27b071345_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-2ea27b071345_NEFL_280-377",
+        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-2ea27b071345_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-2ea27b071345_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "boltz_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-db51a6170580_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-db51a6170580_NEFL_280-377",
-        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-db51a6170580_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-db51a6170580_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-db51a6170580_NEFL_280-377",
+        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-db51a6170580_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-db51a6170580_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "boltz_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-870775f54c72_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-870775f54c72_NEFL_280-377",
-        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-870775f54c72_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-870775f54c72_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-870775f54c72_NEFL_280-377",
+        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-870775f54c72_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-870775f54c72_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "boltz_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-98a428e115e9_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-98a428e115e9_NEFL_280-377",
-        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-98a428e115e9_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-98a428e115e9_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-98a428e115e9_NEFL_280-377",
+        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-98a428e115e9_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-98a428e115e9_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "boltz_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-6d8910dd2d15_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-6d8910dd2d15_NEFL_280-377",
-        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-6d8910dd2d15_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-6d8910dd2d15_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-6d8910dd2d15_NEFL_280-377",
+        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-6d8910dd2d15_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-6d8910dd2d15_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "boltz_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-a78bf47c4ea2_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-a78bf47c4ea2_NEFL_280-377",
-        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-a78bf47c4ea2_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-a78bf47c4ea2_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-a78bf47c4ea2_NEFL_280-377",
+        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-a78bf47c4ea2_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-a78bf47c4ea2_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "antibody_antigen_cofolding",
         "tool": "boltz_complex",
         "enabled": "no",
         "input_selector": "complex_fastas",
         "input_path": "outputs/exports/fasta/complex_DN-9c287784eedf_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-9c287784eedf_NEFL_280-377",
-        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-9c287784eedf_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0549249078480800/boltz_complex/complex_DN-9c287784eedf_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-9c287784eedf_NEFL_280-377",
+        "command": "<PATH_TO_BOLTZ_EXECUTABLE> predict outputs/exports/fasta/complex_DN-9c287784eedf_NEFL_280-377.fasta --cache <PATH_TO_BOLTZ_CACHE> --out_dir real_runs/results/nfl_design_20260813T0935566056980800/boltz_complex/complex_DN-9c287784eedf_NEFL_280-377"
       },
       {
-        "run_id": "nfl_design_20260813T0549249078480800",
+        "run_id": "nfl_design_20260813T0935566056980800",
         "stage": "post_prediction_interface_scoring",
         "tool": "rosetta_interface_analysis",
         "enabled": "no",
         "input_selector": "sandwich_fasta",
         "input_path": "outputs/exports/fasta/sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377.fasta",
-        "output_dir": "real_runs/results/nfl_design_20260813T0549249078480800/rosetta_interface_analysis/sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377",
-        "command": "<PATH_TO_ROSETTA_INTERFACE_ANALYZER> --input outputs/exports/fasta/sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377.fasta --database <PATH_TO_ROSETTA_DATABASE> --outdir real_runs/results/nfl_design_20260813T0549249078480800/rosetta_interface_analysis/sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377"
+        "output_dir": "real_runs/results/nfl_design_20260813T0935566056980800/rosetta_interface_analysis/sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377",
+        "command": "<PATH_TO_ROSETTA_INTERFACE_ANALYZER> --input outputs/exports/fasta/sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377.fasta --database <PATH_TO_ROSETTA_DATABASE> --outdir real_runs/results/nfl_design_20260813T0935566056980800/rosetta_interface_analysis/sandwich_7-H11-D3-2-C7_15-C12-H6_NEFL_280-377"
       }
     ]
   },
