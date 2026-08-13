@@ -4,7 +4,7 @@
 
 **`blocked_pending_human_review`：候选结构已生成和机器校验，但尚未经人工审核，不能进入真实模型 handoff。**
 
-当前 campaign 只采用单链单体，并将第一表位定义为 `helix_surface_323_331`。热点仅为 Met325/Leu329；Cys322 不属于表位窗口、热点、名称或直接接触约束。多链状态不建模、不生成、不排名，详见 `docs/antigen_conformation_strategy.md`。
+当前 campaign 只采用单链单体，并将第一表位定义为 `helix_surface_323_331`。热点仅为 Met325/Leu329；Cys322 不属于表位窗口、热点、名称或直接接触约束。上游优先的反平行四聚体生化模型（两个 Cys322 二硫键二聚体组成）及“二聚体＋未知伙伴”备选模型都不在本结构输入中建模、生成或排名，详见 `docs/antigen_conformation_strategy.md`。
 
 该候选使用 AlphaFold Protein Structure Database 中人 NEFL/P07196 的 v6 全长单体预测，裁剪 A 链 280–377 残基。AlphaFold DB 文件自身明确声明这是 **theoretical modelling only**；它不是实验解析结构，也不能证明该片段在溶液中的实际构象、表位可及性或聚集状态。
 

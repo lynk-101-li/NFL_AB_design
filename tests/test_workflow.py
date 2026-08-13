@@ -14,10 +14,34 @@ from nfl_ab_design.workflow import (
     load_antibodies,
     load_external_pipeline_config,
     run_workflow,
+    TRUNCATION_CONSTRAINTS_PATH,
 )
 
 
 class WorkflowCampaignTest(unittest.TestCase):
+    def test_reduction_sensitive_tetramer_hypothesis_is_explicit_but_not_a_design_track(self) -> None:
+        constraints = json.loads(TRUNCATION_CONSTRAINTS_PATH.read_text(encoding="utf-8"))
+        observation = constraints["experimental_observation"]
+        scope = json.loads(
+            (PROJECT_ROOT / "config/antigen_conformation_tracks.json").read_text(encoding="utf-8")
+        )
+
+        self.assertEqual(observation["non_reducing_band_kDa_range"], [25.0, 35.0])
+        self.assertEqual(observation["reducing_band_kDa_range"], [6.0, 12.0])
+        self.assertIn("tetramer", observation["preferred_interpretation"])
+        self.assertIn("unknown_binding_partner", observation["alternative_not_excluded"])
+        self.assertEqual(len(scope["active_tracks"]), 1)
+        self.assertEqual(scope["active_tracks"][0]["oligomeric_state"], "single_chain_monomer")
+        self.assertEqual(scope["active_tracks"][0]["selected_hotspots"], [325, 329])
+        self.assertEqual(scope["active_tracks"][0]["excluded_direct_contact_constraints"], [322])
+
+        result = run_workflow()
+        self.assertTrue(result["inferred_fragments"])
+        for row in result["inferred_fragments"]:
+            self.assertIn("two_dimer_tetramer_avg_mass_kDa", row)
+            self.assertIn("reducing_band_mass_fit_score", row)
+            self.assertNotIn("mass_error_from_22kDa", row)
+
     def test_validation_antibodies_rank_top_two(self) -> None:
         result = run_workflow()
         ranking_rows = result["retrospective_ranking_rows"]

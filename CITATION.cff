@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this repository, please cite it as below."
 title: "NFL_AB_design: an epitope-conditioned NfL antibody de novo design workflow"
-version: "0.2.1"
+version: "0.2.2"
 date-released: "2026-08-13"
 license: "MIT"
 authors:
