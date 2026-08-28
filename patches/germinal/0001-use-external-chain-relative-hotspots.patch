@@ -1,0 +1,13 @@
+diff --git a/germinal/filters/filter_utils.py b/germinal/filters/filter_utils.py
+index 71c2231..7ad97f8 100644
+--- a/germinal/filters/filter_utils.py
++++ b/germinal/filters/filter_utils.py
+@@ -704 +704,7 @@ def compute_hotspot_proximity(
+-            target_hotspots = np.array(utils.idx_from_ranges(target_settings["target_hotspots"],ch,offset=offset))+1
++            # External predictors such as Chai renumber each chain from one.
++            # Preserve original PDB numbering for hallucination, but use an
++            # explicitly attested chain-relative mapping for external filters.
++            external_hotspots = target_settings.get(
++                "external_target_hotspots", target_settings["target_hotspots"]
++            )
++            target_hotspots = np.array(utils.idx_from_ranges(external_hotspots,ch,offset=offset))+1

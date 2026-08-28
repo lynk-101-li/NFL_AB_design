@@ -804,6 +804,34 @@ def _standardized_jobs(
             {"name": name, "path": value}
             for name, value in native_job["expected_outputs"].items()
         ]
+        input_artifacts = [
+            {
+                "role": "target_pdb",
+                "path": str(target_pdb),
+                "sha256": _file_sha256(target_pdb),
+            },
+            {
+                "role": "template_scfv_pdb",
+                "path": str(scfv_pdb),
+                "sha256": _file_sha256(scfv_pdb),
+            },
+            {
+                "role": "generated_target_yaml",
+                "path": native_job["target_yaml"]["handoff_path"],
+                "sha256": _text_sha256(native_job["target_yaml"]["content"]),
+            },
+        ]
+        starting_complex = native_job["inputs"].get(
+            "prepositioned_starting_complex"
+        )
+        if starting_complex:
+            input_artifacts.append(
+                {
+                    "role": "prepositioned_starting_complex",
+                    "path": starting_complex["path"],
+                    "sha256": starting_complex["sha256"],
+                }
+            )
         germinal_jobs.append(
             {
                 "job_id": native_job["job_id"],
@@ -824,23 +852,7 @@ def _standardized_jobs(
                     }
                 ],
                 "expected_outputs": normalized_outputs,
-                "input_artifacts": [
-                    {
-                        "role": "target_pdb",
-                        "path": str(target_pdb),
-                        "sha256": _file_sha256(target_pdb),
-                    },
-                    {
-                        "role": "template_scfv_pdb",
-                        "path": str(scfv_pdb),
-                        "sha256": _file_sha256(scfv_pdb),
-                    },
-                    {
-                        "role": "generated_target_yaml",
-                        "path": native_job["target_yaml"]["handoff_path"],
-                        "sha256": _text_sha256(native_job["target_yaml"]["content"]),
-                    },
-                ],
+                "input_artifacts": input_artifacts,
                 "unresolved_blockers": [],
                 "native_job_reference": f"jobs[{index}]",
             }
@@ -859,6 +871,7 @@ def _apply_execution_selection(
     requested_scope: str | None,
     canary_template_id: str | None,
     canary_epitope_id: str | None,
+    execution_engines: Sequence[str] | None,
 ) -> dict[str, Any]:
     """Mark an auditable execution subset while retaining every planned job."""
 
@@ -875,6 +888,14 @@ def _apply_execution_selection(
         raise RealModelHandoffError(
             "Canary identity options cannot be used with --job-scope all"
         )
+    selected_engines = [
+        engine for engine in REQUEST_FILENAMES if not execution_engines or engine in execution_engines
+    ]
+    if not selected_engines:
+        raise RealModelHandoffError("At least one execution engine must be selected")
+    unknown_engines = sorted(set(execution_engines or ()) - set(REQUEST_FILENAMES))
+    if unknown_engines:
+        raise RealModelHandoffError(f"Unsupported execution engines: {unknown_engines}")
 
     combinations_by_engine: dict[str, set[tuple[str, str]]] = {}
     for engine in REQUEST_FILENAMES:
@@ -934,18 +955,28 @@ def _apply_execution_selection(
         excluded_ids: list[str] = []
         for job in jobs:
             identity = (str(job["template_id"]), str(job["epitope_id"]))
-            selected = job_scope == "all" or identity == canary_identity
+            selected = engine in selected_engines and (
+                job_scope == "all" or identity == canary_identity
+            )
             job["selected_for_execution"] = selected
             job["execution_disposition"] = (
                 "selected_for_execution"
                 if selected
-                else "excluded_by_job_scope_do_not_execute"
+                else (
+                    "excluded_by_engine_scope_do_not_execute"
+                    if engine not in selected_engines
+                    else "excluded_by_job_scope_do_not_execute"
+                )
             )
             if selected:
                 selected_ids.append(str(job["job_id"]))
             else:
                 excluded_ids.append(str(job["job_id"]))
-        expected_selected_count = len(jobs) if job_scope == "all" else 1
+        expected_selected_count = (
+            (len(jobs) if job_scope == "all" else 1)
+            if engine in selected_engines
+            else 0
+        )
         if len(selected_ids) != expected_selected_count:
             raise RealModelHandoffError(
                 f"Internal execution-selection error for {engine}: expected "
@@ -957,6 +988,7 @@ def _apply_execution_selection(
 
     return {
         "requested_job_scope": requested_scope or "auto",
+        "selected_engines": selected_engines,
         "resolved_job_scope": job_scope,
         "default_rule": "smoke->canary; full->all",
         "canary_identity": (
@@ -1053,8 +1085,9 @@ def compile_handoff(args: argparse.Namespace) -> dict[str, Any]:
         label="Germinal AlphaFold-Multimer parameter directory",
     )
 
+    germinal_profile = args.germinal_profile or args.profile
     backend_paths: dict[str, str] = {}
-    if args.profile == "full":
+    if germinal_profile == "full":
         for key in (
             "af3_repo_path",
             "af3_sif_path",
@@ -1121,7 +1154,7 @@ def compile_handoff(args: argparse.Namespace) -> dict[str, Any]:
         template_scfv_pdbs=target["germinal_scfv"],
         target_residue_map=target["full_to_pdb"],
         handoff_root=germinal_root,
-        profile=args.profile,
+        profile=germinal_profile,
         target_chain=target["target_chain"],
         binder_chain=args.germinal_binder_chain,
         scfv_chain=args.germinal_scfv_chain,
@@ -1156,6 +1189,7 @@ def compile_handoff(args: argparse.Namespace) -> dict[str, Any]:
         requested_scope=args.job_scope,
         canary_template_id=args.canary_template_id,
         canary_epitope_id=args.canary_epitope_id,
+        execution_engines=args.execution_engine,
     )
 
     rfantibody_plan_path = rfantibody_root / "rfantibody_plan.json"
@@ -1185,6 +1219,11 @@ def compile_handoff(args: argparse.Namespace) -> dict[str, Any]:
         germinal_root / "jobs" / str(job["job_id"]) / "pdbs" / "scfv.pdb"
         for job in germinal_handoff["jobs"]
     ]
+    germinal_starting_complexes = [
+        Path(seed["path"])
+        for job in germinal_handoff["jobs"]
+        if (seed := job["inputs"].get("prepositioned_starting_complex"))
+    ]
     planned_writes = [
         rfantibody_plan_path,
         iggm_plan_path,
@@ -1194,6 +1233,7 @@ def compile_handoff(args: argparse.Namespace) -> dict[str, Any]:
         *fasta_paths,
         *germinal_yaml_paths,
         *germinal_staged_pdbs,
+        *germinal_starting_complexes,
     ]
     _ensure_writable_targets(planned_writes, overwrite=args.overwrite)
 
@@ -1243,11 +1283,13 @@ def compile_handoff(args: argparse.Namespace) -> dict[str, Any]:
     generated_at = datetime.now().astimezone().isoformat()
     invocation_config = {
         "profile": args.profile,
+        "germinal_profile": germinal_profile,
         "requested_job_scope": args.job_scope,
         "resolved_job_scope": execution_selection["resolved_job_scope"],
         "canary_template_id": args.canary_template_id,
         "canary_epitope_id": args.canary_epitope_id,
         "resolved_canary_identity": execution_selection["canary_identity"],
+        "selected_engines": execution_selection["selected_engines"],
         "seed": args.seed,
         "rfantibody_command_prefix": list(args.rfantibody_command_prefix),
         "rfantibody_runtime_ref": args.rfantibody_runtime_ref,
@@ -1312,6 +1354,7 @@ def compile_handoff(args: argparse.Namespace) -> dict[str, Any]:
         "execution_state": "planned_not_executed",
         "does_not_execute_external_models": True,
         "profile": args.profile,
+        "germinal_profile": germinal_profile,
         "job_scope": execution_selection["resolved_job_scope"],
         "seed": args.seed,
         "run_id": source_run_metadata["run_id"],
@@ -1352,6 +1395,8 @@ def compile_handoff(args: argparse.Namespace) -> dict[str, Any]:
         "engines": [
             {
                 "engine": "RFantibody",
+                "selected_for_execution": "RFantibody"
+                in execution_selection["selected_engines"],
                 "profile": args.profile,
                 "geometry": "native_two_chain_paired_Fv",
                 "execution_state": "planned_not_executed",
@@ -1389,6 +1434,8 @@ def compile_handoff(args: argparse.Namespace) -> dict[str, Any]:
             },
             {
                 "engine": "IgGM",
+                "selected_for_execution": "IgGM"
+                in execution_selection["selected_engines"],
                 "profile": args.profile,
                 "geometry": "native_two_chain_paired_VH_VL_plus_antigen",
                 "execution_state": "planned_not_executed",
@@ -1426,7 +1473,9 @@ def compile_handoff(args: argparse.Namespace) -> dict[str, Any]:
             },
             {
                 "engine": "Germinal",
-                "profile": args.profile,
+                "selected_for_execution": "Germinal"
+                in execution_selection["selected_engines"],
+                "profile": germinal_profile,
                 "geometry": "single_chain_VH_linker_VL_scFv_separate_track",
                 "execution_state": "planned_not_executed",
                 "adapter_schema": germinal_handoff["schema"],
@@ -1527,10 +1576,21 @@ def _self_test_write_hlt(path: Path) -> None:
         f"REMARK PDBinfo-LABEL: {index} {name}"
         for index, name in enumerate(cdr_names, start=1)
     ]
-    atoms = [
-        "ATOM      1  CA  ALA H   1       1.000   0.000   0.000  1.00 20.00           C",
-        "ATOM      2  CA  GLY L   1       2.000   0.000   0.000  1.00 20.00           C",
-    ]
+    atoms: list[str] = []
+    serial = 1
+    for residue_number, chain in enumerate(("H", "H", "H", "L", "L", "L"), start=1):
+        base = float(residue_number * 3)
+        for atom_name, coordinate in (
+            ("N", (base, 0.0, 0.0)),
+            ("CA", (base + 1.0, 1.0, 0.0)),
+            ("C", (base + 2.0, 0.0, 0.0)),
+        ):
+            atoms.append(
+                f"ATOM  {serial:5d} {atom_name:^4s} ALA {chain}{residue_number:4d}    "
+                f"{coordinate[0]:8.3f}{coordinate[1]:8.3f}{coordinate[2]:8.3f}"
+                "  1.00 20.00           C"
+            )
+            serial += 1
     path.write_text("\n".join([*remarks, *atoms, "END", ""]), encoding="utf-8")
 
 
@@ -1836,6 +1896,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Adapter profile to compile; neither choice executes a model",
     )
     parser.add_argument(
+        "--germinal-profile",
+        choices=("smoke", "pilot", "full"),
+        default=None,
+        help=(
+            "Optional Germinal-only profile override. Use pilot with --profile smoke "
+            "to keep RFantibody/IgGM plans bounded while compiling a scientific "
+            "Germinal pilot. This option never executes a model."
+        ),
+    )
+    parser.add_argument(
         "--job-scope",
         choices=("canary", "all"),
         default=None,
@@ -1843,6 +1913,16 @@ def build_parser() -> argparse.ArgumentParser:
             "Execution selection recorded in the wrapper. Default is canary for "
             "--profile smoke and all for --profile full; all 2x2 jobs are still "
             "validated and retained in native plans."
+        ),
+    )
+    parser.add_argument(
+        "--execution-engine",
+        action="append",
+        choices=tuple(REQUEST_FILENAMES),
+        default=None,
+        help=(
+            "Restrict executable jobs to explicitly selected engines while retaining "
+            "all native plans for provenance. Repeat as needed; default selects all."
         ),
     )
     parser.add_argument(

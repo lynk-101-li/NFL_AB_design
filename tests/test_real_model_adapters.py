@@ -14,9 +14,11 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from nfl_ab_design import workflow
 from nfl_ab_design.adapters.germinal import (
+    PROFILE_SETTINGS as GERMINAL_PROFILES,
     UPSTREAM_PROVENANCE as GERMINAL_UPSTREAM,
     GerminalAdapterError,
     build_germinal_jobs,
+    write_germinal_handoff,
 )
 from nfl_ab_design.adapters.iggm import (
     UPSTREAM as IGGM_UPSTREAM,
@@ -75,10 +77,21 @@ def _write_hlt_pdb(path: Path) -> None:
         f"REMARK PDBinfo-LABEL: {index} {name}"
         for index, name in enumerate(CDR_NAMES, start=1)
     ]
-    atoms = [
-        "ATOM      1  CA  ALA H   1       1.000   0.000   0.000  1.00 20.00           C",
-        "ATOM      2  CA  GLY L   1       2.000   0.000   0.000  1.00 20.00           C",
-    ]
+    atoms = []
+    serial = 1
+    for residue_number, chain in enumerate(("H", "H", "H", "L", "L", "L"), start=1):
+        base = float(residue_number * 3)
+        for atom, coordinates in (
+            ("N", (base, 0.0, 0.0)),
+            ("CA", (base + 1.0, 1.0, 0.0)),
+            ("C", (base + 2.0, 0.0, 0.0)),
+        ):
+            atoms.append(
+                f"ATOM  {serial:5d} {atom:^4s} ALA {chain}{residue_number:4d}    "
+                f"{coordinates[0]:8.3f}{coordinates[1]:8.3f}{coordinates[2]:8.3f}"
+                "  1.00 20.00           C"
+            )
+            serial += 1
     path.write_text("\n".join([*remarks, *atoms, "END", ""]), encoding="utf-8")
 
 
@@ -249,6 +262,72 @@ class RealModelAdapterContractTest(unittest.TestCase):
             }
             self.assertEqual(observed, expected_pairs)
 
+        for job in rf_plan.jobs:
+            stages = [command.stage for command in job.commands]
+            self.assertNotIn("proteinmpnn_score_export", stages)
+            self.assertEqual(
+                stages[stages.index("proteinmpnn_six_cdr_sequence_design") + 1],
+                "rf2_structure_prediction",
+            )
+            score_exports = [
+                command.argv[-1]
+                for command in job.commands
+                if command.argv and "qvscorefile" in command.argv
+            ]
+            self.assertEqual(len(score_exports), 2)
+            self.assertTrue(score_exports[0].endswith("1_rfdiffusion.qv"))
+            self.assertTrue(score_exports[1].endswith("3_rf2.qv"))
+
+    def test_germinal_pilot_uses_full_optimization_and_materializes_hashed_seed(self) -> None:
+        cdr_positions = {2, 5, 8, 16, 19, 22}
+        for path in self.scfv_pdbs.values():
+            rewritten = []
+            for line in path.read_text(encoding="utf-8").splitlines():
+                if line.startswith("ATOM"):
+                    residue = int(line[22:26])
+                    y = 10.0 if residue in cdr_positions else 0.0
+                    line = f"{line[:38]}{y:8.3f}{line[46:]}"
+                rewritten.append(line)
+            path.write_text("\n".join(rewritten) + "\n", encoding="utf-8")
+        handoff = build_germinal_jobs(
+            _normalized_request("Germinal"),
+            target_pdb_path=self.target_pdb,
+            template_scfv_pdbs=self.scfv_pdbs,
+            handoff_root=self.root / "pilot_handoff",
+            profile="pilot",
+        )
+        self.assertEqual(GERMINAL_PROFILES["pilot"]["hydra_overrides"]["logits_steps"], 60)
+        self.assertEqual(GERMINAL_PROFILES["pilot"]["hydra_overrides"]["softmax_steps"], 35)
+        self.assertEqual(GERMINAL_PROFILES["pilot"]["hydra_overrides"]["search_steps"], 10)
+        for job in handoff["jobs"]:
+            seed = job["inputs"]["prepositioned_starting_complex"]
+            self.assertGreaterEqual(seed["minimum_heavy_atom_distance_angstrom"], 2.5)
+            self.assertLessEqual(seed["minimum_hotspot_to_cdr_distance_angstrom"], 12.0)
+            expected_external = "A2" if job["epitope_id"] == "epitope_N" else "A9"
+            expected_chai_hotspot = (
+                "C2" if job["epitope_id"] == "epitope_N" else "K9"
+            )
+            self.assertEqual(
+                job["target_yaml"]["values"]["external_target_hotspots"],
+                expected_external,
+            )
+            self.assertIn(
+                f'external_target_hotspots: "{expected_external}"',
+                job["target_yaml"]["content"],
+            )
+            self.assertEqual(
+                job["target_yaml"]["values"]["hotspot_residue"],
+                expected_chai_hotspot,
+            )
+        written = write_germinal_handoff(
+            handoff,
+            self.root / "pilot_handoff",
+            stage_template_pdbs=True,
+        )
+        self.assertEqual(len(written["generated_starting_complexes"]), 4)
+        for path in written["generated_starting_complexes"]:
+            self.assertTrue(Path(path).is_file())
+
     def test_planners_only_return_commands_and_never_execute_or_stage_them(self) -> None:
         forbidden_calls = (
             mock.patch.object(
@@ -345,6 +424,88 @@ class RealModelAdapterContractTest(unittest.TestCase):
                     target_pdb=self.target_pdb,
                     **valid_arguments,
                 )
+
+    def test_rfantibody_rejects_parser_incompatible_hlt_frameworks(self) -> None:
+        request = _normalized_request("RFantibody")
+
+        def assert_rejected(path: Path, pattern: str) -> None:
+            frameworks = dict(self.hlt_pdbs)
+            frameworks["template_A"] = path
+            with self.assertRaisesRegex(RFantibodyAdapterError, pattern):
+                build_rfantibody_plan(
+                    request,
+                    target_pdb=self.target_pdb,
+                    framework_hlt_pdbs=frameworks,
+                    full_coordinate_to_pdb=self.rf_mapping,
+                    output_root=self.root / "rejected_hlt_results",
+                    mode="smoke",
+                )
+
+        source_lines = self.hlt_pdbs["template_A"].read_text(
+            encoding="utf-8"
+        ).splitlines()
+
+        with self.subTest("Chothia insertion codes would collapse parser keys"):
+            insertion_path = self.root / "framework_with_H1A.pdb"
+            insertion_lines = []
+            for line in source_lines:
+                if (
+                    line.startswith("ATOM  ")
+                    and line[21] == "H"
+                    and line[22:26].strip() == "2"
+                ):
+                    line = f"{line[:22]}{1:4d}A{line[27:]}"
+                insertion_lines.append(line)
+            insertion_path.write_text(
+                "\n".join(insertion_lines) + "\n", encoding="utf-8"
+            )
+            assert_rejected(insertion_path, "retains insertion code H1A")
+
+        with self.subTest("every residue needs N CA C"):
+            missing_path = self.root / "framework_missing_N.pdb"
+            missing_path.write_text(
+                "\n".join(
+                    line
+                    for line in source_lines
+                    if not (
+                        line.startswith("ATOM  ")
+                        and line[21] == "H"
+                        and line[22:26].strip() == "1"
+                        and line[12:16].strip() == "N"
+                    )
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            assert_rejected(missing_path, "H1 is missing backbone atom")
+
+        with self.subTest("null backbone frames are rejected"):
+            degenerate_path = self.root / "framework_degenerate_frame.pdb"
+            degenerate_lines = []
+            for line in source_lines:
+                if (
+                    line.startswith("ATOM  ")
+                    and line[21] == "H"
+                    and line[22:26].strip() == "1"
+                    and line[12:16].strip() in {"N", "CA", "C"}
+                ):
+                    line = (
+                        f"{line[:30]}{0.0:8.3f}{0.0:8.3f}{0.0:8.3f}{line[54:]}"
+                    )
+                degenerate_lines.append(line)
+            degenerate_path.write_text(
+                "\n".join(degenerate_lines) + "\n", encoding="utf-8"
+            )
+            assert_rejected(degenerate_path, "null or degenerate N-CA-C")
+
+        with self.subTest("CDR labels must address real absolute residues"):
+            out_of_range_path = self.root / "framework_bad_remark.pdb"
+            out_of_range_lines = list(source_lines)
+            out_of_range_lines[0] = "REMARK PDBinfo-LABEL: 99 H1"
+            out_of_range_path.write_text(
+                "\n".join(out_of_range_lines) + "\n", encoding="utf-8"
+            )
+            assert_rejected(out_of_range_path, "indices outside 1..6")
 
     def test_iggm_fails_loudly_without_target_or_complete_coordinate_mapping(self) -> None:
         request = _normalized_request("IgGM")

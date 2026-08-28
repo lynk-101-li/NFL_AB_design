@@ -12,7 +12,9 @@ Upstream documentation: https://github.com/SantiagoMille/germinal
 from __future__ import annotations
 
 import argparse
+from hashlib import sha256
 import json
+import math
 import re
 import shlex
 import shutil
@@ -106,6 +108,34 @@ PROFILE_SETTINGS: dict[str, dict[str, Any]] = {
             "One optimization step is intended to expose installation, input, and shape errors; it is not a quality-producing run.",
         ],
     },
+    "pilot": {
+        "purpose": (
+            "Bounded scientific pilot with upstream scFv optimization depth and "
+            "Chai validation; not an upstream-scale campaign."
+        ),
+        "structure_backend": "chai",
+        "scientific_use_allowed": True,
+        "hydra_overrides": {
+            "max_trajectories": 4,
+            "max_hallucinated_trajectories": 4,
+            "max_passing_designs": 2,
+            "structure_model": "chai",
+            "logits_steps": 60,
+            "softmax_steps": 35,
+            "search_steps": 10,
+            "num_seqs": 8,
+            "max_mpnn_sequences": 4,
+            "multi_relax": False,
+            "save_design_animations": False,
+            "save_design_trajectory_plots": True,
+        },
+        "notes": [
+            "Optimization depth matches the upstream scFv run defaults (60/35/10).",
+            "Four trajectories per handoff bound single-GPU cost and support an early stop.",
+            "Chai is retained so this pilot does not silently require an AF3 deployment.",
+            "Scientific filters remain unchanged; this profile must not lower confidence gates.",
+        ],
+    },
     "full": {
         "purpose": "Upstream-scale job specification requiring resource and license review before execution.",
         "structure_backend": "af3",
@@ -152,6 +182,9 @@ AA3_TO_AA1 = {
     "VAL": "V",
 }
 AA20 = frozenset(AA3_TO_AA1.values())
+PILOT_PARATOPE_OFFSET_ANGSTROM = 8.0
+PILOT_MIN_HEAVY_ATOM_DISTANCE_ANGSTROM = 2.5
+PILOT_MAX_HOTSPOT_TO_CDR_DISTANCE_ANGSTROM = 12.0
 
 
 class GerminalAdapterError(ValueError):
@@ -720,6 +753,15 @@ def _scfv_layout(
 
     regions = _validated_regions(template)
     cdr_lengths = [int(regions[name]["length"]) for name in EXPECTED_CDR_ORDER]
+    cdr_positions: list[int] = []
+    for name in EXPECTED_CDR_ORDER:
+        offset = 0 if name.startswith("H") else len(masked_vh) + linker_length
+        cdr_positions.extend(
+            range(
+                offset + int(regions[name]["start"]),
+                offset + int(regions[name]["end"]) + 1,
+            )
+        )
     framework_lengths = [
         int(regions["H1"]["start"]) - 1,
         int(regions["H2"]["start"]) - int(regions["H1"]["end"]) - 1,
@@ -753,6 +795,7 @@ def _scfv_layout(
         "vl_length": len(masked_vl),
         "cdr_order": list(EXPECTED_CDR_ORDER),
         "cdr_lengths": cdr_lengths,
+        "cdr_positions": cdr_positions,
         "framework_lengths": framework_lengths,
         "framework_sequence_validated": True,
         "cdr_seed_identity_validated_as_non_control": False,
@@ -783,6 +826,7 @@ def _target_yaml(values: Mapping[str, Any]) -> str:
         "target_chain",
         "binder_chain",
         "target_hotspots",
+        "external_target_hotspots",
         "hotspot_residue",
         "dimer",
     )
@@ -794,6 +838,302 @@ def _target_yaml(values: Mapping[str, Any]) -> str:
         if key in values:
             lines.append(f"{key}: {_yaml_scalar(values[key])}")
     return "\n".join(lines) + "\n"
+
+
+def _vector_add(left: tuple[float, float, float], right: tuple[float, float, float]) -> tuple[float, float, float]:
+    return tuple(left[index] + right[index] for index in range(3))  # type: ignore[return-value]
+
+
+def _vector_subtract(left: tuple[float, float, float], right: tuple[float, float, float]) -> tuple[float, float, float]:
+    return tuple(left[index] - right[index] for index in range(3))  # type: ignore[return-value]
+
+
+def _vector_scale(value: tuple[float, float, float], scale: float) -> tuple[float, float, float]:
+    return tuple(component * scale for component in value)  # type: ignore[return-value]
+
+
+def _dot(left: tuple[float, float, float], right: tuple[float, float, float]) -> float:
+    return sum(left[index] * right[index] for index in range(3))
+
+
+def _cross(left: tuple[float, float, float], right: tuple[float, float, float]) -> tuple[float, float, float]:
+    return (
+        left[1] * right[2] - left[2] * right[1],
+        left[2] * right[0] - left[0] * right[2],
+        left[0] * right[1] - left[1] * right[0],
+    )
+
+
+def _norm(value: tuple[float, float, float]) -> float:
+    return math.sqrt(_dot(value, value))
+
+
+def _unit(value: tuple[float, float, float], *, label: str) -> tuple[float, float, float]:
+    length = _norm(value)
+    if length < 1.0e-8:
+        raise GerminalAdapterError(f"Cannot normalize degenerate {label} vector")
+    return _vector_scale(value, 1.0 / length)
+
+
+def _centroid(points: Sequence[tuple[float, float, float]], *, label: str) -> tuple[float, float, float]:
+    if not points:
+        raise GerminalAdapterError(f"Cannot compute {label} centroid from zero atoms")
+    return tuple(sum(point[index] for point in points) / len(points) for index in range(3))  # type: ignore[return-value]
+
+
+def _rotate_between(
+    point: tuple[float, float, float],
+    source: tuple[float, float, float],
+    destination: tuple[float, float, float],
+) -> tuple[float, float, float]:
+    """Rotate ``point`` so unit ``source`` aligns with unit ``destination``."""
+
+    source_u = _unit(source, label="source orientation")
+    destination_u = _unit(destination, label="destination orientation")
+    cosine = max(-1.0, min(1.0, _dot(source_u, destination_u)))
+    if cosine > 1.0 - 1.0e-10:
+        return point
+    axis = _cross(source_u, destination_u)
+    if _norm(axis) < 1.0e-8:
+        trial = (1.0, 0.0, 0.0) if abs(source_u[0]) < 0.9 else (0.0, 1.0, 0.0)
+        axis = _unit(_cross(source_u, trial), label="antiparallel rotation axis")
+        return _vector_subtract(_vector_scale(axis, 2.0 * _dot(axis, point)), point)
+    axis = _unit(axis, label="rotation axis")
+    sine = math.sqrt(max(0.0, 1.0 - cosine * cosine))
+    return _vector_add(
+        _vector_add(_vector_scale(point, cosine), _vector_scale(_cross(axis, point), sine)),
+        _vector_scale(axis, _dot(axis, point) * (1.0 - cosine)),
+    )
+
+
+def _pdb_atoms(path: Path, *, chain: str, label: str) -> list[dict[str, Any]]:
+    atoms: list[dict[str, Any]] = []
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        if not line.startswith(("ATOM  ", "HETATM")) or len(line) < 54 or line[21] != chain:
+            continue
+        try:
+            coordinate = (float(line[30:38]), float(line[38:46]), float(line[46:54]))
+            residue_number = int(line[22:26])
+        except ValueError as exc:
+            raise GerminalAdapterError(f"Malformed coordinate record in {label}: {line!r}") from exc
+        atoms.append(
+            {
+                "line": line,
+                "coordinate": coordinate,
+                "atom_name": line[12:16].strip(),
+                "residue_number": residue_number,
+                "heavy": not line[12:16].strip().upper().startswith("H"),
+            }
+        )
+    if not atoms:
+        raise GerminalAdapterError(f"{label} contains no atoms for chain {chain}")
+    return atoms
+
+
+def _minimum_distance(
+    left: Sequence[tuple[float, float, float]],
+    right: Sequence[tuple[float, float, float]],
+) -> float:
+    if not left or not right:
+        raise GerminalAdapterError("Cannot compute minimum distance from an empty atom set")
+    cell_size = 8.0
+    grid: dict[tuple[int, int, int], list[tuple[float, float, float]]] = {}
+    for point in left:
+        cell = tuple(math.floor(value / cell_size) for value in point)
+        grid.setdefault(cell, []).append(point)  # type: ignore[arg-type]
+    candidate_distances: list[float] = []
+    for point in right:
+        cell = tuple(math.floor(value / cell_size) for value in point)
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                for dz in (-1, 0, 1):
+                    for other in grid.get((cell[0] + dx, cell[1] + dy, cell[2] + dz), ()):
+                        candidate_distances.append(
+                            sum((point[index] - other[index]) ** 2 for index in range(3))
+                        )
+    if not candidate_distances:
+        minimum_squared = min(
+            sum((a[index] - b[index]) ** 2 for index in range(3))
+            for a in left
+            for b in right
+        )
+    else:
+        minimum_squared = min(candidate_distances)
+    return math.sqrt(minimum_squared)
+
+
+def _has_distance_below(
+    left: Sequence[tuple[float, float, float]],
+    right: Sequence[tuple[float, float, float]],
+    threshold: float,
+) -> bool:
+    threshold_squared = threshold * threshold
+    grid: dict[tuple[int, int, int], list[tuple[float, float, float]]] = {}
+    for point in left:
+        cell = tuple(math.floor(value / threshold) for value in point)
+        grid.setdefault(cell, []).append(point)  # type: ignore[arg-type]
+    for point in right:
+        cell = tuple(math.floor(value / threshold) for value in point)
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                for dz in (-1, 0, 1):
+                    if any(
+                        sum((point[index] - other[index]) ** 2 for index in range(3))
+                        < threshold_squared
+                        for other in grid.get(
+                            (cell[0] + dx, cell[1] + dy, cell[2] + dz), ()
+                        )
+                    ):
+                        return True
+    return False
+
+
+def _replace_pdb_coordinate(
+    line: str,
+    *,
+    serial: int,
+    chain: str,
+    coordinate: tuple[float, float, float],
+) -> str:
+    padded = line.ljust(80)
+    return (
+        f"{padded[:6]}{serial:5d}{padded[11:21]}{chain}{padded[22:30]}"
+        f"{coordinate[0]:8.3f}{coordinate[1]:8.3f}{coordinate[2]:8.3f}{padded[54:]}"
+    ).rstrip()
+
+
+def _hotspot_prepositioned_complex(
+    *,
+    target_pdb: Path,
+    target_chain: str,
+    scfv_pdb: Path,
+    scfv_chain: str,
+    binder_chain: str,
+    hotspot_residue_numbers: Sequence[int],
+    cdr_positions: Sequence[int],
+) -> dict[str, Any]:
+    """Build a deterministic, hotspot-aware starting complex entirely in memory."""
+
+    target_atoms = _pdb_atoms(target_pdb, chain=target_chain, label="target PDB")
+    binder_atoms = _pdb_atoms(scfv_pdb, chain=scfv_chain, label="scFv PDB")
+    target_ca = [atom["coordinate"] for atom in target_atoms if atom["atom_name"] == "CA"]
+    binder_ca = [atom["coordinate"] for atom in binder_atoms if atom["atom_name"] == "CA"]
+    hotspot_atoms = [
+        atom["coordinate"]
+        for atom in target_atoms
+        if atom["heavy"] and atom["residue_number"] in set(hotspot_residue_numbers)
+    ]
+    cdr_atoms = [
+        atom["coordinate"]
+        for atom in binder_atoms
+        if atom["atom_name"] == "CA" and atom["residue_number"] in set(cdr_positions)
+    ]
+    missing_hotspots = sorted(
+        set(hotspot_residue_numbers)
+        - {atom["residue_number"] for atom in target_atoms}
+    )
+    if missing_hotspots:
+        raise GerminalAdapterError(
+            f"Cannot preposition scFv; target lacks hotspot residues {missing_hotspots}"
+        )
+    missing_cdrs = sorted(
+        set(cdr_positions) - {atom["residue_number"] for atom in binder_atoms}
+    )
+    if missing_cdrs:
+        raise GerminalAdapterError(
+            f"Cannot preposition scFv; template lacks CDR residues {missing_cdrs}"
+        )
+
+    target_center = _centroid(target_ca, label="target CA")
+    hotspot_center = _centroid(hotspot_atoms, label="hotspot heavy-atom")
+    binder_center = _centroid(binder_ca, label="binder CA")
+    paratope_center = _centroid(cdr_atoms, label="CDR CA")
+    outward = _unit(_vector_subtract(hotspot_center, target_center), label="target outward")
+    binder_to_paratope = _unit(
+        _vector_subtract(paratope_center, binder_center), label="binder-to-paratope"
+    )
+    desired_binder_to_paratope = _vector_scale(outward, -1.0)
+
+    rotated_coordinates: list[tuple[float, float, float]] = []
+    for atom in binder_atoms:
+        relative = _vector_subtract(atom["coordinate"], paratope_center)
+        rotated_coordinates.append(
+            _rotate_between(relative, binder_to_paratope, desired_binder_to_paratope)
+        )
+    desired_paratope_center = _vector_add(
+        hotspot_center, _vector_scale(outward, PILOT_PARATOPE_OFFSET_ANGSTROM)
+    )
+    placed_coordinates = [
+        _vector_add(coordinate, desired_paratope_center)
+        for coordinate in rotated_coordinates
+    ]
+
+    target_heavy = [atom["coordinate"] for atom in target_atoms if atom["heavy"]]
+    binder_heavy_indices = [index for index, atom in enumerate(binder_atoms) if atom["heavy"]]
+    backoff = 0.0
+    binder_heavy = [placed_coordinates[index] for index in binder_heavy_indices]
+    while _has_distance_below(
+        target_heavy, binder_heavy, PILOT_MIN_HEAVY_ATOM_DISTANCE_ANGSTROM
+    ) and backoff < 30.0:
+        step = 1.0
+        backoff += step
+        shift = _vector_scale(outward, step)
+        placed_coordinates = [_vector_add(coordinate, shift) for coordinate in placed_coordinates]
+        binder_heavy = [placed_coordinates[index] for index in binder_heavy_indices]
+
+    minimum_heavy_distance = _minimum_distance(target_heavy, binder_heavy)
+
+    hotspot_to_cdr = _minimum_distance(
+        hotspot_atoms,
+        [
+            placed_coordinates[index]
+            for index, atom in enumerate(binder_atoms)
+            if atom["heavy"] and atom["residue_number"] in set(cdr_positions)
+        ],
+    )
+    if minimum_heavy_distance < PILOT_MIN_HEAVY_ATOM_DISTANCE_ANGSTROM:
+        raise GerminalAdapterError(
+            "Could not produce a clash-free hotspot-aware Germinal starting complex"
+        )
+    if hotspot_to_cdr > PILOT_MAX_HOTSPOT_TO_CDR_DISTANCE_ANGSTROM:
+        raise GerminalAdapterError(
+            "Hotspot-aware Germinal starting complex left the CDRs too far from "
+            f"the target: {hotspot_to_cdr:.3f} A"
+        )
+
+    lines: list[str] = []
+    serial = 1
+    for atom in target_atoms:
+        lines.append(
+            _replace_pdb_coordinate(
+                atom["line"], serial=serial, chain=target_chain, coordinate=atom["coordinate"]
+            )
+        )
+        serial += 1
+    lines.append("TER")
+    for atom, coordinate in zip(binder_atoms, placed_coordinates, strict=True):
+        lines.append(
+            _replace_pdb_coordinate(
+                atom["line"], serial=serial, chain=binder_chain, coordinate=coordinate
+            )
+        )
+        serial += 1
+    lines.extend(("TER", "END"))
+    content = "\n".join(lines) + "\n"
+    return {
+        "schema": "nfl_ab_design.germinal_hotspot_seed.v1",
+        "method": "hotspot_centroid_surface_normal_paratope_alignment",
+        "content": content,
+        "sha256": sha256(content.encode("utf-8")).hexdigest(),
+        "target_chain": target_chain,
+        "binder_chain": binder_chain,
+        "hotspot_residue_numbers": list(hotspot_residue_numbers),
+        "cdr_positions": list(cdr_positions),
+        "requested_paratope_offset_angstrom": PILOT_PARATOPE_OFFSET_ANGSTROM,
+        "collision_backoff_angstrom": backoff,
+        "minimum_heavy_atom_distance_angstrom": round(minimum_heavy_distance, 3),
+        "minimum_hotspot_to_cdr_distance_angstrom": round(hotspot_to_cdr, 3),
+    }
 
 
 def _hydra_value(value: Any) -> str:
@@ -868,6 +1208,10 @@ def build_germinal_jobs(
     target_lookup = {
         (residue.chain, residue.number, residue.insertion_code): residue
         for residue in target_chains[target_chain]
+    }
+    target_local_position = {
+        (residue.chain, residue.number, residue.insertion_code): index
+        for index, residue in enumerate(target_chains[target_chain], start=1)
     }
 
     templates = [dict(item) for item in normalized["templates"]]
@@ -991,9 +1335,32 @@ def build_germinal_jobs(
                 "target_hotspots": ",".join(
                     residue.germinal_hotspot for _, residue in mapped
                 ),
-                "hotspot_residue": median_residue.chai_hotspot,
+                "external_target_hotspots": ",".join(
+                    f"{residue.chain}{target_local_position[(residue.chain, residue.number, residue.insertion_code)]}"
+                    for _, residue in mapped
+                ),
+                "hotspot_residue": (
+                    f"{median_residue.amino_acid}"
+                    f"{target_local_position[(median_residue.chain, median_residue.number, median_residue.insertion_code)]}"
+                ),
                 "dimer": False,
             }
+            prepositioned_starting_complex: dict[str, Any] | None = None
+            if profile == "pilot":
+                cdr_token = "_".join(str(value) for value in layout["cdr_lengths"])
+                starting_complex_path = (
+                    staged_pdb_dir / f"{target_config_name}_{cdr_token}_scfv.pdb"
+                )
+                prepositioned_starting_complex = _hotspot_prepositioned_complex(
+                    target_pdb=target_pdb,
+                    target_chain=target_chain,
+                    scfv_pdb=Path(layout["scfv_pdb_path"]),
+                    scfv_chain=scfv_chain,
+                    binder_chain=binder_chain,
+                    hotspot_residue_numbers=[residue.number for _, residue in mapped],
+                    cdr_positions=layout["cdr_positions"],
+                )
+                prepositioned_starting_complex["path"] = str(starting_complex_path)
 
             common_overrides: dict[str, Any] = {
                 "project_dir": str(handoff_path),
@@ -1102,6 +1469,7 @@ def build_germinal_jobs(
                         "template_scfv_source_chain": scfv_chain,
                         "combined_complex_binder_chain": binder_chain,
                         "scfv_layout": layout,
+                        "prepositioned_starting_complex": prepositioned_starting_complex,
                     },
                     "target_mapping": {
                         "coordinate_source": "normalized antigen 1-based positions",
@@ -1127,6 +1495,13 @@ def build_germinal_jobs(
                                 "pdb_insertion_code": residue.insertion_code,
                                 "pdb_amino_acid": residue.amino_acid,
                                 "germinal_hotspot": residue.germinal_hotspot,
+                                "external_chain_relative_position": target_local_position[
+                                    (
+                                        residue.chain,
+                                        residue.number,
+                                        residue.insertion_code,
+                                    )
+                                ],
                             }
                             for source_position, residue in mapped
                         ],
@@ -1269,6 +1644,11 @@ def write_germinal_handoff(
         existing.extend(
             yaml_dir / f"{job['target_yaml']['config_name']}.yaml" for job in jobs
         )
+        existing.extend(
+            Path(seed["path"])
+            for job in jobs
+            if (seed := job["inputs"].get("prepositioned_starting_complex"))
+        )
         conflicts = [path for path in existing if path.exists()]
         if conflicts:
             raise GerminalAdapterError(
@@ -1278,6 +1658,7 @@ def write_germinal_handoff(
     yaml_dir.mkdir(parents=True, exist_ok=True)
     written_yamls: list[str] = []
     staged_pdbs: list[str] = []
+    generated_starting_complexes: list[str] = []
     for job in jobs:
         yaml_path = yaml_dir / f"{job['target_yaml']['config_name']}.yaml"
         yaml_path.write_text(str(job["target_yaml"]["content"]), encoding="utf-8")
@@ -1291,6 +1672,22 @@ def write_germinal_handoff(
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(job["inputs"]["template_scfv_pdb_path"], destination)
             staged_pdbs.append(str(destination))
+        seed = job["inputs"].get("prepositioned_starting_complex")
+        if seed:
+            seed_path = Path(seed["path"]).expanduser().resolve()
+            if seed_path.exists() and not overwrite:
+                raise GerminalAdapterError(
+                    f"Refusing to overwrite generated Germinal starting complex: {seed_path}"
+                )
+            seed_path.parent.mkdir(parents=True, exist_ok=True)
+            content = str(seed["content"])
+            observed_hash = sha256(content.encode("utf-8")).hexdigest()
+            if observed_hash != seed["sha256"]:
+                raise GerminalAdapterError(
+                    f"Generated Germinal starting complex hash drift for {job['job_id']}"
+                )
+            seed_path.write_text(content, encoding="utf-8")
+            generated_starting_complexes.append(str(seed_path))
     root.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(
         json.dumps(handoff, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
@@ -1300,6 +1697,7 @@ def write_germinal_handoff(
         "manifest": str(manifest_path),
         "target_yamls": written_yamls,
         "staged_template_pdbs": staged_pdbs,
+        "generated_starting_complexes": generated_starting_complexes,
     }
 
 

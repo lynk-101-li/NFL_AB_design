@@ -133,6 +133,8 @@ NFL_AB_design/
 
 ## Installation and Run
 
+面向初次使用者的 proxy 与真实 GPU 全流程操作、验收、错误处理和 11 个阶段可视化脚本，见 [`docs/pipeline_operation_guide_zh.md`](docs/pipeline_operation_guide_zh.md)。
+
 本包的本地 proxy workflow 需要 Python 3.10 或更高版本及 NumPy；editable install 会自动安装声明的依赖。
 
 ```bash

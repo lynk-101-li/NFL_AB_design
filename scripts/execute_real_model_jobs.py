@@ -40,6 +40,8 @@ EXPECTED_ENGINES = ("RFantibody", "IgGM", "Germinal")
 SHA256_PATTERN = re.compile(r"[0-9a-f]{64}")
 SAFE_ID_PATTERN = re.compile(r"[A-Za-z0-9._-]+")
 PLACEHOLDER_PATTERN = re.compile(r"<[^<>]+>")
+COMMAND_LOG_TAIL_BYTES = 64 * 1024
+COMMAND_HEARTBEAT_SECONDS = 30
 
 
 class RealModelExecutorError(ValueError):
@@ -70,6 +72,76 @@ def _file_sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _text_file_tail(path: Path, *, limit: int = COMMAND_LOG_TAIL_BYTES) -> tuple[str, bool]:
+    size = path.stat().st_size
+    with path.open("rb") as handle:
+        if size > limit:
+            handle.seek(-limit, os.SEEK_END)
+        payload = handle.read()
+    return payload.decode("utf-8", errors="replace"), size > limit
+
+
+def _persist_germinal_metrics(stdout_path: Path, output_path: Path) -> dict[str, Any]:
+    """Persist compact confidence evidence even for scientifically rejected runs."""
+
+    trajectory_pattern = re.compile(r"^Starting trajectory\s+\d+:\s*(\S+)")
+    metrics_pattern = re.compile(
+        r"^(Initial trajectory metrics too low to continue|Final pLDDT/iPTM/iPAE .*?):\s*"
+        r"([0-9.eE+-]+)\s*/?\s*([0-9.eE+-]+)\s*/?\s*([0-9.eE+-]+)"
+    )
+    accepted_pattern = re.compile(
+        r"^(\d+) designs passed all filters and were accepted\."
+    )
+    trajectories: list[dict[str, Any]] = []
+    current: dict[str, Any] | None = None
+    accepted_count: int | None = None
+    with stdout_path.open("r", encoding="utf-8", errors="replace") as handle:
+        for raw_line in handle:
+            line = raw_line.strip()
+            trajectory_match = trajectory_pattern.match(line)
+            if trajectory_match:
+                current = {"trajectory": trajectory_match.group(1)}
+                trajectories.append(current)
+                continue
+            metrics_match = metrics_pattern.match(line)
+            if metrics_match:
+                if current is None:
+                    current = {"trajectory": "unknown"}
+                    trajectories.append(current)
+                key = (
+                    "initial"
+                    if metrics_match.group(1).startswith("Initial")
+                    else "final"
+                )
+                current[key] = {
+                    "plddt": float(metrics_match.group(2)),
+                    "iptm": float(metrics_match.group(3)),
+                    "ipae": float(metrics_match.group(4)),
+                }
+                continue
+            accepted_match = accepted_pattern.match(line)
+            if accepted_match:
+                accepted_count = int(accepted_match.group(1))
+    payload = {
+        "schema": "nfl_ab_design.germinal_metrics.v1",
+        "source_stdout_log": str(stdout_path),
+        "trajectory_count_with_metrics": sum(
+            1
+            for trajectory in trajectories
+            if "initial" in trajectory or "final" in trajectory
+        ),
+        "accepted_design_count": accepted_count,
+        "trajectories": trajectories,
+    }
+    _atomic_write_json(output_path, payload)
+    return {
+        "path": str(output_path),
+        "sha256": _file_sha256(output_path),
+        "trajectory_count_with_metrics": payload["trajectory_count_with_metrics"],
+        "accepted_design_count": accepted_count,
+    }
 
 
 def _load_object(path: Path, *, label: str) -> dict[str, Any]:
@@ -369,6 +441,27 @@ def _validate_handoff(
     raw_engines = manifest.get("engines")
     if not isinstance(raw_engines, list) or len(raw_engines) != len(EXPECTED_ENGINES):
         raise RealModelExecutorError("handoff engines must contain exactly three entries")
+    execution_selection = _mapping(
+        manifest.get("execution_selection"), label="execution_selection"
+    )
+    raw_selected_engines = execution_selection.get("selected_engines")
+    if not isinstance(raw_selected_engines, list) or not raw_selected_engines:
+        raise RealModelExecutorError(
+            "execution_selection.selected_engines must be a non-empty list"
+        )
+    selected_engines = [
+        _string(value, label=f"execution_selection.selected_engines[{index}]")
+        for index, value in enumerate(raw_selected_engines)
+    ]
+    expected_selected_order = [
+        engine for engine in EXPECTED_ENGINES if engine in selected_engines
+    ]
+    if selected_engines != expected_selected_order or len(set(selected_engines)) != len(
+        selected_engines
+    ):
+        raise RealModelExecutorError(
+            f"selected_engines must be a unique ordered subset of {list(EXPECTED_ENGINES)}"
+        )
     engines: list[dict[str, Any]] = []
     observed_engine_names: list[str] = []
     all_job_ids: set[str] = set()
@@ -382,12 +475,33 @@ def _validate_handoff(
             raise RealModelExecutorError(
                 f"{engine}.execution_state must be 'planned_not_executed'"
             )
+        engine_selected = engine in selected_engines
+        if engine_manifest.get("selected_for_execution") is not engine_selected:
+            raise RealModelExecutorError(
+                f"{engine}.selected_for_execution disagrees with execution_selection"
+            )
         # Deliberately no fallback to engine_manifest['jobs'] or native_plan.
         raw_execution_jobs = engine_manifest.get("execution_jobs")
-        if not isinstance(raw_execution_jobs, list) or not raw_execution_jobs:
+        if not isinstance(raw_execution_jobs, list):
             raise RealModelExecutorError(
-                f"{engine} has no non-empty execution_jobs selection; native_plan/jobs "
-                "are rejected as submission sources"
+                f"{engine}.execution_jobs must be a list; native_plan/jobs are rejected"
+            )
+        if not engine_selected:
+            if raw_execution_jobs != []:
+                raise RealModelExecutorError(
+                    f"Deselected engine {engine} must have empty execution_jobs"
+                )
+            if engine_manifest.get("selected_job_ids") != [] or engine_manifest.get(
+                "selected_job_count"
+            ) != 0:
+                raise RealModelExecutorError(
+                    f"Deselected engine {engine} must have zero selected jobs"
+                )
+            continue
+        if not raw_execution_jobs:
+            raise RealModelExecutorError(
+                f"Selected engine {engine} has no execution_jobs; native_plan/jobs are "
+                "rejected as submission sources"
             )
         jobs = [
             _validate_execution_job(
@@ -469,9 +583,9 @@ def _validate_attestation(
     if attestation.get("handoff_manifest_sha256") != handoff["manifest_sha256"]:
         raise RealModelExecutorError("runtime attestation handoff_manifest_sha256 mismatch")
     raw_engines = attestation.get("engines")
-    if not isinstance(raw_engines, list) or len(raw_engines) != len(EXPECTED_ENGINES):
+    if not isinstance(raw_engines, list) or len(raw_engines) != len(handoff["engines"]):
         raise RealModelExecutorError(
-            "runtime attestation must contain exactly one entry for each of the three engines"
+            "runtime attestation must contain exactly one entry for each selected engine"
         )
     attested_by_name: dict[str, Mapping[str, Any]] = {}
     for index, raw_engine in enumerate(raw_engines):
@@ -480,9 +594,11 @@ def _validate_attestation(
         if engine in attested_by_name:
             raise RealModelExecutorError(f"runtime attestation repeats engine {engine!r}")
         attested_by_name[engine] = value
-    if set(attested_by_name) != set(EXPECTED_ENGINES):
+    expected_attested_engines = {engine["engine"] for engine in handoff["engines"]}
+    if set(attested_by_name) != expected_attested_engines:
         raise RealModelExecutorError(
-            f"runtime attestation engines must be exactly {list(EXPECTED_ENGINES)}"
+            "runtime attestation engines must exactly match selected handoff engines: "
+            f"{sorted(expected_attested_engines)}"
         )
 
     normalized_engines: list[dict[str, Any]] = []
@@ -936,28 +1052,55 @@ def _run_serial(
                     attempt["staging"] = [_stage_file(action) for action in actions]
                     report["updated_at"] = _now()
                     _atomic_write_json(state_path, report)
-                for command in job["commands"]:
+                log_root = (
+                    state_path.parent
+                    / "logs"
+                    / job["job_id"]
+                    / f"attempt_{attempt['attempt']:03d}"
+                )
+                log_root.mkdir(parents=True, exist_ok=True)
+                for command_index, command in enumerate(job["commands"], start=1):
                     started_at = _now()
                     timer = monotonic()
+                    stdout_path = log_root / f"command_{command_index:03d}.stdout.log"
+                    stderr_path = log_root / f"command_{command_index:03d}.stderr.log"
                     command_result: dict[str, Any] = {
                         "stage": command["stage"],
                         "argv": list(command["argv"]),
                         "working_directory": command["working_directory"],
                         "shell": False,
+                        "stdout_log_path": str(stdout_path),
+                        "stderr_log_path": str(stderr_path),
                         "started_at": started_at,
                         "status": "running",
                     }
                     attempt["commands"].append(command_result)
                     _atomic_write_json(state_path, report)
                     try:
-                        completed = subprocess.run(
-                            list(command["argv"]),
-                            cwd=command["working_directory"],
-                            shell=False,
-                            capture_output=True,
-                            text=True,
-                            check=False,
-                        )
+                        with stdout_path.open(
+                            "w", encoding="utf-8", errors="replace"
+                        ) as stdout_handle, stderr_path.open(
+                            "w", encoding="utf-8", errors="replace"
+                        ) as stderr_handle:
+                            process = subprocess.Popen(
+                                list(command["argv"]),
+                                cwd=command["working_directory"],
+                                shell=False,
+                                stdout=stdout_handle,
+                                stderr=stderr_handle,
+                                text=True,
+                            )
+                            while True:
+                                try:
+                                    return_code = process.wait(
+                                        timeout=COMMAND_HEARTBEAT_SECONDS
+                                    )
+                                    break
+                                except subprocess.TimeoutExpired:
+                                    heartbeat = _now()
+                                    attempt["heartbeat_at"] = heartbeat
+                                    report["updated_at"] = heartbeat
+                                    _atomic_write_json(state_path, report)
                     except OSError as exc:
                         command_result.update(
                             {
@@ -973,23 +1116,36 @@ def _run_serial(
                             f"{engine['engine']} job {job['job_id']} failed to launch "
                             f"stage {command['stage']}: {exc}"
                         ) from exc
+                    stdout, stdout_truncated = _text_file_tail(stdout_path)
+                    stderr, stderr_truncated = _text_file_tail(stderr_path)
                     command_result.update(
                         {
-                            "stdout": completed.stdout if isinstance(completed.stdout, str) else "",
-                            "stderr": completed.stderr if isinstance(completed.stderr, str) else "",
-                            "exit_code": int(completed.returncode),
-                            "status": "succeeded" if completed.returncode == 0 else "failed",
+                            "stdout": stdout,
+                            "stderr": stderr,
+                            "stdout_is_tail": stdout_truncated,
+                            "stderr_is_tail": stderr_truncated,
+                            "exit_code": int(return_code),
+                            "status": "succeeded" if return_code == 0 else "failed",
                             "finished_at": _now(),
                             "duration_seconds": round(monotonic() - timer, 6),
                         }
                     )
                     report["updated_at"] = _now()
                     _atomic_write_json(state_path, report)
-                    if completed.returncode != 0:
+                    if return_code != 0:
                         raise RealModelExecutionFailed(
                             f"{engine['engine']} job {job['job_id']} stage "
-                            f"{command['stage']} exited with code {completed.returncode}"
+                            f"{command['stage']} exited with code {return_code}"
                         )
+                    if (
+                        engine["engine"] == "Germinal"
+                        and command["stage"] == "germinal_scfv_design_and_filter"
+                    ):
+                        attempt["germinal_metrics"] = _persist_germinal_metrics(
+                            stdout_path, log_root / "germinal_metrics.json"
+                        )
+                        report["updated_at"] = _now()
+                        _atomic_write_json(state_path, report)
             except (RealModelExecutorError, OSError) as exc:
                 attempt["status"] = "failed"
                 attempt["finished_at"] = _now()
