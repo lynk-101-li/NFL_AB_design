@@ -15,17 +15,17 @@ authors = [
 dependencies = [
   "numpy>=1.24",
 ]
-
-[project.optional-dependencies]
-visualization = [
-  "matplotlib>=3.7",
-]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+
+[project.optional-dependencies]
+visualization = [
+  "matplotlib>=3.7",
 ]
 
 [project.scripts]
