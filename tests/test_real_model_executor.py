@@ -13,6 +13,22 @@ sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 import execute_real_model_jobs as executor
 
 
+def _fake_popen(results):
+    queue = iter(results)
+
+    def launch(argv, **kwargs):
+        completed = next(queue)
+        kwargs["stdout"].write(completed.stdout or "")
+        kwargs["stdout"].flush()
+        kwargs["stderr"].write(completed.stderr or "")
+        kwargs["stderr"].flush()
+        process = mock.Mock()
+        process.wait.return_value = completed.returncode
+        return process
+
+    return launch
+
+
 class ExecutorFixture:
     def __init__(self, root: Path) -> None:
         self.root = root.resolve()
@@ -116,6 +132,7 @@ class ExecutorFixture:
             engines.append(
                 {
                     "engine": engine,
+                    "selected_for_execution": True,
                     "execution_state": "planned_not_executed",
                     "ready_for_execution": False,
                     "required_upstream_revision": f"{engine.lower()}-revision",
@@ -143,6 +160,9 @@ class ExecutorFixture:
             "handoff_identity": identity,
             "execution_state": "planned_not_executed",
             "does_not_execute_external_models": True,
+            "execution_selection": {
+                "selected_engines": list(executor.EXPECTED_ENGINES),
+            },
             "source_run": {
                 "source_integrity": {
                     "ready_for_execution": True,
@@ -227,6 +247,7 @@ class ExecutorFixture:
                 "overrides_manifest_ready_for_execution": True,
             }
             for engine in self.manifest["engines"]
+            if engine.get("selected_for_execution") is True
         ]
         self.attestation_path.write_text(
             json.dumps(self.attestation, indent=2) + "\n", encoding="utf-8"
@@ -260,7 +281,7 @@ class RealModelExecutorTest(unittest.TestCase):
         )
         with mock.patch.object(
             executor.subprocess,
-            "run",
+            "Popen",
             side_effect=AssertionError("dry-run launched a process"),
         ), mock.patch.object(
             executor.shutil,
@@ -284,7 +305,9 @@ class RealModelExecutorTest(unittest.TestCase):
             subprocess.CompletedProcess([], 0, stdout=f"out-{index}", stderr=f"err-{index}")
             for index in range(4)
         ]
-        with mock.patch.object(executor.subprocess, "run", side_effect=completed) as run:
+        with mock.patch.object(
+            executor.subprocess, "Popen", side_effect=_fake_popen(completed)
+        ) as run:
             report = self._run(execute=True)
         self.assertEqual(report["status"], "succeeded")
         self.assertEqual(run.call_count, 4)
@@ -295,8 +318,6 @@ class RealModelExecutorTest(unittest.TestCase):
         )
         for call in run.call_args_list:
             self.assertIs(call.kwargs["shell"], False)
-            self.assertIs(call.kwargs["check"], False)
-            self.assertIs(call.kwargs["capture_output"], True)
             self.assertIs(call.kwargs["text"], True)
         self.assertIsNone(run.call_args_list[0].kwargs["cwd"])
         self.assertEqual(run.call_args_list[2].kwargs["cwd"], str(self.fixture.iggm_repo))
@@ -309,6 +330,10 @@ class RealModelExecutorTest(unittest.TestCase):
         self.assertEqual(first_command["argv"][0], "rfantibody-backbone")
         self.assertEqual(first_command["stdout"], "out-0")
         self.assertEqual(first_command["stderr"], "err-0")
+        self.assertFalse(first_command["stdout_is_tail"])
+        self.assertFalse(first_command["stderr_is_tail"])
+        self.assertTrue(Path(first_command["stdout_log_path"]).is_file())
+        self.assertTrue(Path(first_command["stderr_log_path"]).is_file())
         self.assertEqual(first_command["exit_code"], 0)
         germinal_attempt = saved["jobs"][2]["attempts"][0]
         self.assertEqual(len(germinal_attempt["staging"]), 2)
@@ -331,7 +356,9 @@ class RealModelExecutorTest(unittest.TestCase):
             subprocess.CompletedProcess([], 0, stdout="ok", stderr=""),
             subprocess.CompletedProcess([], 17, stdout="partial", stderr="boom"),
         ]
-        with mock.patch.object(executor.subprocess, "run", side_effect=completed) as run:
+        with mock.patch.object(
+            executor.subprocess, "Popen", side_effect=_fake_popen(completed)
+        ) as run:
             with self.assertRaisesRegex(executor.RealModelExecutionFailed, "code 17"):
                 self._run(execute=True)
         self.assertEqual(run.call_count, 2)
@@ -353,11 +380,13 @@ class RealModelExecutorTest(unittest.TestCase):
             subprocess.CompletedProcess([], 0, stdout="ok", stderr="")
             for _ in range(4)
         ]
-        with mock.patch.object(executor.subprocess, "run", side_effect=successes):
+        with mock.patch.object(
+            executor.subprocess, "Popen", side_effect=_fake_popen(successes)
+        ):
             self._run(execute=True)
         with mock.patch.object(
             executor.subprocess,
-            "run",
+            "Popen",
             side_effect=AssertionError("resume reran a successful job"),
         ) as run:
             resumed = self._run(execute=True, resume=True)
@@ -375,13 +404,15 @@ class RealModelExecutorTest(unittest.TestCase):
             subprocess.CompletedProcess([], 0, stdout="ok", stderr="")
             for _ in range(4)
         ]
-        with mock.patch.object(executor.subprocess, "run", side_effect=successes):
+        with mock.patch.object(
+            executor.subprocess, "Popen", side_effect=_fake_popen(successes)
+        ):
             self._run(execute=True)
         state_path = self.fixture.root / "execution" / "execution_report.json"
         report = json.loads(state_path.read_text(encoding="utf-8"))
         report["jobs"][0]["attempts"][-1]["commands"][0]["exit_code"] = 9
         state_path.write_text(json.dumps(report), encoding="utf-8")
-        with mock.patch.object(executor.subprocess, "run") as run:
+        with mock.patch.object(executor.subprocess, "Popen") as run:
             with self.assertRaisesRegex(
                 executor.RealModelExecutorError, "zero-exit success record"
             ):
@@ -455,6 +486,38 @@ class RealModelExecutorTest(unittest.TestCase):
         ):
             self._run()
         self.assertFalse((self.fixture.root.parent / "escaped_pdb_dir").exists())
+
+    def test_explicit_engine_scope_can_select_only_germinal(self) -> None:
+        for engine in self.fixture.manifest["engines"][:2]:
+            engine["selected_for_execution"] = False
+            engine["selected_job_count"] = 0
+            engine["selected_job_ids"] = []
+            engine["execution_jobs"] = []
+        self.fixture.manifest["execution_selection"]["selected_engines"] = [
+            "Germinal"
+        ]
+        self.fixture.rewrite()
+        preview = self._run()
+        self.assertEqual(
+            [job["engine"] for job in preview["jobs"]],
+            ["Germinal"],
+        )
+
+    def test_germinal_metrics_are_persisted_from_rejected_stdout(self) -> None:
+        stdout = self.fixture.root / "germinal.stdout.log"
+        metrics = self.fixture.root / "germinal_metrics.json"
+        stdout.write_text(
+            "Starting trajectory 1: design_s7\n"
+            "Initial trajectory metrics too low to continue:  0.722 / 0.129 / 0.918\n"
+            "Final pLDDT/iPTM/iPAE for design design_s7: 0.722 0.129 0.918\n"
+            "0 designs passed all filters and were accepted.\n",
+            encoding="utf-8",
+        )
+        evidence = executor._persist_germinal_metrics(stdout, metrics)
+        saved = json.loads(metrics.read_text(encoding="utf-8"))
+        self.assertEqual(evidence["trajectory_count_with_metrics"], 1)
+        self.assertEqual(evidence["accepted_design_count"], 0)
+        self.assertEqual(saved["trajectories"][0]["initial"]["iptm"], 0.129)
 
 
 if __name__ == "__main__":

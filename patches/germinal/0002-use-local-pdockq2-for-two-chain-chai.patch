@@ -1,0 +1,42 @@
+diff --git a/germinal/filters/filter_utils.py b/germinal/filters/filter_utils.py
+index 7ad97f8..9c1561a 100644
+--- a/germinal/filters/filter_utils.py
++++ b/germinal/filters/filter_utils.py
+@@ -784,2 +784,4 @@ def compute_pdockq_and_lis(
+-    # discard the buggy chain_specific_pdockq2 dict entirely.
++    # For exactly two chains its per-chain ordering is unambiguous, so Chai can
++    # use the binder row when ipsae is unavailable. Keep larger complexes
++    # fail-closed because the historical chain-keying bug affects that case.
+     pDockQ2_out, _ = pDockQ.pDockQ2(external_pdb, external_pae)
+@@ -787,7 +789,28 @@ def compute_pdockq_and_lis(
+-    # Use ipsae's pDockQ2 scalar directly. None when ipsae unavailable so
+-    # downstream filter evaluation fails-loud rather than silently passes.
++    local_two_chain_pdockq2 = None
++    if ipsae is None:
++        chain_ids = []
++        with open(external_pdb, "r", encoding="utf-8", errors="replace") as handle:
++            for line in handle:
++                if line.startswith(("ATOM  ", "HETATM")) and len(line) > 21:
++                    chain_id = line[21]
++                    if chain_id not in chain_ids:
++                        chain_ids.append(chain_id)
++        local_scores = np.asarray(pDockQ2_out["pmidockq"], dtype=float)
++        if len(chain_ids) == 2 and binder_chain in chain_ids and local_scores.size == 2:
++            binder_index = chain_ids.index(binder_chain)
++            local_two_chain_pdockq2 = float(local_scores[binder_index])
++            print(
++                "Using two-chain local pDockQ2 fallback for Chai binder "
++                f"chain {binder_chain}: {local_two_chain_pdockq2:.4f}",
++                flush=True,
++            )
++
++    # Prefer ipsae when available. Chai has no ipsae artifact, so use the
++    # explicitly gated two-chain fallback derived from its full PAE matrix.
+     pdockq_metrics = {
+-        "pDockQ2": ipsae["pdockq2"] if ipsae is not None else None,
++        "pDockQ2": (
++            ipsae["pdockq2"] if ipsae is not None else local_two_chain_pdockq2
++        ),
+     }
+     lis_metrics = {
+         "lis": ipsae.get("LIS") if ipsae is not None else None,

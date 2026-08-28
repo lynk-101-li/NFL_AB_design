@@ -1,0 +1,22 @@
+{
+  "schema": "nfl_ab_design.pipeline_visualization.v1",
+  "repository_root": ".",
+  "hotspots": [368, 372, 375],
+  "external_hotspots": [89, 93, 96],
+  "paths": {
+    "antigen_fragments_csv": "outputs/01_antigen_fragment_prioritization.csv",
+    "epitope_windows_csv": "outputs/02_epitope_windows.csv",
+    "template_frameworks_csv": "outputs/03_template_frameworks.csv",
+    "screening_funnel_csv": "outputs/08_screening_funnel.csv",
+    "target_pdb": "input/structures/NEFL_P07196_AFDB_v6_280-377_chainA.pdb",
+    "handoff_manifest": "",
+    "runtime_attestation": "",
+    "rfantibody_results": "",
+    "iggm_results": "",
+    "germinal_seed_pdb": "",
+    "germinal_results": "",
+    "filter_only_report": "",
+    "execution_report": "",
+    "status_json": ""
+  }
+}

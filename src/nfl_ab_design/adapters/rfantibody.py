@@ -60,8 +60,11 @@ class RFantibodyProfile:
             raise RFantibodyAdapterError("num_backbones must be positive")
         if self.sequences_per_backbone <= 0:
             raise RFantibodyAdapterError("sequences_per_backbone must be positive")
-        if self.diffuser_timesteps <= 0:
-            raise RFantibodyAdapterError("diffuser_timesteps must be positive")
+        if self.diffuser_timesteps < 15:
+            raise RFantibodyAdapterError(
+                "diffuser_timesteps must be at least 15; pinned RFdiffusion rejects "
+                "smaller discrete-time schedules"
+            )
         if self.rf2_recycles <= 0:
             raise RFantibodyAdapterError("rf2_recycles must be positive")
         if self.proteinmpnn_temperature <= 0:
@@ -98,7 +101,7 @@ DEFAULT_PROFILES: dict[RunMode, RFantibodyProfile] = {
     "smoke": RFantibodyProfile(
         num_backbones=2,
         sequences_per_backbone=1,
-        diffuser_timesteps=10,
+        diffuser_timesteps=15,
         rf2_recycles=2,
     ),
     # These values follow the scale of the official full-pipeline example.  The
@@ -393,17 +396,106 @@ def _parse_hlt_framework(path: Path) -> dict[str, str]:
 
     chains: set[str] = set()
     loop_indices: dict[str, set[int]] = {name: set() for name in CDR_NAMES}
+    loop_by_index: dict[int, str] = {}
+    residue_order: list[tuple[str, int]] = []
+    residue_atoms: dict[tuple[str, int], dict[str, tuple[float, float, float]]] = {}
+    seen_ca: set[tuple[str, int]] = set()
     with path.open("r", encoding="utf-8", errors="replace") as handle:
         for line in handle:
-            if line.startswith("ATOM  ") and len(line) >= 22:
+            if line.startswith("ATOM  ") and len(line) >= 54:
                 chain = line[21].strip()
-                if chain:
-                    chains.add(chain)
+                number_text = line[22:26].strip()
+                insertion_code = line[26].strip()
+                if not chain or not number_text:
+                    raise RFantibodyAdapterError(
+                        f"HLT framework {path} contains an ATOM row without a "
+                        "chain or residue number"
+                    )
+                try:
+                    number = int(number_text)
+                except ValueError as exc:
+                    raise RFantibodyAdapterError(
+                        f"HLT framework {path} contains a non-integer residue "
+                        f"number: {number_text!r}"
+                    ) from exc
+                if insertion_code:
+                    raise RFantibodyAdapterError(
+                        f"HLT framework {path} retains insertion code "
+                        f"{chain}{number}{insertion_code}; RFantibody's HLT parser "
+                        "drops insertion codes and would create duplicate/all-zero "
+                        "coordinate rows. Reconvert with chothia2HLT.py."
+                    )
+                chains.add(chain)
+                parser_key = (chain, number)
+                atom = line[12:16].strip()
+                if atom == "CA":
+                    if parser_key in seen_ca:
+                        raise RFantibodyAdapterError(
+                            f"HLT framework {path} repeats RFantibody parser key "
+                            f"{chain}{number}"
+                        )
+                    seen_ca.add(parser_key)
+                    residue_order.append(parser_key)
+                if parser_key not in residue_atoms:
+                    residue_atoms[parser_key] = {}
+                try:
+                    coordinates = (
+                        float(line[30:38]),
+                        float(line[38:46]),
+                        float(line[46:54]),
+                    )
+                except ValueError as exc:
+                    raise RFantibodyAdapterError(
+                        f"HLT framework {path} has invalid coordinates for "
+                        f"{chain}{number} atom {atom}"
+                    ) from exc
+                residue_atoms[parser_key][atom] = coordinates
             match = _HLT_REMARK.match(line.rstrip("\n"))
             if match:
-                loop_indices[match.group("cdr")].add(
-                    int(match.group("absolute_index"))
-                )
+                absolute_index = int(match.group("absolute_index"))
+                cdr = match.group("cdr")
+                existing = loop_by_index.get(absolute_index)
+                if existing is not None and existing != cdr:
+                    raise RFantibodyAdapterError(
+                        f"HLT framework {path} assigns absolute residue "
+                        f"{absolute_index} to both {existing} and {cdr}"
+                    )
+                loop_by_index[absolute_index] = cdr
+                loop_indices[cdr].add(absolute_index)
+    if not residue_order:
+        raise RFantibodyAdapterError(f"HLT framework {path} contains no CA residues")
+    expected_numbers = list(range(1, len(residue_order) + 1))
+    observed_numbers = [number for _, number in residue_order]
+    if observed_numbers != expected_numbers:
+        raise RFantibodyAdapterError(
+            f"HLT framework {path} must use global consecutive residue numbers "
+            f"1..{len(residue_order)} in H/L order; observed numbering is not "
+            "RFantibody HLT-compatible"
+        )
+    for parser_key in residue_order:
+        chain, number = parser_key
+        atoms = residue_atoms[parser_key]
+        missing = [atom for atom in ("N", "CA", "C") if atom not in atoms]
+        if missing:
+            raise RFantibodyAdapterError(
+                f"HLT framework {path} residue {chain}{number} is missing "
+                f"backbone atom(s): {missing}"
+            )
+        n_xyz = atoms["N"]
+        ca_xyz = atoms["CA"]
+        c_xyz = atoms["C"]
+        n_vector = tuple(n - ca for n, ca in zip(n_xyz, ca_xyz, strict=True))
+        c_vector = tuple(c - ca for c, ca in zip(c_xyz, ca_xyz, strict=True))
+        cross = (
+            n_vector[1] * c_vector[2] - n_vector[2] * c_vector[1],
+            n_vector[2] * c_vector[0] - n_vector[0] * c_vector[2],
+            n_vector[0] * c_vector[1] - n_vector[1] * c_vector[0],
+        )
+        if sum(component * component for component in cross) <= 1e-12:
+            raise RFantibodyAdapterError(
+                f"HLT framework {path} residue {chain}{number} has a null or "
+                "degenerate N-CA-C coordinate frame"
+            )
     missing_chains = {"H", "L"} - chains
     if missing_chains:
         raise RFantibodyAdapterError(
@@ -414,6 +506,24 @@ def _parse_hlt_framework(path: Path) -> dict[str, str]:
         raise RFantibodyAdapterError(
             f"Framework-only HLT PDB {path} contains unexpected chain(s) "
             f"{sorted(extra)}; pass the target separately with --target"
+        )
+    out_of_range = sorted(
+        index for index in loop_by_index if not 1 <= index <= len(residue_order)
+    )
+    if out_of_range:
+        raise RFantibodyAdapterError(
+            f"HLT framework {path} has PDBinfo-LABEL indices outside "
+            f"1..{len(residue_order)}: {out_of_range}"
+        )
+    wrong_chain = sorted(
+        (index, cdr, residue_order[index - 1][0])
+        for index, cdr in loop_by_index.items()
+        if residue_order[index - 1][0] != cdr[0]
+    )
+    if wrong_chain:
+        raise RFantibodyAdapterError(
+            f"HLT framework {path} has CDR labels assigned to the wrong chain: "
+            f"{wrong_chain}"
         )
     missing_loops = [name for name, values in loop_indices.items() if not values]
     if missing_loops:
@@ -781,7 +891,6 @@ def build_rfantibody_plan(
             diffusion_qv = job_dir / "1_rfdiffusion.qv"
             diffusion_sc = diffusion_qv.with_suffix(".sc")
             proteinmpnn_qv = job_dir / "2_proteinmpnn.qv"
-            proteinmpnn_sc = proteinmpnn_qv.with_suffix(".sc")
             rf2_qv = job_dir / "3_rf2.qv"
             rf2_sc = rf2_qv.with_suffix(".sc")
             final_pdb_dir = job_dir / "final_pdbs"
@@ -858,12 +967,6 @@ def build_rfantibody_plan(
                     expected_outputs=(str(proteinmpnn_qv),),
                     expected_record_count=selected_profile.expected_sequences,
                     notes="ProteinMPNN redesigns H1,H2,H3,L1,L2,L3 explicitly.",
-                ),
-                CommandSpec(
-                    stage="proteinmpnn_score_export",
-                    argv=_command(prefix, "qvscorefile", str(proteinmpnn_qv)),
-                    expected_outputs=(str(proteinmpnn_sc),),
-                    expected_record_count=selected_profile.expected_sequences,
                 ),
                 CommandSpec(
                     stage="rf2_structure_prediction",
